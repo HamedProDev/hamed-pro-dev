@@ -1,36 +1,38 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, Square } from 'lucide-react' // Changed Code2 to Square
+import { Menu, Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
-import { ThemeToggle } from '@/components/shared/ThemeToggle'
-import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 import { MobileNav } from './MobileNav'
-import { UserMenu } from './UserMenu'
 import { cn } from '@/lib/utils/cn'
 
 const navLinks = [
   { href: '/projects', label: 'Projects' },
   { href: '/courses', label: 'Courses' },
   { href: '/blog', label: 'Blog' },
-  { href: '/jobs', label: 'Jobs' },
   { href: '/tools', label: 'Tools' },
   { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
 ]
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
+
+  useEffect(() => setMounted(true), [])
 
   return (
     <>
-      <header className="fixed top-0 z-50 w-full border-b border-dark-500/50 bg-dark-900/80 backdrop-blur-xl">
+      <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-dark-900/80 backdrop-blur-xl">
         <div className="container-wide flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
-            <span className="h-6 w-6 relative flex items-center justify-center"><Square className="h-full w-full absolute text-brand-primary/20" /><span className="gradient-bg absolute w-3 h-3 rounded-sm rotate-45"></span></span>
-            <span>Hamed<span className="gradient-text">Pro</span>Dev</span>
+            <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center text-white text-sm font-bold">HP</span>
+            <span>Hamed<span className="text-brand-primary">Pro</span></span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -39,11 +41,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'relative px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                  'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                   pathname === link.href || pathname.startsWith(link.href + '/')
-                    ? 'text-brand-primary'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-dark-600',
-                  (pathname === link.href || pathname.startsWith(link.href + '/')) && 'after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-brand-primary after:rounded-full' // Active link underline
+                    ? 'text-text-primary'
+                    : 'text-text-secondary hover:text-text-primary'
                 )}
               >
                 {link.label}
@@ -52,9 +53,18 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
-            <UserMenu />
+            <span className="hidden md:flex items-center gap-1 text-xs text-text-secondary mr-1">
+              🇬🇧 EN
+            </span>
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="hidden md:flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+            >
+              {mounted ? (theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />) : <div className="h-4 w-4" />}
+            </button>
+            <Button asChild className="hidden md:flex gradient-bg text-white hover:shadow-lg hover:shadow-brand-primary/30 transition-all duration-200">
+              <Link href="/hire">Hire Me</Link>
+            </Button>
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(true)}>
               <Menu className="h-5 w-5" />
             </Button>
