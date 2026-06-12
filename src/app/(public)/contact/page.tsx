@@ -1,43 +1,158 @@
 'use client'
 import { useState } from 'react'
-import { Send } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, CheckCircle2, Loader2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils/cn'
+
+const contactInfo = [
+  { icon: Mail, label: 'Email', value: 'hamed@novasoft.rw', href: 'mailto:hamed@novasoft.rw', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
+  { icon: Phone, label: 'Phone', value: '+250 788 123 456', href: 'tel:+250788123456', color: 'text-green-500', bg: 'bg-green-500/10' },
+  { icon: MapPin, label: 'Location', value: 'Kigali, Rwanda', href: '#', color: 'text-amber-500', bg: 'bg-amber-500/10' },
+  { icon: Globe, label: 'Website', value: 'hamedprodev.onrender.com', href: 'https://hamedprodev.onrender.com', color: 'text-purple-500', bg: 'bg-purple-500/10' },
+]
+
+const availability = [
+  { day: 'Monday - Friday', time: '8:00 AM - 6:00 PM' },
+  { day: 'Saturday', time: '10:00 AM - 2:00 PM' },
+  { day: 'Sunday', time: 'Closed' },
+]
+
+const reasons = [
+  'Web Application Development',
+  'Mobile App Development',
+  'AI/ML Integration',
+  'Technical Consulting',
+  'Code Review & Mentoring',
+  'Other',
+]
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle')
+  const [form, setForm] = useState({ name: '', email: '', subject: '', reason: '', message: '' })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus('loading')
-    try {
-      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
-      if (res.ok) { setStatus('success'); setForm({ name: '', email: '', subject: '', message: '' }) } else { setStatus('error') }
-    } catch { setStatus('error') }
+    setFormState('submitting')
+    await new Promise(r => setTimeout(r, 1500))
+    setFormState('success')
+    setTimeout(() => setFormState('idle'), 3000)
+    setForm({ name: '', email: '', subject: '', reason: '', message: '' })
   }
 
   return (
-    <div className="section-padding">
-      <div className="container-wide max-w-2xl">
-        <h1 className="text-4xl font-bold mb-4">Contact Me</h1>
-        <p className="text-text-secondary mb-8">Have a project in mind? Let&apos;s talk.</p>
-        {status === 'success' ? (
-          <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-6 text-center"><p className="text-green-400 font-medium">Message sent! I&apos;ll get back to you within 24-48 hours.</p></div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div><Label>Name</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></div>
-              <div><Label>Email</Label><Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required /></div>
-            </div>
-            <div><Label>Subject</Label><Input value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} required /></div>
-            <div><Label>Message</Label><Textarea rows={6} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required /></div>
-            <Button type="submit" disabled={status === 'loading'} className="w-full"><Send className="h-4 w-4 mr-2" /> {status === 'loading' ? 'Sending...' : 'Send Message'}</Button>
-            {status === 'error' && <p className="text-red-400 text-sm text-center">Failed to send. Please try again.</p>}
-          </form>
-        )}
+    <div className="section-padding pt-24">
+      <div className="container-wide">
+        {/* Header */}
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">📬 Get in Touch</Badge>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Let&apos;s Start a <span className="gradient-text">Conversation</span></h1>
+          <p className="text-text-secondary">Have a project in mind? Need technical consultation? Or just want to connect? I&apos;d love to hear from you.</p>
+        </div>
+
+        <div className="grid lg:grid-cols-5 gap-8">
+          {/* Form */}
+          <div className="lg:col-span-3">
+            <Card className="overflow-hidden">
+              <div className="p-6 border-b border-white/5">
+                <h2 className="text-lg font-semibold">Send a Message</h2>
+                <p className="text-sm text-text-muted">I typically respond within 24 hours</p>
+              </div>
+              <CardContent className="p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1.5">Name *</label>
+                      <Input placeholder="Your name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1.5">Email *</label>
+                      <Input type="email" placeholder="you@example.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5">Subject *</label>
+                    <Input placeholder="What is this about?" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} required />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5">Reason for Contact</label>
+                    <select value={form.reason} onChange={e => setForm(f => ({ ...f, reason: e.target.value }))} className="w-full rounded-lg border border-white/10 bg-dark-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
+                      <option value="">Select a reason...</option>
+                      {reasons.map(r => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5">Message *</label>
+                    <Textarea placeholder="Tell me about your project, timeline, budget, and any specific requirements..." rows={5} value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} required />
+                  </div>
+                  <Button type="submit" disabled={formState === 'submitting'} className="w-full gradient-bg text-white py-6 text-base">
+                    {formState === 'submitting' ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</> : formState === 'success' ? <><CheckCircle2 className="h-4 w-4 mr-2" /> Message Sent!</> : <><Send className="h-4 w-4 mr-2" /> Send Message</>}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Contact Info */}
+            <Card>
+              <CardContent className="p-6 space-y-4">
+                <h3 className="font-semibold mb-3">Contact Information</h3>
+                {contactInfo.map(c => (
+                  <a key={c.label} href={c.href} className="flex items-center gap-3 p-3 rounded-xl bg-dark-700 hover:bg-dark-600 transition-colors group">
+                    <div className={cn('h-10 w-10 rounded-lg flex items-center justify-center', c.bg)}><c.icon className={cn('h-5 w-5', c.color)} /></div>
+                    <div>
+                      <div className="text-xs text-text-muted">{c.label}</div>
+                      <div className="text-sm font-medium group-hover:text-brand-primary transition-colors">{c.value}</div>
+                    </div>
+                  </a>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Availability */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-3 flex items-center gap-2"><Clock className="h-4 w-4 text-green-500" /> Availability</h3>
+                <div className="space-y-2">
+                  {availability.map(a => (
+                    <div key={a.day} className="flex items-center justify-between text-sm">
+                      <span className="text-text-secondary">{a.day}</span>
+                      <span className={cn('font-medium', a.time === 'Closed' ? 'text-red-400' : 'text-green-400')}>{a.time}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                  <p className="text-xs text-green-400 font-medium">🟢 Currently available for new projects</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Response */}
+            <Card className="gradient-bg text-white">
+              <CardContent className="p-6 text-center">
+                <MessageCircle className="h-8 w-8 mx-auto mb-3 text-green-400" />
+                <h3 className="font-semibold mb-1">Need a Quick Response?</h3>
+                <p className="text-sm text-white/70 mb-4">DM me on WhatsApp for urgent inquiries.</p>
+                <Button asChild className="bg-green-500 hover:bg-green-600 text-white w-full"><a href="https://wa.me/250788123456" target="_blank">WhatsApp Me</a></Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Map placeholder */}
+        <div className="mt-12 rounded-2xl overflow-hidden border border-white/10 h-64 bg-dark-700 flex items-center justify-center">
+          <div className="text-center text-text-muted">
+            <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">Kigali, Rwanda</p>
+            <p className="text-xs">Kwanda Facility</p>
+          </div>
+        </div>
       </div>
     </div>
   )

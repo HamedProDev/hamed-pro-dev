@@ -5,8 +5,8 @@ const footerLinks = {
   platform: [
     { label: 'Projects', href: '/projects' },
     { label: 'Courses', href: '/courses' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Tools', href: '/tools' },
+    { label: 'Get Job', href: '/jobs' },
+    { label: 'Startups / Orgs', href: '/startups' },
   ],
   resources: [
     { label: 'Documentation', href: '/docs' },
