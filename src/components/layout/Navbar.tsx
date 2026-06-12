@@ -7,6 +7,7 @@ import { Menu, Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { MobileNav } from './MobileNav'
+import { UserMenu } from './UserMenu'
 import { cn } from '@/lib/utils/cn'
 
 const navLinks = [
@@ -65,6 +66,9 @@ export function Navbar() {
             <Button asChild className="hidden md:flex gradient-bg text-white hover:shadow-lg hover:shadow-brand-primary/30 transition-all duration-200">
               <Link href="/hire">Hire Me</Link>
             </Button>
+            <div className="hidden md:block ml-1">
+              <UserMenu />
+            </div>
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(true)}>
               <Menu className="h-5 w-5" />
             </Button>

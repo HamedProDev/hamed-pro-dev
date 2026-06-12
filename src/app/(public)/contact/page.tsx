@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, CheckCircle2, Loader2, ArrowRight } from 'lucide-react'
+import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, CheckCircle2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -32,22 +32,36 @@ const reasons = [
 ]
 
 export default function ContactPage() {
-  const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle')
+  const [formState, setFormState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [form, setForm] = useState({ name: '', email: '', subject: '', reason: '', message: '' })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormState('submitting')
-    await new Promise(r => setTimeout(r, 1500))
-    setFormState('success')
-    setTimeout(() => setFormState('idle'), 3000)
-    setForm({ name: '', email: '', subject: '', reason: '', message: '' })
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setFormState('success')
+        setForm({ name: '', email: '', subject: '', reason: '', message: '' })
+        setTimeout(() => setFormState('idle'), 4000)
+      } else {
+        setFormState('error')
+        setTimeout(() => setFormState('idle'), 3000)
+      }
+    } catch {
+      setFormState('error')
+      setTimeout(() => setFormState('idle'), 3000)
+    }
   }
 
   return (
     <div className="section-padding pt-24">
       <div className="container-wide">
-        {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">📬 Get in Touch</Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Let&apos;s Start a <span className="gradient-text">Conversation</span></h1>
@@ -55,7 +69,6 @@ export default function ContactPage() {
         </div>
 
         <div className="grid lg:grid-cols-5 gap-8">
-          {/* Form */}
           <div className="lg:col-span-3">
             <Card className="overflow-hidden">
               <div className="p-6 border-b border-white/5">
@@ -92,14 +105,13 @@ export default function ContactPage() {
                   <Button type="submit" disabled={formState === 'submitting'} className="w-full gradient-bg text-white py-6 text-base">
                     {formState === 'submitting' ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</> : formState === 'success' ? <><CheckCircle2 className="h-4 w-4 mr-2" /> Message Sent!</> : <><Send className="h-4 w-4 mr-2" /> Send Message</>}
                   </Button>
+                  {formState === 'error' && <p className="text-red-400 text-sm text-center">Something went wrong. Please try again.</p>}
                 </form>
               </CardContent>
             </Card>
           </div>
 
-          {/* Sidebar */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Contact Info */}
             <Card>
               <CardContent className="p-6 space-y-4">
                 <h3 className="font-semibold mb-3">Contact Information</h3>
@@ -115,7 +127,6 @@ export default function ContactPage() {
               </CardContent>
             </Card>
 
-            {/* Availability */}
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-3 flex items-center gap-2"><Clock className="h-4 w-4 text-green-500" /> Availability</h3>
@@ -133,7 +144,6 @@ export default function ContactPage() {
               </CardContent>
             </Card>
 
-            {/* Quick Response */}
             <Card className="gradient-bg text-white">
               <CardContent className="p-6 text-center">
                 <MessageCircle className="h-8 w-8 mx-auto mb-3 text-green-400" />
@@ -145,7 +155,6 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* Map placeholder */}
         <div className="mt-12 rounded-2xl overflow-hidden border border-white/10 h-64 bg-dark-700 flex items-center justify-center">
           <div className="text-center text-text-muted">
             <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />

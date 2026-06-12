@@ -1,39 +1,71 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Search, ExternalLink, Github, ArrowRight } from 'lucide-react'
+import { Search, ExternalLink, Github, ArrowRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils/cn'
 
-const categories = ['All', 'Web App', 'Mobile', 'AI/ML', 'Enterprise', 'Open Source']
+const categories = ['All', 'large', 'mini', 'school']
 
-const projects = [
-  { title: 'FarmConnect', description: 'Digital marketplace connecting Rwandan farmers directly with buyers.', tech: ['Next.js', 'TypeScript', 'MongoDB'], category: 'Web App', gradient: 'from-green-600/30 via-dark-700 to-dark-800', featured: true, demoUrl: '#', sourceUrl: '#' },
-  { title: 'Kwanda EMS', description: 'Enterprise management system for Kwanda Facility operations.', tech: ['Next.js', 'Express', 'PostgreSQL'], category: 'Enterprise', gradient: 'from-blue-600/30 via-indigo-700/20 to-dark-800', featured: true, demoUrl: '#', sourceUrl: '#' },
-  { title: 'AI Health Assistant', description: 'ML-powered health screening tool for rural communities.', tech: ['Python', 'TensorFlow', 'React Native'], category: 'AI/ML', gradient: 'from-purple-600/30 via-pink-700/20 to-dark-800', featured: true, demoUrl: '#', sourceUrl: '#' },
-  { title: 'EduConnect Platform', description: 'Learning management system for schools across Rwanda.', tech: ['React', 'Node.js', 'Supabase'], category: 'Web App', gradient: 'from-cyan-600/30 via-blue-700/20 to-dark-800', featured: false, demoUrl: '#', sourceUrl: '#' },
-  { title: 'PaySmart Mobile', description: 'Mobile payment solution for small businesses in East Africa.', tech: ['React Native', 'Firebase', 'Stripe'], category: 'Mobile', gradient: 'from-amber-600/30 via-orange-700/20 to-dark-800', featured: false, demoUrl: '#', sourceUrl: '#' },
-  { title: 'OpenDev CLI', description: 'Command-line tool for scaffolding fullstack projects.', tech: ['Go', 'TypeScript', 'Docker'], category: 'Open Source', gradient: 'from-teal-600/30 via-emerald-700/20 to-dark-800', featured: false, demoUrl: '#', sourceUrl: '#' },
+const categoryLabels: Record<string, string> = {
+  large: 'Web App',
+  mini: 'Mini Project',
+  school: 'School Project',
+}
+
+const gradients = [
+  'from-green-600/30 via-dark-700 to-dark-800',
+  'from-blue-600/30 via-indigo-700/20 to-dark-800',
+  'from-purple-600/30 via-pink-700/20 to-dark-800',
+  'from-cyan-600/30 via-blue-700/20 to-dark-800',
+  'from-amber-600/30 via-orange-700/20 to-dark-800',
+  'from-teal-600/30 via-emerald-700/20 to-dark-800',
 ]
 
+interface Project {
+  _id: string
+  title: string
+  slug: string
+  description: string
+  category: string
+  techStack: string[]
+  featured: boolean
+  status: string
+  demoUrl?: string
+  sourceUrl?: string
+  coverImage?: string
+}
+
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('All')
   const [search, setSearch] = useState('')
 
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (activeCategory !== 'All') params.set('category', activeCategory)
+    if (search) params.set('search', search)
+    params.set('limit', '50')
+
+    fetch(`/api/projects?${params}`)
+      .then(r => r.json())
+      .then(d => { setProjects(d.data || []); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [activeCategory, search])
+
   const filtered = projects.filter(p => {
-    const matchCategory = activeCategory === 'All' || p.category === activeCategory
-    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
-    return matchCategory && matchSearch
+    const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
+    return matchSearch
   })
 
   return (
     <div className="section-padding">
       <div className="container-wide">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2">Featured <span className="gradient-text">Projects</span></h1>
@@ -45,47 +77,54 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {/* Category Tabs */}
         <div className="flex flex-wrap gap-2 mb-8">
           {categories.map(cat => (
             <button key={cat} onClick={() => setActiveCategory(cat)} className={cn(
               'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
               activeCategory === cat ? 'bg-brand-primary text-white' : 'bg-dark-700 text-text-secondary hover:text-text-primary border border-white/5'
-            )}>{cat}</button>
+            )}>{cat === 'All' ? 'All' : categoryLabels[cat] || cat}</button>
           ))}
         </div>
 
-        {/* Project Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((p, i) => (
-            <motion.div key={p.title} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              <Card className="h-full card-hover group overflow-hidden">
-                <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', p.gradient)}>
-                  {p.featured && <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs">Featured</Badge>}
-                  <div className="absolute inset-4 rounded-lg bg-dark-900/40 border border-white/5 p-3">
-                    <div className="h-2 w-16 bg-white/10 rounded mb-2" />
-                    <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-white/5 rounded" /><div className="h-10 bg-white/5 rounded" /></div>
+        {loading ? (
+          <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-brand-primary" /></div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((p, i) => (
+              <motion.div key={p._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                <Card className="h-full card-hover group overflow-hidden">
+                  <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', gradients[i % gradients.length])}>
+                    {p.featured && <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs">Featured</Badge>}
+                    <div className="absolute inset-4 rounded-lg bg-dark-900/40 border border-white/5 p-3">
+                      <div className="h-2 w-16 bg-white/10 rounded mb-2" />
+                      <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-white/5 rounded" /><div className="h-10 bg-white/5 rounded" /></div>
+                    </div>
                   </div>
-                </div>
-                <CardContent className="p-6">
-                  <Badge variant="outline" className="mb-3 text-xs">{p.category}</Badge>
-                  <h3 className="text-lg font-semibold mb-2 group-hover:text-brand-primary transition-colors">{p.title}</h3>
-                  <p className="text-sm text-text-secondary mb-4 line-clamp-2">{p.description}</p>
-                  <div className="flex flex-wrap gap-1.5 mb-5">
-                    {p.tech.map(t => <Badge key={t} className="text-xs bg-brand-primary/10 text-brand-primary border-brand-primary/20">{t}</Badge>)}
-                  </div>
-                  <div className="flex items-center gap-4 pt-4 border-t border-white/5">
-                    <a href={p.demoUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>
-                    <a href={p.sourceUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>
-                    <ArrowRight className="h-4 w-4 text-text-muted ml-auto group-hover:text-brand-primary group-hover:translate-x-1 transition-all" />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                  <CardContent className="p-6">
+                    <Badge variant="outline" className="mb-3 text-xs">{categoryLabels[p.category] || p.category}</Badge>
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-brand-primary transition-colors">{p.title}</h3>
+                    <p className="text-sm text-text-secondary mb-4 line-clamp-2">{p.description}</p>
+                    <div className="flex flex-wrap gap-1.5 mb-5">
+                      {(p.techStack || []).slice(0, 4).map((t: string) => <Badge key={t} className="text-xs bg-brand-primary/10 text-brand-primary border-brand-primary/20">{t}</Badge>)}
+                    </div>
+                    <div className="flex items-center gap-4 pt-4 border-t border-white/5">
+                      {p.demoUrl && <a href={p.demoUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
+                      {p.sourceUrl && <a href={p.sourceUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
+                      <ArrowRight className="h-4 w-4 text-text-muted ml-auto group-hover:text-brand-primary group-hover:translate-x-1 transition-all" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
-        {filtered.length === 0 && <p className="text-center text-text-muted py-12">No projects found.</p>}
+        {!loading && filtered.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-text-muted mb-4">No projects yet.</p>
+            <p className="text-sm text-text-muted">Projects will appear here once added from the admin panel.</p>
+          </div>
+        )}
       </div>
     </div>
   )
