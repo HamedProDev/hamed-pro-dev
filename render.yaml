@@ -8,12 +8,15 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.20.2
-      - key: NEXT_PUBLIC_APP_URL
-        sync: false
       - key: NEXT_PUBLIC_SITE_NAME
         value: HamedProDev
       - key: MONGODB_URI
-        sync: false
+        value: "mongodb+srv://hamedprodev:%40He00Ri%23Ga4Da@hamedprodev.aiwnhac.mongodb.net/hamedpro_dev?retryWrites=true&w=majority&appName=HamedProDev"
+      - key: NEXTAUTH_URL
+        fromService:
+          name: hamedpro
+          type: web
+          property: host
       - key: NEXTAUTH_SECRET
         generateValue: true
       - key: NEXT_PUBLIC_APP_URL
@@ -40,10 +43,10 @@ services:
       - key: RESEND_API_KEY
         sync: false
       - key: RESEND_FROM_EMAIL
-        value: hello@hamedpro.rw
+        value: hello@hamedprodev.onrender.com
       - key: UPSTASH_REDIS_REST_URL
         sync: false
       - key: UPSTASH_REDIS_REST_TOKEN
         sync: false
       - key: ADMIN_EMAIL
-        value: hamed@novasoft.rw
+        value: hamedpro.work@gmail.com
