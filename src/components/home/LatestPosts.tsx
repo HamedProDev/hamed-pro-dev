@@ -5,6 +5,13 @@ import { ArrowRight, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils/cn'
+
+const categoryConfig: Record<string, { color: string; gradient: string }> = {
+  Backend: { color: 'bg-blue-500/20 text-blue-400 border-blue-500/30', gradient: 'from-blue-700/40 via-dark-700 to-dark-800' },
+  'AI/ML': { color: 'bg-purple-500/20 text-purple-400 border-purple-500/30', gradient: 'from-purple-700/40 via-dark-700 to-dark-800' },
+  Career: { color: 'bg-green-500/20 text-green-400 border-green-500/30', gradient: 'from-green-700/40 via-dark-700 to-dark-800' },
+}
 
 const posts = [
   { title: 'Building Scalable APIs with Next.js', category: 'Backend', excerpt: 'A deep dive into production-ready APIs...', readingTime: 8, slug: 'scalable-apis-nextjs' },
@@ -25,12 +32,14 @@ export function LatestPosts() {
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
               <Link href={`/blog/${post.slug}`}>
                 <Card className="h-full card-hover">
-                  <div className="h-48 bg-dark-600 rounded-t-xl" />
+                  <div className={cn('h-48 rounded-t-xl bg-gradient-to-br', categoryConfig[post.category]?.gradient || 'from-dark-700 to-dark-800')} />
                   <CardContent className="p-6">
-                    <Badge variant="secondary" className="mb-3">{post.category}</Badge>
+                    <Badge variant="outline" className={cn('mb-3', categoryConfig[post.category]?.color)}>{post.category}</Badge>
                     <h3 className="text-lg font-semibold mb-2 line-clamp-2">{post.title}</h3>
                     <p className="text-sm text-text-secondary mb-4 line-clamp-2">{post.excerpt}</p>
-                    <div className="flex items-center text-xs text-text-muted"><Clock className="h-3 w-3 mr-1" /> {post.readingTime} min read</div>
+                    <div className="flex items-center text-xs text-text-muted pt-4 border-t border-dark-500">
+                      <Clock className="h-3 w-3 mr-1" /> {post.readingTime} min read
+                    </div>
                   </CardContent>
                 </Card>
               </Link>

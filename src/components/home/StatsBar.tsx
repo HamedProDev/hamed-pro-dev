@@ -2,6 +2,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { FolderOpen, Star, BookOpen, Calendar } from 'lucide-react'
+import { cn } from '@/lib/utils/cn' // Added cn import
+
+const iconColors = ['text-brand-primary', 'text-yellow-500', 'text-green-500', 'text-purple-500'] // Added custom colors
 
 function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
   const [count, setCount] = useState(0)
@@ -28,12 +31,16 @@ export function StatsBar() {
     { icon: <Calendar className="h-6 w-6" />, value: 5, label: 'Years Experience' },
   ]
   return (
-    <section className="py-16 border-y border-dark-500 bg-dark-800/50">
+    <section className="py-16 bg-dark-800/50">
       <div className="container-wide">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border border-dark-500 rounded-xl p-6 md:p-8"> {/* Bordered card row */}
           {stats.map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
-              <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-brand-primary/10 text-brand-primary mb-3">{stat.icon}</div>
+              <div className={cn(
+                "inline-flex items-center justify-center h-12 w-12 rounded-xl mb-3",
+                iconColors[i % iconColors.length], // Apply dynamic color
+                `bg-${iconColors[i % iconColors.length].replace('text-', '')}/10`
+              )}>{stat.icon}</div> {/* Colored icon squares */}
               <div className="text-3xl font-bold text-text-primary"><AnimatedNumber value={stat.value} suffix={stat.suffix} /></div>
               <div className="text-sm text-text-secondary mt-1">{stat.label}</div>
             </motion.div>

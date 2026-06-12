@@ -17,7 +17,7 @@ export function UserMenu() {
         <Button variant="ghost" size="sm" asChild>
           <Link href="/login">Sign In</Link>
         </Button>
-        <Button size="sm" asChild>
+        <Button size="sm" className="gradient-bg text-white" asChild>
           <Link href="/register">Sign Up</Link>
         </Button>
       </div>
