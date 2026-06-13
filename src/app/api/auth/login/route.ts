@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         image: user.image,
         role: user.role,
       },
-      salt: secret.slice(0, 32),
+      salt: '',
     })
 
     const response = NextResponse.json({ success: true, url: '/dashboard' })
