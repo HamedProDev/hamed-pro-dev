@@ -11,12 +11,9 @@ services:
       - key: NEXT_PUBLIC_SITE_NAME
         value: HamedProDev
       - key: MONGODB_URI
-        value: "mongodb+srv://hamedprodev:%40He00Ri%23Ga4Da@hamedprodev.aiwnhac.mongodb.net/hamedpro_dev?retryWrites=true&w=majority&appName=HamedProDev"
+        value: "mongodb+srv://hamedprodev:fable5yaje@hamedprodev.aiwnhac.mongodb.net/hamedpro_dev?retryWrites=true&w=majority&appName=HamedProDev"
       - key: NEXTAUTH_URL
-        fromService:
-          name: hamedpro
-          type: web
-          property: host
+        value: "https://hamedprodev.onrender.com"
       - key: NEXTAUTH_SECRET
         value: "2LF20tNXRCmCrG54/vRbWVxBMYo+6JFrWymfy8XC7no="
       - key: NEXT_PUBLIC_APP_URL

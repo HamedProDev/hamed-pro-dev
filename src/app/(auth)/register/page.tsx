@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -7,13 +7,21 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Code2, Github } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import { Code2, Github, Loader2 } from 'lucide-react'
 
 export default function RegisterPage() {
   const router = useRouter()
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [providers, setProviders] = useState<string[]>(['credentials'])
+
+  useEffect(() => {
+    fetch('/api/auth/providers').then(r => r.json()).then(d => {
+      if (d.providers) setProviders(d.providers)
+    }).catch(() => {})
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,6 +38,8 @@ export default function RegisterPage() {
     setLoading(false)
   }
 
+  const hasOAuth = providers.includes('google') || providers.includes('github')
+
   return (
     <Card className="border-dark-500 bg-dark-700">
       <CardHeader className="text-center">
@@ -38,17 +48,24 @@ export default function RegisterPage() {
         <CardDescription>Join the HamedProDev community</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" onClick={() => signIn('google')}>Google</Button>
-          <Button variant="outline" onClick={() => signIn('github')}><Github className="h-4 w-4 mr-2" /> GitHub</Button>
-        </div>
+        {hasOAuth && (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              {providers.includes('google') && <Button variant="outline" onClick={() => signIn('google')}>Google</Button>}
+              {providers.includes('github') && <Button variant="outline" onClick={() => signIn('github')}><Github className="h-4 w-4 mr-2" /> GitHub</Button>}
+            </div>
+            <div className="relative"><Separator /><span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-dark-700 px-2 text-xs text-text-muted">or</span></div>
+          </>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div><Label>Name</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></div>
           <div><Label>Email</Label><Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required /></div>
           <div><Label>Password</Label><Input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required minLength={8} /></div>
           <div><Label>Confirm Password</Label><Input type="password" value={form.confirmPassword} onChange={e => setForm({ ...form, confirmPassword: e.target.value })} required /></div>
           {error && <p className="text-red-400 text-sm">{error}</p>}
-          <Button type="submit" className="w-full" disabled={loading}>{loading ? 'Creating account...' : 'Create Account'}</Button>
+          <Button type="submit" className="w-full gradient-bg text-white" disabled={loading}>
+            {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating account...</> : 'Create Account'}
+          </Button>
         </form>
         <p className="text-center text-sm text-text-secondary">Already have an account? <Link href="/login" className="text-brand-primary hover:underline">Sign in</Link></p>
       </CardContent>
