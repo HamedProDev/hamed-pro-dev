@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         image: user.image,
         role: user.role,
       },
-      salt: '',
+      salt: '__Secure-authjs.session-token',
     })
 
     const response = NextResponse.json({ success: true, url: '/dashboard' })
