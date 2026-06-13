@@ -28,9 +28,18 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const result = await signIn('credentials', { email, password, redirect: false })
-    if (result?.error) { setError('Invalid email or password') }
-    else { router.push('/dashboard'); router.refresh() }
+    try {
+      const result = await signIn('credentials', { email, password, redirect: false, callbackUrl: '/dashboard' })
+      if (result?.error) {
+        setError('Invalid email or password')
+      } else if (result?.url) {
+        window.location.href = result.url
+      } else {
+        window.location.href = '/dashboard'
+      }
+    } catch (err) {
+      setError('Something went wrong. Please try again.')
+    }
     setLoading(false)
   }
 
