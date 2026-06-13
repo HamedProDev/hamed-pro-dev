@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: npm install --legacy-peer-deps && npm run build
-    startCommand: npm start
+    startCommand: cp -r public .next/standalone/public 2>/dev/null; cp -r .next/static .next/standalone/.next/static 2>/dev/null; node .next/standalone/server.js
     envVars:
       - key: NODE_VERSION
         value: 20.20.2
