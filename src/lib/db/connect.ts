@@ -1,9 +1,11 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI!
-
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable in .env.local')
+function getMongoDBUri(): string {
+  const uri = process.env.MONGODB_URI
+  if (!uri) {
+    throw new Error('Please define the MONGODB_URI environment variable')
+  }
+  return uri
 }
 
 interface MongooseCache {
@@ -25,7 +27,7 @@ export async function connectDB(): Promise<typeof mongoose> {
   if (cached.conn) return cached.conn
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
+    cached.promise = mongoose.connect(getMongoDBUri(), {
       bufferCommands: false,
     })
   }
