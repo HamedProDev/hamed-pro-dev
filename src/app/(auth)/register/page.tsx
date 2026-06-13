@@ -1,6 +1,6 @@
 'use client'
-import Link from 'next/link'
 import { useState } from 'react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,17 +16,37 @@ export default function RegisterPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    const form = e.currentTarget as HTMLFormElement
+    const data = Object.fromEntries(new FormData(form))
+
+    if (data.password !== data.confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
     try {
-      const form = e.currentTarget as HTMLFormElement
-      const formData = new FormData(form)
-      const { registerAction } = await import('./actions')
-      const result = await registerAction(null, formData)
-      if (result?.error) {
-        setError(result.error)
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      })
+
+      if (!res.ok) {
+        const errData = await res.json()
+        setError(errData.error || 'Registration failed')
         setLoading(false)
+        return
       }
+
+      window.location.href = '/login'
     } catch {
-      window.location.href = '/dashboard'
+      setError('Something went wrong')
+      setLoading(false)
     }
   }
 
