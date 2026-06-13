@@ -28,6 +28,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Server config error' }, { status: 500 })
     }
 
+    const maxAge = 30 * 24 * 60 * 60
+    const expires = new Date(Date.now() + maxAge * 1000)
+
     const token = await encode({
       secret,
       token: {
@@ -43,13 +46,16 @@ export async function POST(req: NextRequest) {
 
     const response = NextResponse.json({ success: true, url: '/dashboard' })
 
-    response.cookies.set('authjs.session-token', token, {
+    const cookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'lax' as const,
       path: '/',
-      maxAge: 30 * 24 * 60 * 60,
-    })
+      expires,
+    }
+
+    response.cookies.set('authjs.session-token', token, cookieOptions)
+    response.cookies.set('__Secure-authjs.session-token', token, cookieOptions)
 
     return response
   } catch (e: any) {

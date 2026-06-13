@@ -1,26 +1,10 @@
 import NextAuth from 'next-auth'
-import Google from 'next-auth/providers/google'
-import GitHub from 'next-auth/providers/github'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { connectDB } from '@/lib/db/connect'
 import { User } from '@/lib/db/models/User'
 
 const providers: any[] = []
-
-if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-  providers.push(Google({
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  }))
-}
-
-if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
-  providers.push(GitHub({
-    clientId: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  }))
-}
 
 providers.push(Credentials({
   name: 'credentials',
