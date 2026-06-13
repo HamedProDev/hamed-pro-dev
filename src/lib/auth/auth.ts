@@ -80,7 +80,7 @@ export const {
     async jwt({ token, user }) {
       if (user) {
         token.role = (user as any).role
-        token.id = user.id
+        token.id = user.id as string
       } else if (token.email && !token.role) {
         try {
           await connectDB()
