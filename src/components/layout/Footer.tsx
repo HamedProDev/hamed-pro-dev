@@ -1,5 +1,12 @@
+'use client'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Github, Twitter, Linkedin, Youtube, MapPin } from 'lucide-react'
+import { MapPin, Github, Twitter, Linkedin, Youtube, Instagram, Facebook, MessageCircle, Send } from 'lucide-react'
+
+const iconMap: Record<string, any> = {
+  github: Github, twitter: Twitter, linkedin: Linkedin, youtube: Youtube,
+  instagram: Instagram, facebook: Facebook, discord: MessageCircle, whatsapp: Send, telegram: Send, tiktok: Send,
+}
 
 const footerLinks = {
   platform: [
@@ -21,14 +28,24 @@ const footerLinks = {
   ],
 }
 
-const socials = [
-  { icon: Github, href: 'https://github.com/HamedProDev', label: 'GitHub' },
-  { icon: Linkedin, href: 'https://linkedin.com/in/hamedProDev', label: 'LinkedIn' },
-  { icon: Twitter, href: 'https://twitter.com/hamedProDev', label: 'Twitter' },
-  { icon: Youtube, href: 'https://youtube.com/@hamedProDev', label: 'YouTube' },
-]
+interface Settings {
+  siteName?: string
+  location?: string
+  socialLinks?: Record<string, string>
+}
 
 export function Footer() {
+  const [settings, setSettings] = useState<Settings>({})
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => {
+      if (d.success) setSettings(d.data)
+    }).catch(() => {})
+  }, [])
+
+  const socialLinks: Record<string, string> = settings.socialLinks || {}
+  const activeSocials = Object.entries(socialLinks).filter(([, url]) => url && typeof url === 'string' && url.trim())
+
   return (
     <footer className="border-t border-white/5 bg-dark-900">
       <div className="container-wide py-12">
@@ -38,17 +55,20 @@ export function Footer() {
               <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center text-white text-sm font-bold">HP</span>
               <span>Hamed<span className="text-brand-primary">Pro</span></span>
             </Link>
-            <p className="text-sm text-text-secondary mb-3">Building innovative solutions from Kigali, Rwanda.</p>
+            <p className="text-sm text-text-secondary mb-3">Building innovative solutions from {settings.location || 'Kigali, Rwanda'}.</p>
             <div className="inline-flex items-center gap-1.5 text-xs text-green-400 mb-4">
               <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" /><span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" /></span>
               Available for freelance projects
             </div>
-            <div className="flex gap-2">
-              {socials.map(s => (
-                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center h-8 w-8 rounded-lg bg-white/5 text-text-muted hover:bg-brand-primary/20 hover:text-brand-primary transition-all duration-200">
-                  <s.icon className="h-3.5 w-3.5" />
-                </a>
-              ))}
+            <div className="flex gap-2 flex-wrap">
+              {activeSocials.map(([key, url]) => {
+                const Icon = iconMap[key] || Send
+                return (
+                  <a key={key} href={url as string} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center h-8 w-8 rounded-lg bg-white/5 text-text-muted hover:bg-brand-primary/20 hover:text-brand-primary transition-all duration-200 capitalize">
+                    <Icon className="h-3.5 w-3.5" />
+                  </a>
+                )
+              })}
             </div>
           </div>
 
@@ -58,9 +78,7 @@ export function Footer() {
               <ul className="space-y-2.5">
                 {links.map(link => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-sm text-text-secondary hover:text-brand-primary transition-colors">
-                      {link.label}
-                    </Link>
+                    <Link href={link.href} className="text-sm text-text-secondary hover:text-brand-primary transition-colors">{link.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -72,11 +90,10 @@ export function Footer() {
             <div className="flex items-start gap-2 mb-3">
               <MapPin className="h-4 w-4 text-brand-primary mt-0.5 shrink-0" />
               <div>
-                <p className="text-sm text-text-secondary">Kigali, Rwanda</p>
+                <p className="text-sm text-text-secondary">{settings.location || 'Kigali, Rwanda'}</p>
                 <p className="text-xs text-text-muted">UTC +2</p>
               </div>
             </div>
-            {/* Mini map placeholder */}
             <div className="h-20 rounded-lg bg-dark-700 border border-white/5 overflow-hidden relative">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
@@ -87,7 +104,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-text-muted">© {new Date().getFullYear()} HamedProDev. All rights reserved.</p>
+          <p className="text-sm text-text-muted">© {new Date().getFullYear()} {settings.siteName || 'HamedProDev'}. All rights reserved.</p>
           <div className="flex items-center gap-4 text-xs text-text-muted">
             <Link href="/privacy" className="hover:text-text-secondary transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-text-secondary transition-colors">Terms of Service</Link>

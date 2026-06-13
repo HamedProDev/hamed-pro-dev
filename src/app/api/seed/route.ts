@@ -4,6 +4,7 @@ import { User } from '@/lib/db/models/User'
 import { Project } from '@/lib/db/models/Project'
 import { Course } from '@/lib/db/models/Course'
 import { Job } from '@/lib/db/models/Job'
+import { SiteSettings } from '@/lib/db/models/SiteSettings'
 import bcrypt from 'bcryptjs'
 
 export async function GET() {
@@ -82,6 +83,42 @@ export async function GET() {
       results.push('6 jobs seeded')
     } else {
       results.push(`${jobCount} jobs exist`)
+    }
+
+    // 5. Site Settings
+    const settingsCount = await SiteSettings.countDocuments()
+    if (settingsCount === 0) {
+      await SiteSettings.create({
+        siteName: 'HamedProDev',
+        tagline: 'Fullstack & AI/ML Developer',
+        description: 'I build modern web applications, mobile apps, and AI-powered solutions. Passionate about creating technology that makes a difference in Africa and beyond.',
+        heroName: 'Hamed Hussein',
+        heroTitle: 'Full Stack Developer & AI Engineer',
+        heroSubtitle: 'Building scalable solutions that make an impact.',
+        location: 'Kigali, Rwanda',
+        contactEmail: 'hamedpro.work@gmail.com',
+        contactPhone: '+250 788 123 456',
+        address: 'Kwanda Facility, Kigali',
+        socialLinks: {
+          github: 'https://github.com/HamedProDev',
+          linkedin: 'https://linkedin.com/in/hamedprodev',
+          twitter: 'https://twitter.com/hamedprodev',
+          youtube: 'https://youtube.com/@hamedprodev',
+          instagram: 'https://instagram.com/hamedprodev',
+          whatsapp: 'https://wa.me/250788123456',
+          facebook: '',
+          discord: '',
+          telegram: '',
+          tiktok: '',
+        },
+        integrations: {
+          cloudinaryCloudName: '',
+          whatsappNumber: '+250788123456',
+        },
+      })
+      results.push('Site settings created')
+    } else {
+      results.push('Site settings exist')
     }
 
     return NextResponse.json({ success: true, data: { results, loginUrl: '/login', credentials: { email: adminEmail, password: '@He00Ri#Ga4Da' } } })

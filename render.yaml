@@ -18,7 +18,7 @@ services:
           type: web
           property: host
       - key: NEXTAUTH_SECRET
-        generateValue: true
+        value: "2LF20tNXRCmCrG54/vRbWVxBMYo+6JFrWymfy8XC7no="
       - key: NEXT_PUBLIC_APP_URL
         fromService:
           name: hamedpro
