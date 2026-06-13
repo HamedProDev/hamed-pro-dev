@@ -86,6 +86,4 @@ export const {
     signIn: '/login',
     error: '/login',
   },
-  session: { strategy: 'jwt' },
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
 })
