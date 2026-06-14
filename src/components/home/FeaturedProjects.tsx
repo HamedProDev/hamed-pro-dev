@@ -9,9 +9,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils/cn'
 
 const gradients = [
-  'from-blue-600/30 via-purple-600/20 to-dark-800',
-  'from-indigo-600/30 via-blue-600/20 to-dark-800',
-  'from-cyan-600/30 via-blue-600/20 to-dark-800',
+  'from-blue-600/30 via-purple-600/20 to-surface-secondary',
+  'from-indigo-600/30 via-blue-600/20 to-surface-secondary',
+  'from-cyan-600/30 via-blue-600/20 to-surface-secondary',
 ]
 
 export function FeaturedProjects() {
@@ -65,7 +65,7 @@ export function FeaturedProjects() {
               transition={{ delay: i * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ y: -8 }}
             >
-              <Card className="h-full group overflow-hidden border-white/5 hover:border-blue-500/30 transition-all duration-300">
+              <Card className="h-full group overflow-hidden border-border-primary hover:border-blue-500/30 transition-all duration-300">
                 <div className={cn('h-52 rounded-t-xl bg-gradient-to-br relative overflow-hidden', gradients[i % gradients.length])}>
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent"
@@ -74,7 +74,7 @@ export function FeaturedProjects() {
                     transition={{ duration: 0.3 }}
                   />
                   <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs z-10">Featured</Badge>
-                  <div className="absolute inset-4 rounded-lg bg-dark-900/40 border border-white/5 p-3">
+                  <div className="absolute inset-4 rounded-lg bg-surface-card/40 border border-border-primary p-3">
                     <div className="h-2 w-16 bg-white/10 rounded mb-2" />
                     <div className="grid grid-cols-3 gap-2">
                       <div className="h-12 bg-white/5 rounded" />
@@ -92,7 +92,7 @@ export function FeaturedProjects() {
                       <Badge key={t} className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/20 font-medium">{t}</Badge>
                     ))}
                   </div>
-                  <div className="flex items-center gap-4 pt-4 border-t border-white/5">
+                  <div className="flex items-center gap-4 pt-4 border-t border-border-primary">
                     {p.demoUrl && <a href={p.demoUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-blue-400 transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
                     {p.sourceUrl && <a href={p.sourceUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-blue-400 transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
                     <motion.div className="ml-auto">

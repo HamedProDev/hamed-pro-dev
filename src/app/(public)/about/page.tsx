@@ -78,7 +78,7 @@ export default function AboutPage() {
               {activeSocials.map(([key, url]) => {
                 const Icon = iconMap[key] || Send
                 return (
-                  <a key={key} href={url as string} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-text-secondary hover:bg-brand-primary/20 hover:text-brand-primary transition-all text-sm capitalize">
+                  <a key={key} href={url as string} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-tertiary/50 text-text-secondary hover:bg-brand-primary/20 hover:text-brand-primary transition-all text-sm capitalize">
                     <Icon className="h-4 w-4" /> {key}
                   </a>
                 )
@@ -91,7 +91,7 @@ export default function AboutPage() {
           </div>
           <div className="relative flex justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-secondary/10 to-transparent rounded-3xl blur-3xl" />
-            <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-dark-700 to-dark-800 border border-white/10 flex items-center justify-center overflow-hidden">
+            <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-surface-card to-dark-800 border border-border-primary flex items-center justify-center overflow-hidden">
               {settings.profilePhoto ? (
                 <img src={settings.profilePhoto} alt="Profile" className="w-full h-full object-cover" />
               ) : (
@@ -117,7 +117,7 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <div className="flex gap-4 border-b border-white/5 mb-8">
+        <div className="flex gap-4 border-b border-border-primary mb-8">
           {tabs.map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)} className={cn('pb-3 px-1 text-sm font-medium transition-all border-b-2 -mb-px', activeTab === tab ? 'border-brand-primary text-brand-primary' : 'border-transparent text-text-muted hover:text-text-secondary')}>{tab}</button>
           ))}
@@ -141,7 +141,7 @@ export default function AboutPage() {
                       <span className="font-medium">{s.name}</span>
                       <span className="text-text-muted">{s.level}%</span>
                     </div>
-                    <div className="h-2 bg-dark-700 rounded-full overflow-hidden">
+                    <div className="h-2 bg-surface-card rounded-full overflow-hidden">
                       <motion.div initial={{ width: 0 }} animate={{ width: `${s.level}%` }} transition={{ duration: 1, delay: i * 0.1 }} className="h-full rounded-full gradient-bg" />
                     </div>
                   </div>
@@ -186,7 +186,7 @@ export default function AboutPage() {
           </div>
         )}
 
-        <div className="mt-16 rounded-2xl border border-white/10 bg-gradient-to-r from-dark-700 to-dark-800 p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="mt-16 rounded-2xl border border-border-primary bg-gradient-to-r from-surface-card to-dark-800 p-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div><h3 className="text-2xl font-bold mb-2">Let&apos;s work together</h3><p className="text-text-secondary">Have a project in mind? Let&apos;s build something amazing.</p></div>
           <Button asChild className="gradient-bg text-white shrink-0"><Link href="/contact">Start a Project <ArrowRight className="h-4 w-4 ml-1" /></Link></Button>
         </div>

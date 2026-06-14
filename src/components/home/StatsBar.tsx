@@ -38,7 +38,7 @@ export function StatsBar() {
     { icon: <ThumbsUp className="h-5 w-5" />, value: 100, label: 'Client Satisfaction', suffix: '%' },
   ]
   return (
-    <section className="py-12 border-y border-white/5 bg-dark-800/30">
+    <section className="py-12 border-y border-border-primary bg-surface-secondary/30">
       <div className="container-wide">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
           {stats.map((stat, i) => (

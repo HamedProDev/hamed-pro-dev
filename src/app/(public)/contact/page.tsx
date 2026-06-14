@@ -71,7 +71,7 @@ export default function ContactPage() {
         <div className="grid lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3">
             <Card className="overflow-hidden">
-              <div className="p-6 border-b border-white/5">
+              <div className="p-6 border-b border-border-primary">
                 <h2 className="text-lg font-semibold">Send a Message</h2>
                 <p className="text-sm text-text-muted">I typically respond within 24 hours</p>
               </div>
@@ -93,7 +93,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1.5">Reason for Contact</label>
-                    <select value={form.reason} onChange={e => setForm(f => ({ ...f, reason: e.target.value }))} className="w-full rounded-lg border border-white/10 bg-dark-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
+                    <select value={form.reason} onChange={e => setForm(f => ({ ...f, reason: e.target.value }))} className="w-full rounded-lg border border-border-primary bg-surface-tertiary px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
                       <option value="">Select a reason...</option>
                       {reasons.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
@@ -116,7 +116,7 @@ export default function ContactPage() {
               <CardContent className="p-6 space-y-4">
                 <h3 className="font-semibold mb-3">Contact Information</h3>
                 {contactInfo.map(c => (
-                  <a key={c.label} href={c.href} className="flex items-center gap-3 p-3 rounded-xl bg-dark-700 hover:bg-dark-600 transition-colors group">
+                  <a key={c.label} href={c.href} className="flex items-center gap-3 p-3 rounded-xl bg-surface-card hover:bg-surface-tertiary transition-colors group">
                     <div className={cn('h-10 w-10 rounded-lg flex items-center justify-center', c.bg)}><c.icon className={cn('h-5 w-5', c.color)} /></div>
                     <div>
                       <div className="text-xs text-text-muted">{c.label}</div>
@@ -155,7 +155,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="mt-12 rounded-2xl overflow-hidden border border-white/10 h-64 bg-dark-700 flex items-center justify-center">
+        <div className="mt-12 rounded-2xl overflow-hidden border border-border-primary h-64 bg-surface-card flex items-center justify-center">
           <div className="text-center text-text-muted">
             <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">Kigali, Rwanda</p>

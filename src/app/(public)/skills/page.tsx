@@ -34,7 +34,7 @@ export default function SkillsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a1a] flex items-center justify-center">
+      <div className="min-h-screen bg-surface-primary flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
@@ -45,7 +45,7 @@ export default function SkillsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a] py-20">
+    <div className="min-h-screen bg-surface-primary py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn className="text-center mb-12">
           <motion.span
@@ -55,13 +55,13 @@ export default function SkillsPage() {
           >
             Technologies & Tools
           </motion.span>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-text-primary mb-4">
             Skills &{' '}
             <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
               Expertise
             </span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-text-secondary text-lg max-w-2xl mx-auto">
             Technologies and tools I work with daily to build innovative solutions
           </p>
         </FadeIn>
@@ -76,7 +76,7 @@ export default function SkillsPage() {
               className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeTab === cat
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                  : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white hover:shadow-md hover:shadow-white/5'
+                  : 'bg-surface-tertiary/50 text-text-secondary hover:bg-surface-tertiary hover:text-text-primary hover:shadow-md hover:shadow-white/5'
               }`}
             >
               {cat}
@@ -100,7 +100,7 @@ export default function SkillsPage() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: i * 0.04, duration: 0.4, ease }}
                 whileHover={{ y: -6, scale: 1.02 }}
-                className="group relative bg-white/[0.03] border border-white/5 rounded-2xl p-6 hover:border-blue-500/30 transition-all duration-300 cursor-default overflow-hidden"
+                className="group relative bg-surface-card/50 border border-border-primary rounded-2xl p-6 hover:border-blue-500/30 transition-all duration-300 cursor-default overflow-hidden"
               >
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
@@ -110,14 +110,14 @@ export default function SkillsPage() {
                 />
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-white font-semibold text-lg group-hover:text-blue-300 transition-colors duration-300">
+                    <h3 className="text-text-primary font-semibold text-lg group-hover:text-blue-300 transition-colors duration-300">
                       {skill.name}
                     </h3>
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-white/10 text-gray-400 group-hover:bg-blue-500/20 group-hover:text-blue-300 transition-all duration-300">
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-surface-tertiary text-text-secondary group-hover:bg-blue-500/20 group-hover:text-blue-300 transition-all duration-300">
                       {skill.category}
                     </span>
                   </div>
-                  <div className="relative h-3 bg-white/5 rounded-full overflow-hidden mb-3">
+                  <div className="relative h-3 bg-surface-tertiary/50 rounded-full overflow-hidden mb-3">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${skill.proficiency}%` }}
@@ -140,12 +140,12 @@ export default function SkillsPage() {
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">Proficiency</span>
+                    <span className="text-xs text-text-muted">Proficiency</span>
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: i * 0.04 + 0.5 }}
-                      className="text-sm text-gray-300 font-bold"
+                      className="text-sm text-text-primary font-bold"
                       style={{ color: skill.color || '#3B82F6' }}
                     >
                       {skill.proficiency}%
@@ -163,15 +163,15 @@ export default function SkillsPage() {
             animate={{ opacity: 1 }}
             className="text-center py-20"
           >
-            <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
+            <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-surface-tertiary/50 flex items-center justify-center">
               <span className="text-2xl">🔍</span>
             </div>
-            <p className="text-gray-500 text-lg">No skills found in this category</p>
+            <p className="text-text-muted text-lg">No skills found in this category</p>
           </motion.div>
         )}
 
         <FadeIn delay={0.3} className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/5 text-sm text-gray-400">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-tertiary/50 border border-border-primary text-sm text-text-secondary">
             <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
             {skills.length} skills across {categories.length - 1} categories
           </div>

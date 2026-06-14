@@ -62,7 +62,6 @@ export default function JobsPage() {
   return (
     <div className="section-padding pt-24">
       <div className="container-wide">
-        {/* Hero */}
         <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
           <div>
             <Badge className="mb-4 bg-green-500/10 text-green-500 border-green-500/20">🟢 Actively hiring</Badge>
@@ -73,7 +72,7 @@ export default function JobsPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 via-emerald-700/10 to-transparent rounded-3xl blur-3xl" />
             <div className="relative grid grid-cols-2 gap-3">
               {[{ icon: '💻', label: 'Remote', sub: 'Work anywhere' }, { icon: '🏢', label: 'Hybrid', sub: 'Best of both' }, { icon: '📈', label: 'Growth', sub: 'Career path' }, { icon: '🤝', label: 'Network', sub: 'Community' }].map((s, i) => (
-                <div key={s.label} className="p-4 rounded-xl bg-dark-800/80 border border-white/5 backdrop-blur-sm text-center animate-float" style={{ animationDelay: `${i * 0.2}s` }}>
+                <div key={s.label} className="p-4 rounded-xl bg-surface-card/80 border border-border-primary backdrop-blur-sm text-center animate-float" style={{ animationDelay: `${i * 0.2}s` }}>
                   <div className="text-2xl mb-1">{s.icon}</div>
                   <div className="text-xs font-semibold">{s.label}</div>
                   <div className="text-[10px] text-text-muted">{s.sub}</div>
@@ -83,7 +82,6 @@ export default function JobsPage() {
           </div>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
             { icon: Briefcase, value: String(filtered.length), label: 'Open Positions', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
@@ -100,18 +98,16 @@ export default function JobsPage() {
           ))}
         </div>
 
-        {/* Search */}
         <div className="relative mb-6">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-text-muted" />
-          <Input placeholder="Search by job title or company..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 py-6 text-base bg-dark-700 border-white/5" />
+          <Input placeholder="Search by job title or company..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 py-6 text-base bg-surface-tertiary border-border-primary" />
         </div>
 
-        {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-8">
           {jobTypes.map(t => (
             <button key={t} onClick={() => setActiveType(t)} className={cn(
               'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
-              activeType === t ? 'bg-brand-primary text-white' : 'bg-dark-700 text-text-secondary hover:text-text-primary border border-white/5'
+              activeType === t ? 'bg-brand-primary text-white' : 'bg-surface-card text-text-secondary hover:text-text-primary border border-border-primary'
             )}>{t === 'All Types' ? t : typeLabels[t] || t}</button>
           ))}
         </div>
@@ -126,7 +122,7 @@ export default function JobsPage() {
                   <CardContent className="p-5">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg bg-dark-600 border border-white/10 flex items-center justify-center text-xs font-bold text-brand-primary">{j.company.slice(0, 2).toUpperCase()}</div>
+                        <div className="h-10 w-10 rounded-lg bg-surface-tertiary border border-border-primary flex items-center justify-center text-xs font-bold text-brand-primary">{j.company.slice(0, 2).toUpperCase()}</div>
                         <div>
                           <h3 className="font-semibold group-hover:text-brand-primary transition-colors">{j.title}</h3>
                           <p className="text-sm text-text-secondary">{j.company}</p>
@@ -142,7 +138,7 @@ export default function JobsPage() {
                     <div className="flex flex-wrap gap-1.5 mb-3">
                       {(j.skills || []).slice(0, 4).map((t: string) => <Badge key={t} className="text-xs bg-brand-primary/10 text-brand-primary border-brand-primary/20">{t}</Badge>)}
                     </div>
-                    <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                    <div className="flex items-center justify-between pt-3 border-t border-border-primary">
                       <span className="text-sm font-semibold text-green-500">
                         {j.salaryMin ? `$${j.salaryMin.toLocaleString()}${j.salaryMax ? ` - $${j.salaryMax.toLocaleString()}` : ''}` : 'Competitive'}
                       </span>

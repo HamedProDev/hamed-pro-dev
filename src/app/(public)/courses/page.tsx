@@ -61,7 +61,6 @@ export default function CoursesPage() {
   return (
     <div className="section-padding pt-24">
       <div className="container-wide">
-        {/* Hero */}
         <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
           <div>
             <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">🚀 Level up your skills</Badge>
@@ -69,7 +68,7 @@ export default function CoursesPage() {
             <p className="text-text-secondary mb-6">Practical, project-based courses to help you master in-demand skills and build real-world solutions.</p>
             <div className="relative mb-8">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-text-muted" />
-              <Input placeholder="Search courses, topics or skills..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 py-6 text-base bg-dark-700 border-white/5" />
+              <Input placeholder="Search courses, topics or skills..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 py-6 text-base bg-surface-tertiary border-border-primary" />
             </div>
             <div className="grid grid-cols-4 gap-4">
               {[{ icon: '📚', label: `${courses.length}+`, sub: 'Courses' }, { icon: '👥', label: '2.5K+', sub: 'Students' }, { icon: '⭐', label: '4.9', sub: 'Avg Rating' }, { icon: '🔄', label: 'Lifetime', sub: 'Access' }].map(s => (
@@ -83,12 +82,12 @@ export default function CoursesPage() {
           </div>
           <div className="relative hidden md:flex justify-center items-center">
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-secondary/10 to-transparent rounded-3xl blur-3xl" />
-            <div className="relative w-80 h-80 rounded-2xl bg-gradient-to-br from-dark-700 to-dark-800 border border-white/10 overflow-hidden flex items-center justify-center">
+            <div className="relative w-80 h-80 rounded-2xl bg-gradient-to-br from-surface-card to-dark-800 border border-border-primary overflow-hidden flex items-center justify-center">
               <div className="text-6xl opacity-30">💻</div>
             </div>
             {[{ name: 'React', x: '-10%', y: '20%', icon: '⚛️' }, { name: 'Node.js', x: '80%', y: '10%', icon: '🟢' }, { name: 'Python', x: '-5%', y: '70%', icon: '🐍' }, { name: 'TypeScript', x: '85%', y: '65%', icon: 'TS' }].map((b, i) => (
               <div key={b.name} className="absolute animate-float" style={{ left: b.x, top: b.y, animationDelay: `${i * 0.3}s` }}>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-white/10 bg-dark-800/90 backdrop-blur-sm shadow-lg">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border-primary bg-surface-card/90 backdrop-blur-sm shadow-lg">
                   <span className="text-sm">{b.icon}</span>
                   <span className="text-xs font-medium text-text-primary">{b.name}</span>
                 </div>
@@ -97,18 +96,16 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        {/* Category Tabs */}
         <div className="flex flex-wrap gap-3 mb-8">
           {categoryTabs.map(cat => (
             <button key={cat} onClick={() => setActiveCategory(cat)} className={cn(
               'px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
-              activeCategory === cat ? 'bg-brand-primary text-white' : 'bg-dark-700 text-text-secondary hover:text-text-primary border border-white/5'
+              activeCategory === cat ? 'bg-brand-primary text-white' : 'bg-surface-card text-text-secondary hover:text-text-primary border border-border-primary'
             )}>{cat}</button>
           ))}
         </div>
 
         <div className="flex gap-8">
-          {/* Sidebar */}
           <div className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-24 space-y-6">
               <div className="flex items-center justify-between">
@@ -128,7 +125,7 @@ export default function CoursesPage() {
                   </label>
                 ))}
               </div>
-              <div className="p-4 rounded-xl bg-dark-700 border border-white/5">
+              <div className="p-4 rounded-xl bg-surface-card border border-border-primary">
                 <h4 className="font-medium text-text-primary mb-1">Can&apos;t find the right course?</h4>
                 <p className="text-xs text-text-muted mb-3">Request a course and I&apos;ll create it for you.</p>
                 <Button size="sm" className="gradient-bg text-white w-full" asChild><Link href="/contact">Request a Course</Link></Button>
@@ -136,7 +133,6 @@ export default function CoursesPage() {
             </div>
           </div>
 
-          {/* Course Grid */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -165,7 +161,7 @@ export default function CoursesPage() {
                           <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {c.enrolled || 0}</span>
                           <span className="flex items-center gap-1 capitalize">{levelLabels[c.level] || c.level}</span>
                         </div>
-                        <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                        <div className="flex items-center justify-between pt-3 border-t border-border-primary">
                           <div className="flex items-center gap-1">
                             <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                             <span className="text-sm font-medium">{c.rating || '4.9'}</span>
@@ -194,8 +190,7 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        {/* Features Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 py-8 border-y border-white/5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 py-8 border-y border-border-primary">
           {[{ icon: '🎯', title: 'Project-Based Learning', desc: 'Learn by building real-world projects.' }, { icon: '♾️', title: 'Lifetime Access', desc: 'Get lifetime access to all content and updates.' }, { icon: '👥', title: 'Community Support', desc: 'Join our community of builders.' }, { icon: '🏆', title: 'Certificate', desc: 'Earn a certificate upon completion.' }].map(f => (
             <div key={f.title} className="text-center">
               <div className="text-2xl mb-2">{f.icon}</div>

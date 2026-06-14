@@ -27,7 +27,7 @@ export function Testimonials() {
               transition={{ delay: i * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ y: -6 }}
             >
-              <Card className="h-full text-left border-white/5 hover:border-blue-500/20 transition-all duration-300 group">
+              <Card className="h-full text-left border-border-primary hover:border-blue-500/20 transition-all duration-300 group">
                 <CardContent className="p-6">
                   <div className="flex gap-0.5 mb-4">
                     {Array.from({ length: t.rating }).map((_, j) => (

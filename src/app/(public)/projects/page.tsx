@@ -18,7 +18,7 @@ const categoryLabels: Record<string, string> = {
 }
 
 const gradients = [
-  'from-green-600/30 via-dark-700 to-dark-800',
+  'from-green-600/30 via-surface-card to-dark-800',
   'from-blue-600/30 via-indigo-700/20 to-dark-800',
   'from-purple-600/30 via-pink-700/20 to-dark-800',
   'from-cyan-600/30 via-blue-700/20 to-dark-800',
@@ -81,7 +81,7 @@ export default function ProjectsPage() {
           {categories.map(cat => (
             <button key={cat} onClick={() => setActiveCategory(cat)} className={cn(
               'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
-              activeCategory === cat ? 'bg-brand-primary text-white' : 'bg-dark-700 text-text-secondary hover:text-text-primary border border-white/5'
+              activeCategory === cat ? 'bg-brand-primary text-white' : 'bg-surface-card text-text-secondary hover:text-text-primary border border-border-primary'
             )}>{cat === 'All' ? 'All' : categoryLabels[cat] || cat}</button>
           ))}
         </div>
@@ -95,9 +95,9 @@ export default function ProjectsPage() {
                 <Card className="h-full card-hover group overflow-hidden">
                   <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', gradients[i % gradients.length])}>
                     {p.featured && <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs">Featured</Badge>}
-                    <div className="absolute inset-4 rounded-lg bg-dark-900/40 border border-white/5 p-3">
-                      <div className="h-2 w-16 bg-white/10 rounded mb-2" />
-                      <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-white/5 rounded" /><div className="h-10 bg-white/5 rounded" /></div>
+                    <div className="absolute inset-4 rounded-lg bg-dark-900/40 border border-border-primary p-3">
+                      <div className="h-2 w-16 bg-surface-tertiary rounded mb-2" />
+                      <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-surface-tertiary/50 rounded" /><div className="h-10 bg-surface-tertiary/50 rounded" /></div>
                     </div>
                   </div>
                   <CardContent className="p-6">
@@ -107,7 +107,7 @@ export default function ProjectsPage() {
                     <div className="flex flex-wrap gap-1.5 mb-5">
                       {(p.techStack || []).slice(0, 4).map((t: string) => <Badge key={t} className="text-xs bg-brand-primary/10 text-brand-primary border-brand-primary/20">{t}</Badge>)}
                     </div>
-                    <div className="flex items-center gap-4 pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-4 pt-4 border-t border-border-primary">
                       {p.demoUrl && <a href={p.demoUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
                       {p.sourceUrl && <a href={p.sourceUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
                       <ArrowRight className="h-4 w-4 text-text-muted ml-auto group-hover:text-brand-primary group-hover:translate-x-1 transition-all" />

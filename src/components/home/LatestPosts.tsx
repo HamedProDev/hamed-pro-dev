@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils/cn'
 
 const categoryConfig: Record<string, { color: string; gradient: string; icon: string }> = {
-  Backend: { color: 'bg-blue-500 text-white', gradient: 'from-blue-600/40 via-blue-800/30 to-dark-800', icon: 'N' },
-  'AI/ML': { color: 'bg-purple-500 text-white', gradient: 'from-purple-600/40 via-purple-800/30 to-dark-800', icon: '🤖' },
-  Career: { color: 'bg-green-500 text-white', gradient: 'from-green-600/40 via-green-800/30 to-dark-800', icon: '🚀' },
+  Backend: { color: 'bg-blue-500 text-white', gradient: 'from-blue-600/40 via-blue-800/30 to-surface-secondary', icon: 'N' },
+  'AI/ML': { color: 'bg-purple-500 text-white', gradient: 'from-purple-600/40 via-purple-800/30 to-surface-secondary', icon: '🤖' },
+  Career: { color: 'bg-green-500 text-white', gradient: 'from-green-600/40 via-green-800/30 to-surface-secondary', icon: '🚀' },
 }
 
 const posts = [
@@ -45,7 +45,7 @@ export function LatestPosts() {
               whileHover={{ y: -8 }}
             >
               <Link href={`/blog/${post.slug}`}>
-                <Card className="h-full group overflow-hidden border-white/5 hover:border-blue-500/20 transition-all duration-300">
+                <Card className="h-full group overflow-hidden border-border-primary hover:border-blue-500/20 transition-all duration-300">
                   <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative flex items-center justify-center overflow-hidden', categoryConfig[post.category]?.gradient)}>
                     <motion.span
                       className="text-5xl opacity-50"
@@ -61,7 +61,7 @@ export function LatestPosts() {
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-400 transition-colors duration-300 line-clamp-2">{post.title}</h3>
                     <p className="text-sm text-text-secondary mb-4 line-clamp-2">{post.excerpt}</p>
-                    <div className="flex items-center gap-4 text-xs text-text-muted pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-4 text-xs text-text-muted pt-4 border-t border-border-primary">
                       <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {post.readingTime} min read</span>
                       <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {post.date}</span>
                     </div>

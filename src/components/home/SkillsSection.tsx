@@ -22,7 +22,7 @@ const skillCategories = [
     skills: [
       { name: 'Node.js', icon: 'N', iconBg: 'bg-green-500/20 text-green-400' },
       { name: 'Python', icon: '🐍', iconBg: 'bg-yellow-500/20 text-yellow-400' },
-      { name: 'Express', icon: 'Ex', iconBg: 'bg-gray-500/20 text-gray-400' },
+      { name: 'Express', icon: 'Ex', iconBg: 'bg-gray-500/20 text-text-secondary' },
       { name: 'GraphQL', icon: 'GQ', iconBg: 'bg-pink-500/20 text-pink-400' },
     ],
   },
@@ -55,8 +55,8 @@ const skillCategories = [
     skills: [
       { name: 'Docker', icon: 'D', iconBg: 'bg-blue-500/20 text-blue-400' },
       { name: 'AWS', icon: 'aws', iconBg: 'bg-orange-500/20 text-orange-400' },
-      { name: 'GitHub Actions', icon: 'GA', iconBg: 'bg-gray-500/20 text-gray-400' },
-      { name: 'Vercel', icon: '▲', iconBg: 'bg-white/10 text-white' },
+      { name: 'GitHub Actions', icon: 'GA', iconBg: 'bg-gray-500/20 text-text-secondary' },
+      { name: 'Vercel', icon: '▲', iconBg: 'bg-surface-tertiary text-text-primary' },
     ],
   },
 ]
@@ -79,7 +79,7 @@ export function SkillsSection() {
               transition={{ delay: i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ y: -6, scale: 1.02 }}
             >
-              <Card className={cn('h-full border-white/5 transition-all duration-300', cat.border)}>
+              <Card className={cn('h-full border-border-primary transition-all duration-300', cat.border)}>
                 <CardContent className="p-5">
                   <h3 className={cn('text-sm font-bold mb-4 uppercase tracking-wider', cat.color)}>{cat.name}</h3>
                   <div className="space-y-3">

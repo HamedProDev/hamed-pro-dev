@@ -43,7 +43,7 @@ export default function AchievementsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a1a] flex items-center justify-center">
+      <div className="min-h-screen bg-surface-primary flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
@@ -54,7 +54,7 @@ export default function AchievementsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a] py-20">
+    <div className="min-h-screen bg-surface-primary py-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn className="text-center mb-16">
           <motion.span
@@ -64,12 +64,12 @@ export default function AchievementsPage() {
           >
             Recognition & Milestones
           </motion.span>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-text-primary mb-4">
             <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
               Achievements
             </span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-text-secondary text-lg max-w-2xl mx-auto">
             Milestones and recognitions along the journey
           </p>
         </FadeIn>
@@ -107,7 +107,7 @@ export default function AchievementsPage() {
                     className="absolute left-2.5 md:left-1/2 md:-translate-x-1/2 top-2 z-10"
                   >
                     <div className="relative">
-                      <div className="w-4 h-4 rounded-full bg-blue-500 border-4 border-[#0a0a1a]" />
+                      <div className="w-4 h-4 rounded-full bg-blue-500 border-4 border-surface-primary" />
                       <motion.div
                         animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
@@ -119,7 +119,7 @@ export default function AchievementsPage() {
                   <motion.div
                     whileHover={{ y: -4, scale: 1.01 }}
                     transition={{ duration: 0.2, ease }}
-                    className="bg-white/[0.03] border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300 relative overflow-hidden group"
+                    className="bg-surface-card/50 border border-border-primary rounded-2xl p-6 hover:border-border-primary transition-all duration-300 relative overflow-hidden group"
                   >
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
@@ -141,10 +141,10 @@ export default function AchievementsPage() {
                           {achievement.type}
                         </span>
                       </div>
-                      <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-blue-300 transition-colors duration-300">
+                      <h3 className="text-text-primary font-semibold text-lg mb-2 group-hover:text-blue-300 transition-colors duration-300">
                         {achievement.title}
                       </h3>
-                      <p className="text-gray-400 text-sm leading-relaxed">{achievement.description}</p>
+                      <p className="text-text-secondary text-sm leading-relaxed">{achievement.description}</p>
                       {achievement.link && (
                         <motion.a
                           href={achievement.link}
@@ -167,10 +167,10 @@ export default function AchievementsPage() {
 
         {achievements.length === 0 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
-            <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-              <Trophy className="h-8 w-8 text-gray-600" />
+            <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-surface-tertiary/50 flex items-center justify-center">
+              <Trophy className="h-8 w-8 text-text-muted" />
             </div>
-            <p className="text-gray-500 text-lg">No achievements yet</p>
+            <p className="text-text-muted text-lg">No achievements yet</p>
           </motion.div>
         )}
 
@@ -178,7 +178,7 @@ export default function AchievementsPage() {
           <motion.div
             whileHover={{ y: -4 }}
             transition={{ duration: 0.2 }}
-            className="relative bg-white/[0.03] border border-white/5 rounded-2xl p-8 text-center overflow-hidden group hover:border-blue-500/20 transition-all duration-300"
+            className="relative bg-surface-card/50 border border-border-primary rounded-2xl p-8 text-center overflow-hidden group hover:border-blue-500/20 transition-all duration-300"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="relative z-10">
@@ -189,8 +189,8 @@ export default function AchievementsPage() {
               >
                 <Download className="h-7 w-7 text-white" />
               </motion.div>
-              <h2 className="text-2xl font-bold text-white mb-3">Resume / CV</h2>
-              <p className="text-gray-400 mb-6 max-w-md mx-auto">
+              <h2 className="text-2xl font-bold text-text-primary mb-3">Resume / CV</h2>
+              <p className="text-text-secondary mb-6 max-w-md mx-auto">
                 Download my complete resume with detailed experience, education, and skills.
               </p>
               <motion.a
