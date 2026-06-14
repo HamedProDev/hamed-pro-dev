@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { FolderOpen, GraduationCap, Briefcase, Users, FileText, Settings, Zap, Trophy, TrendingUp, Eye } from 'lucide-react'
+import { FolderOpen, GraduationCap, Briefcase, Users, FileText, Settings, Zap, Trophy, TrendingUp, Eye, BarChart3, MessageSquare } from 'lucide-react'
 
 interface Stats {
   projects: number
@@ -12,10 +12,12 @@ interface Stats {
   skills: number
   achievements: number
   blog: number
+  siteStats: number
+  testimonials: number
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stats>({ projects: 0, courses: 0, jobs: 0, users: 0, skills: 0, achievements: 0, blog: 0 })
+  const [stats, setStats] = useState<Stats>({ projects: 0, courses: 0, jobs: 0, users: 0, skills: 0, achievements: 0, blog: 0, siteStats: 0, testimonials: 0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -27,7 +29,9 @@ export default function AdminDashboard() {
       fetch('/api/achievements').then(r => r.json()),
       fetch('/api/blog').then(r => r.json()),
       fetch('/api/users').then(r => r.json()),
-    ]).then(([p, c, j, s, a, b, u]) => {
+      fetch('/api/stats').then(r => r.json()),
+      fetch('/api/testimonials').then(r => r.json()),
+    ]).then(([p, c, j, s, a, b, u, st, t]) => {
       setStats({
         projects: p.data?.length || 0,
         courses: c.data?.length || 0,
@@ -36,6 +40,8 @@ export default function AdminDashboard() {
         achievements: a.data?.length || 0,
         blog: b.data?.length || 0,
         users: u.data?.length || 0,
+        siteStats: st.data?.length || 0,
+        testimonials: t.data?.length || 0,
       })
       setLoading(false)
     }).catch(() => setLoading(false))
@@ -48,6 +54,8 @@ export default function AdminDashboard() {
     { label: 'Skills', value: stats.skills, icon: Zap, href: '/admin/skills', color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
     { label: 'Achievements', value: stats.achievements, icon: Trophy, href: '/admin/achievements', color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { label: 'Blog Posts', value: stats.blog, icon: FileText, href: '/admin/blog', color: 'text-pink-500', bg: 'bg-pink-500/10' },
+    { label: 'Stats', value: stats.siteStats, icon: BarChart3, href: '/admin/stats', color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+    { label: 'Testimonials', value: stats.testimonials, icon: MessageSquare, href: '/admin/testimonials', color: 'text-teal-500', bg: 'bg-teal-500/10' },
     { label: 'Users', value: stats.users, icon: Users, href: '/admin/users', color: 'text-orange-500', bg: 'bg-orange-500/10' },
     { label: 'Settings', value: null, icon: Settings, href: '/admin/settings', color: 'text-gray-500', bg: 'bg-gray-500/10' },
   ]
@@ -59,6 +67,8 @@ export default function AdminDashboard() {
     { label: 'New Skill', href: '/admin/skills/new' },
     { label: 'New Achievement', href: '/admin/achievements/new' },
     { label: 'New Blog Post', href: '/admin/blog/new' },
+    { label: 'New Stat', href: '/admin/stats/new' },
+    { label: 'New Testimonial', href: '/admin/testimonials/new' },
     { label: 'Site Settings', href: '/admin/settings' },
   ]
 
