@@ -14,10 +14,17 @@ export default function ProjectDetailPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/projects').then(r => r.json()).then(d => {
-      if (d.success) {
-        const found = d.data.find((p: any) => p.slug === slug || p._id === slug)
-        if (found) setProject(found)
+    fetch(`/api/projects/${slug}`).then(r => r.json()).then(d => {
+      if (d.success && d.data) setProject(d.data)
+      else {
+        fetch('/api/projects').then(r => r.json()).then(d => {
+          if (d.success) {
+            const found = d.data.find((p: any) => p.slug === slug || p._id === slug)
+            if (found) setProject(found)
+          }
+          setLoading(false)
+        }).catch(() => setLoading(false))
+        return
       }
       setLoading(false)
     }).catch(() => setLoading(false))
@@ -32,6 +39,10 @@ export default function ProjectDetailPage() {
     </div>
   )
 
+  const techStack = project.techStack || project.tags || []
+  const demoUrl = project.demoUrl || project.liveUrl || ''
+  const sourceUrl = project.sourceUrl || project.githubUrl || ''
+
   return (
     <div className="section-padding pt-24">
       <div className="container-wide max-w-4xl">
@@ -40,18 +51,19 @@ export default function ProjectDetailPage() {
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{project.category}</Badge>
           {project.featured && <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Featured</Badge>}
+          {project.status && <Badge className="bg-cyan-500/10 text-cyan-500 border-cyan-500/20">{project.status}</Badge>}
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4">{project.title}</h1>
         <p className="text-lg text-text-secondary mb-8">{project.description}</p>
         {project.longDescription && <div className="prose prose-invert max-w-none mb-8"><p className="text-text-secondary leading-relaxed whitespace-pre-wrap">{project.longDescription}</p></div>}
-        {project.tags?.length > 0 && (
+        {techStack.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-8">
-            {project.tags.map((t: string) => <Badge key={t} variant="outline" className="text-xs"><Tag className="h-3 w-3 mr-1" />{t}</Badge>)}
+            {techStack.map((t: string) => <Badge key={t} variant="outline" className="text-xs"><Tag className="h-3 w-3 mr-1" />{t}</Badge>)}
           </div>
         )}
         <div className="flex gap-3">
-          {project.liveUrl && <Button asChild><a href={project.liveUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4 mr-2" /> Live Demo</a></Button>}
-          {project.githubUrl && <Button asChild variant="outline"><a href={project.githubUrl} target="_blank" rel="noopener noreferrer"><Github className="h-4 w-4 mr-2" /> Source Code</a></Button>}
+          {demoUrl && <Button asChild><a href={demoUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4 mr-2" /> Live Demo</a></Button>}
+          {sourceUrl && <Button asChild variant="outline"><a href={sourceUrl} target="_blank" rel="noopener noreferrer"><Github className="h-4 w-4 mr-2" /> Source Code</a></Button>}
         </div>
       </div>
     </div>

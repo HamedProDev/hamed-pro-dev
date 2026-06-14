@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     await requireAdmin(req)
     const body = await req.json()
-    const timestamp = Math.round(Date.now() / 1000)
+    const timestamp = body.timestamp || Math.round(Date.now() / 1000)
     const folder = body.folder || 'hamedpro'
 
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME

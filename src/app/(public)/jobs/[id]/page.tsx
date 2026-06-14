@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, MapPin, Building2, Clock, Briefcase, ExternalLink } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { ArrowLeft, Loader2, MapPin, Building2, Briefcase, ExternalLink, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -29,6 +29,9 @@ export default function JobDetailPage() {
     </div>
   )
 
+  const salary = job.salaryMin ? `$${job.salaryMin.toLocaleString()}${job.salaryMax ? ` - $${job.salaryMax.toLocaleString()}` : ''}` : ''
+  const benefits = job.niceToHave || job.benefits || []
+
   return (
     <div className="section-padding pt-24">
       <div className="container-wide max-w-4xl">
@@ -42,8 +45,9 @@ export default function JobDetailPage() {
         <div className="flex flex-wrap items-center gap-4 text-text-muted mb-6">
           <span className="flex items-center gap-1"><Building2 className="h-4 w-4" /> {job.company}</span>
           <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {job.location}</span>
-          {job.salary && <span className="flex items-center gap-1"><Briefcase className="h-4 w-4" /> {job.salary}</span>}
+          {salary && <span className="flex items-center gap-1 text-green-500 font-medium"><DollarSign className="h-4 w-4" /> {salary}</span>}
         </div>
+        {job.companyLogo && <img src={job.companyLogo} alt={job.company} className="h-16 rounded-lg mb-6" />}
         <p className="text-lg text-text-secondary mb-8">{job.description}</p>
         {job.requirements?.length > 0 && (
           <Card className="mb-6"><CardContent className="p-6">
@@ -51,13 +55,19 @@ export default function JobDetailPage() {
             <ul className="space-y-2">{job.requirements.map((r: string, i: number) => <li key={i} className="text-sm text-text-secondary">• {r}</li>)}</ul>
           </CardContent></Card>
         )}
-        {job.benefits?.length > 0 && (
+        {benefits.length > 0 && (
           <Card className="mb-8"><CardContent className="p-6">
-            <h3 className="font-semibold mb-3">Benefits</h3>
-            <ul className="space-y-2">{job.benefits.map((b: string, i: number) => <li key={i} className="text-sm text-text-secondary">✓ {b}</li>)}</ul>
+            <h3 className="font-semibold mb-3">Nice to Have</h3>
+            <ul className="space-y-2">{benefits.map((b: string, i: number) => <li key={i} className="text-sm text-text-secondary">✓ {b}</li>)}</ul>
           </CardContent></Card>
         )}
-        <Button className="gradient-bg text-white" asChild><Link href="/contact">Apply Now</Link></Button>
+        <div className="flex gap-3">
+          {job.applicationUrl ? (
+            <Button className="gradient-bg text-white" asChild><a href={job.applicationUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4 mr-2" /> Apply Now</a></Button>
+          ) : (
+            <Button className="gradient-bg text-white" asChild><Link href="/contact">Apply Now</Link></Button>
+          )}
+        </div>
       </div>
     </div>
   )

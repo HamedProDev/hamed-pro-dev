@@ -31,10 +31,33 @@ export async function PUT(req: NextRequest) {
     if (!settings) {
       settings = await SiteSettings.create(body)
     } else {
-      Object.assign(settings, body)
+      const allowedFields = [
+        'siteName', 'tagline', 'description', 'keywords', 'logo', 'favicon', 'ogImage',
+        'profilePhoto', 'heroName', 'heroTitle', 'heroSubtitle',
+        'contactEmail', 'contactPhone', 'address', 'location',
+        'maintenanceMode', 'allowRegistration',
+      ]
+      for (const field of allowedFields) {
+        if (body[field] !== undefined) {
+          settings.set(field, body[field])
+        }
+      }
+      if (body.socialLinks && typeof body.socialLinks === 'object') {
+        settings.set('socialLinks', body.socialLinks)
+      }
+      if (body.emailNotifications && typeof body.emailNotifications === 'object') {
+        settings.set('emailNotifications', body.emailNotifications)
+      }
+      if (body.seoDefaults && typeof body.seoDefaults === 'object') {
+        settings.set('seoDefaults', body.seoDefaults)
+      }
+      if (body.integrations && typeof body.integrations === 'object') {
+        settings.set('integrations', body.integrations)
+      }
       await settings.save()
     }
-    return apiSuccess(settings, 'Settings updated')
+    const plain = settings.toObject()
+    return apiSuccess(plain, 'Settings updated')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }

@@ -94,11 +94,15 @@ export default function ProjectsPage() {
               <motion.div key={p._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                 <Card className="h-full card-hover group overflow-hidden">
                   <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', gradients[i % gradients.length])}>
-                    {p.featured && <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs">Featured</Badge>}
-                    <div className="absolute inset-4 rounded-lg bg-dark-900/40 border border-border-primary p-3">
-                      <div className="h-2 w-16 bg-surface-tertiary rounded mb-2" />
-                      <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-surface-tertiary/50 rounded" /><div className="h-10 bg-surface-tertiary/50 rounded" /></div>
-                    </div>
+                    {p.coverImage ? (
+                      <img src={p.coverImage} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <div className="absolute inset-4 rounded-lg bg-dark-900/40 border border-border-primary p-3">
+                        <div className="h-2 w-16 bg-surface-tertiary rounded mb-2" />
+                        <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-surface-tertiary/50 rounded" /><div className="h-10 bg-surface-tertiary/50 rounded" /></div>
+                      </div>
+                    )}
+                    {p.featured && <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs z-10">Featured</Badge>}
                   </div>
                   <CardContent className="p-6">
                     <Badge variant="outline" className="mb-3 text-xs">{categoryLabels[p.category] || p.category}</Badge>

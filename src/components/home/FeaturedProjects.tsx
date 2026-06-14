@@ -65,24 +65,30 @@ export function FeaturedProjects() {
               transition={{ delay: i * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ y: -8 }}
             >
-              <Card className="h-full group overflow-hidden border-border-primary hover:border-blue-500/30 transition-all duration-300">
+                <Card className="h-full group overflow-hidden border-border-primary hover:border-blue-500/30 transition-all duration-300">
                 <div className={cn('h-52 rounded-t-xl bg-gradient-to-br relative overflow-hidden', gradients[i % gradients.length])}>
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent"
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
+                  {p.coverImage ? (
+                    <img src={p.coverImage} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                  ) : (
+                    <>
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                      <div className="absolute inset-4 rounded-lg bg-surface-card/40 border border-border-primary p-3">
+                        <div className="h-2 w-16 bg-white/10 rounded mb-2" />
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="h-12 bg-white/5 rounded" />
+                          <div className="h-12 bg-white/5 rounded" />
+                          <div className="h-12 bg-white/5 rounded" />
+                        </div>
+                        <div className="mt-2 h-8 bg-white/5 rounded" />
+                      </div>
+                    </>
+                  )}
                   <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs z-10">Featured</Badge>
-                  <div className="absolute inset-4 rounded-lg bg-surface-card/40 border border-border-primary p-3">
-                    <div className="h-2 w-16 bg-white/10 rounded mb-2" />
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="h-12 bg-white/5 rounded" />
-                      <div className="h-12 bg-white/5 rounded" />
-                      <div className="h-12 bg-white/5 rounded" />
-                    </div>
-                    <div className="mt-2 h-8 bg-white/5 rounded" />
-                  </div>
                 </div>
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-400 transition-colors duration-300">{p.title}</h3>

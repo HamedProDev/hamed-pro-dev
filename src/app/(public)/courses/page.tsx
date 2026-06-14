@@ -148,10 +148,14 @@ export default function CoursesPage() {
                 {filtered.map((c, i) => (
                   <motion.div key={c._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                     <Card className="h-full card-hover group overflow-hidden">
-                      <div className="h-40 rounded-t-xl bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-surface-secondary relative flex items-center justify-center">
-                        <span className="text-5xl opacity-60">📚</span>
-                        <Badge className="absolute top-3 left-3 bg-brand-primary/90 text-white border-0 text-xs">{c.category}</Badge>
-                        {c.type === 'premium' && <Badge className="absolute top-3 right-3 bg-amber-500/90 text-white border-0 text-xs">⭐ Premium</Badge>}
+                      <div className="h-40 rounded-t-xl bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-surface-secondary relative flex items-center justify-center overflow-hidden">
+                        {c.coverImage ? (
+                          <img src={c.coverImage} alt={c.title} className="absolute inset-0 w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-5xl opacity-60">📚</span>
+                        )}
+                        <Badge className="absolute top-3 left-3 bg-brand-primary/90 text-white border-0 text-xs z-10">{c.category}</Badge>
+                        {c.type === 'premium' && <Badge className="absolute top-3 right-3 bg-amber-500/90 text-white border-0 text-xs z-10">⭐ Premium</Badge>}
                       </div>
                       <CardContent className="p-5">
                         <h3 className="font-semibold mb-1 group-hover:text-brand-primary transition-colors">{c.title}</h3>
