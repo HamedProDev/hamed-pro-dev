@@ -32,6 +32,7 @@ export default function NewCoursePage() {
           ...form,
           price: Number(form.price),
           duration: Number(form.duration) || 0,
+          rating: Number((form as any).rating) || 0,
           tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
           prerequisites: form.prerequisites.split(',').map(t => t.trim()).filter(Boolean),
           outcomes: form.outcomes.split(',').map(t => t.trim()).filter(Boolean),
@@ -66,6 +67,7 @@ export default function NewCoursePage() {
               <div><label className="text-sm font-medium mb-1 block">Price ($)</label><Input type="number" min="0" value={form.price} onChange={e => update('price', e.target.value)} /></div>
             </div>
             <div><label className="text-sm font-medium mb-1 block">Duration (hours)</label><Input type="number" min="0" value={form.duration} onChange={e => update('duration', e.target.value)} placeholder="e.g. 8" /></div>
+            <div><label className="text-sm font-medium mb-1 block">Rating (0-5)</label><Input type="number" min="0" max="5" step="0.1" value={(form as any).rating || ''} onChange={e => update('rating', e.target.value)} placeholder="e.g. 4.5" /></div>
             <div><label className="text-sm font-medium mb-1 block">Tags (comma separated)</label><Input value={form.tags} onChange={e => update('tags', e.target.value)} placeholder="React, JavaScript, Frontend" /></div>
             <div><label className="text-sm font-medium mb-1 block">Prerequisites (comma separated)</label><Input value={form.prerequisites} onChange={e => update('prerequisites', e.target.value)} placeholder="Basic JavaScript" /></div>
             <div><label className="text-sm font-medium mb-1 block">Outcomes (comma separated)</label><Input value={form.outcomes} onChange={e => update('outcomes', e.target.value)} placeholder="Build React apps from scratch" /></div>

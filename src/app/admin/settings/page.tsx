@@ -134,7 +134,7 @@ export default function AdminSettingsPage() {
                 className="flex-1"
               />
               {settings.socialLinks?.[p.key] && (
-                <a href={settings.socialLinks[p.key]} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-dark-600 transition-colors">
+                <a href={settings.socialLinks[p.key]} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-surface-tertiary transition-colors">
                   <ExternalLink className="h-4 w-4 text-text-muted" />
                 </a>
               )}

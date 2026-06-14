@@ -1,17 +1,68 @@
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ImageUpload } from '@/components/ui/image-upload'
+
 export default function NewBlogPostPage() {
+  const router = useRouter()
+  const [saving, setSaving] = useState(false)
+  const [form, setForm] = useState({
+    title: '', excerpt: '', content: '', category: '', tags: '', coverImage: '',
+  })
+
+  const update = (key: string, value: string) => setForm(f => ({ ...f, [key]: value }))
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      const res = await fetch('/api/blog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: form.title,
+          slug: form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          excerpt: form.excerpt,
+          content: form.content,
+          category: form.category,
+          tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
+          coverImage: form.coverImage,
+          published: true,
+        }),
+      })
+      if (res.ok) router.push('/admin/blog')
+      else setSaving(false)
+    } catch { setSaving(false) }
+  }
+
   return (
-    <div>
+    <div className="max-w-3xl">
+      <Link href="/admin/blog" className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary mb-4"><ArrowLeft className="h-4 w-4" /> Back to Blog</Link>
       <h1 className="text-3xl font-bold mb-6">New Blog Post</h1>
-      <div className="max-w-3xl rounded-xl border border-dark-500 bg-dark-700 p-6 space-y-4">
-        <div><label className="text-sm text-text-secondary">Title</label><input className="w-full mt-1 rounded-lg border border-dark-500 bg-dark-800 px-3 py-2 text-sm text-text-primary" /></div>
-        <div><label className="text-sm text-text-secondary">Excerpt</label><input className="w-full mt-1 rounded-lg border border-dark-500 bg-dark-800 px-3 py-2 text-sm text-text-primary" /></div>
-        <div className="grid grid-cols-2 gap-4">
-          <div><label className="text-sm text-text-secondary">Category</label><input className="w-full mt-1 rounded-lg border border-dark-500 bg-dark-800 px-3 py-2 text-sm text-text-primary" /></div>
-          <div><label className="text-sm text-text-secondary">Tags (comma separated)</label><input className="w-full mt-1 rounded-lg border border-dark-500 bg-dark-800 px-3 py-2 text-sm text-text-primary" /></div>
-        </div>
-        <div><label className="text-sm text-text-secondary">Content (Markdown)</label><textarea className="w-full mt-1 rounded-lg border border-dark-500 bg-dark-800 px-3 py-2 text-sm text-text-primary font-mono h-64" placeholder="Write your post in Markdown..." /></div>
-        <button className="px-4 py-2 rounded-lg bg-brand-primary text-white text-sm font-medium">Publish Post</button>
-      </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Card>
+          <CardHeader><CardTitle>Post Details</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div><label className="text-sm font-medium mb-1 block">Title *</label><Input required value={form.title} onChange={e => update('title', e.target.value)} placeholder="Blog post title" /></div>
+            <div><label className="text-sm font-medium mb-1 block">Cover Image</label><ImageUpload value={form.coverImage} onChange={v => update('coverImage', v)} folder="hamedpro/blog" /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm font-medium mb-1 block">Category</label><Input value={form.category} onChange={e => update('category', e.target.value)} placeholder="e.g. Backend, AI/ML" /></div>
+              <div><label className="text-sm font-medium mb-1 block">Tags (comma separated)</label><Input value={form.tags} onChange={e => update('tags', e.target.value)} placeholder="React, TypeScript" /></div>
+            </div>
+            <div><label className="text-sm font-medium mb-1 block">Excerpt</label><Input value={form.excerpt} onChange={e => update('excerpt', e.target.value)} placeholder="Short summary..." /></div>
+            <div><label className="text-sm font-medium mb-1 block">Content (Markdown) *</label><Textarea rows={12} required value={form.content} onChange={e => update('content', e.target.value)} placeholder="Write your post in Markdown..." /></div>
+          </CardContent>
+        </Card>
+        <Button type="submit" disabled={saving} className="gradient-bg text-white">
+          {saving ? 'Publishing...' : 'Publish Post'}
+        </Button>
+      </form>
     </div>
   )
 }

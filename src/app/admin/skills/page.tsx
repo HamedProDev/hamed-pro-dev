@@ -40,33 +40,33 @@ export default function AdminSkillsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Skills</h1>
-        <Button asChild><Link href="/admin/skills/new"><Plus className="h-4 w-4 mr-2" /> New Skill</Link></Button>
+        <h1 className="text-3xl font-bold text-text-primary">Skills</h1>
+        <Button asChild className="gradient-bg text-white"><Link href="/admin/skills/new"><Plus className="h-4 w-4 mr-2" /> New Skill</Link></Button>
       </div>
       {loading ? (
         <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : (
-        <div className="rounded-xl border border-dark-500 bg-dark-700 overflow-hidden">
+        <div className="rounded-xl border border-border-primary bg-surface-card overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-dark-500">
-                <th className="px-4 py-3 text-left text-text-secondary">Order</th>
-                <th className="px-4 py-3 text-left text-text-secondary">Name</th>
-                <th className="px-4 py-3 text-left text-text-secondary">Category</th>
-                <th className="px-4 py-3 text-left text-text-secondary">Proficiency</th>
-                <th className="px-4 py-3 text-left text-text-secondary">Color</th>
-                <th className="px-4 py-3 text-left text-text-secondary">Actions</th>
+              <tr className="border-b border-border-primary">
+                <th className="px-4 py-3 text-left text-text-muted">Order</th>
+                <th className="px-4 py-3 text-left text-text-muted">Name</th>
+                <th className="px-4 py-3 text-left text-text-muted">Category</th>
+                <th className="px-4 py-3 text-left text-text-muted">Proficiency</th>
+                <th className="px-4 py-3 text-left text-text-muted">Color</th>
+                <th className="px-4 py-3 text-left text-text-muted">Actions</th>
               </tr>
             </thead>
             <tbody>
               {skills.map(skill => (
-                <tr key={skill._id} className="border-b border-dark-500/50 hover:bg-dark-600/50">
+                <tr key={skill._id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                   <td className="px-4 py-3 text-text-muted"><GripVertical className="h-4 w-4" /></td>
-                  <td className="px-4 py-3 font-medium">{skill.name}</td>
+                  <td className="px-4 py-3 font-medium text-text-primary">{skill.name}</td>
                   <td className="px-4 py-3 text-text-secondary">{skill.category}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-24 h-2 bg-dark-500 rounded-full overflow-hidden">
+                      <div className="w-24 h-2 bg-surface-tertiary rounded-full overflow-hidden">
                         <div className="h-full rounded-full" style={{ width: `${skill.proficiency}%`, backgroundColor: skill.color || '#3B82F6' }} />
                       </div>
                       <span className="text-text-muted text-xs">{skill.proficiency}%</span>
@@ -77,7 +77,7 @@ export default function AdminSkillsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin/skills/${skill._id}`} className="p-1.5 rounded-lg hover:bg-dark-500 text-text-muted hover:text-text-primary transition-colors">
+                      <Link href={`/admin/skills/${skill._id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors">
                         <Pencil className="h-4 w-4" />
                       </Link>
                       <button onClick={() => handleDelete(skill._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors">

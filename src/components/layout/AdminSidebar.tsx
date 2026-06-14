@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
 import {
   LayoutDashboard, FolderOpen, GraduationCap, FileText, Briefcase,
-  Users, Image, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight,
+  Users, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight,
   Zap, Trophy, LogOut
 } from 'lucide-react'
 import { useState } from 'react'
@@ -13,8 +13,6 @@ import { useAdminAuth } from '@/components/admin/AdminGate'
 
 const links = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/projects', label: 'Projects', icon: FolderOpen },
-  { href: '/admin/courses', label: 'Courses', icon: GraduationCap },
   { href: '/admin/blog', label: 'Blog', icon: FileText },
   { href: '/admin/jobs', label: 'Jobs', icon: Briefcase },
   { href: '/admin/skills', label: 'Skills', icon: Zap },
@@ -32,8 +30,8 @@ export function AdminSidebar() {
   const { lock } = useAdminAuth()
 
   return (
-    <aside className={cn('sticky top-16 h-[calc(100vh-4rem)] border-r border-border-primary bg-surface-secondary transition-all', collapsed ? 'w-16' : 'w-60')}>
-      <nav className="flex flex-col p-2 gap-1">
+    <aside className={cn('sticky top-16 h-[calc(100vh-4rem)] border-r border-border-primary bg-surface-secondary transition-all flex flex-col', collapsed ? 'w-16' : 'w-60')}>
+      <nav className="flex flex-col p-2 gap-1 flex-1 overflow-y-auto">
         {links.map(link => {
           const active = pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href))
           return (
@@ -53,7 +51,7 @@ export function AdminSidebar() {
           )
         })}
       </nav>
-      <div className="absolute bottom-12 left-0 w-full px-2">
+      <div className="border-t border-border-primary p-2 flex flex-col gap-1">
         <button
           onClick={lock}
           className={cn(
@@ -65,13 +63,18 @@ export function AdminSidebar() {
           <LogOut className="h-5 w-5 shrink-0" />
           {!collapsed && <span>Lock Admin</span>}
         </button>
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className={cn(
+            'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium w-full text-text-muted hover:text-text-primary hover:bg-surface-tertiary transition-colors',
+            collapsed && 'justify-center px-2'
+          )}
+          title={collapsed ? 'Expand' : 'Collapse'}
+        >
+          {collapsed ? <ChevronRight className="h-5 w-5 shrink-0" /> : <ChevronLeft className="h-5 w-5 shrink-0" />}
+          {!collapsed && <span>Collapse</span>}
+        </button>
       </div>
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 text-text-muted hover:text-text-primary"
-      >
-        {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-      </button>
     </aside>
   )
 }

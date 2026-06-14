@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Save, ArrowLeft } from 'lucide-react'
@@ -42,20 +42,22 @@ export default function NewSkillPage() {
     else setSaving(false)
   }
 
+  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-blue-500 focus:outline-none'
+
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
         <Button asChild variant="ghost" size="icon"><Link href="/admin/skills"><ArrowLeft className="h-4 w-4" /></Link></Button>
-        <h1 className="text-3xl font-bold">New Skill</h1>
+        <h1 className="text-3xl font-bold text-text-primary">New Skill</h1>
       </div>
       <form onSubmit={handleSubmit} className="max-w-xl space-y-6">
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-1.5">Name</label>
-          <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-2.5 rounded-lg bg-dark-700 border border-dark-500 text-text-primary focus:border-blue-500 focus:outline-none" placeholder="e.g. React.js" />
+          <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className={inputClass} placeholder="e.g. React.js" />
         </div>
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-1.5">Category</label>
-          <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-4 py-2.5 rounded-lg bg-dark-700 border border-dark-500 text-text-primary focus:border-blue-500 focus:outline-none">
+          <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className={inputClass}>
             {['Frontend', 'Backend', 'Database', 'DevOps', 'Mobile', 'AI/ML', 'Tools'].map(c => (
               <option key={c} value={c}>{c}</option>
             ))}
@@ -69,20 +71,20 @@ export default function NewSkillPage() {
           <label className="block text-sm font-medium text-text-secondary mb-1.5">Color</label>
           <div className="flex flex-wrap gap-2 mb-2">
             {colorPresets.map(p => (
-              <button key={p.value} type="button" onClick={() => setForm({ ...form, color: p.value })} className={`h-8 w-8 rounded-full border-2 transition-all ${form.color === p.value ? 'border-white scale-110' : 'border-transparent hover:scale-105'}`} style={{ backgroundColor: p.value }} title={p.name} />
+              <button key={p.value} type="button" onClick={() => setForm({ ...form, color: p.value })} className={`h-8 w-8 rounded-full border-2 transition-all ${form.color === p.value ? 'border-blue-500 scale-110' : 'border-transparent hover:scale-105'}`} style={{ backgroundColor: p.value }} title={p.name} />
             ))}
           </div>
-          <input type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="h-10 w-20 rounded-lg bg-dark-700 border border-dark-500 cursor-pointer" />
+          <input type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="h-10 w-20 rounded-lg bg-surface-card border border-border-primary cursor-pointer" />
         </div>
         <div>
           <label className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
-          <input type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-lg bg-dark-700 border border-dark-500 text-text-primary focus:border-blue-500 focus:outline-none" />
+          <input type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-blue-500" />
           <label htmlFor="featured" className="text-sm text-text-secondary">Featured skill</label>
         </div>
-        <Button type="submit" disabled={saving} className="bg-blue-600 hover:bg-blue-700">
+        <Button type="submit" disabled={saving} className="gradient-bg text-white">
           <Save className="h-4 w-4 mr-2" />{saving ? 'Saving...' : 'Create Skill'}
         </Button>
       </form>

@@ -1,13 +1,39 @@
+'use client'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Send, Loader2 } from 'lucide-react'
+
 export default function AdminEmailPage() {
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Email Broadcast</h1>
-      <div className="max-w-2xl rounded-xl border border-dark-500 bg-dark-700 p-6 space-y-4">
-        <div><label className="text-sm text-text-secondary">Subject</label><input className="w-full mt-1 rounded-lg border border-dark-500 bg-dark-800 px-3 py-2 text-sm text-text-primary" /></div>
-        <div><label className="text-sm text-text-secondary">Recipients</label><select className="w-full mt-1 rounded-lg border border-dark-500 bg-dark-800 px-3 py-2 text-sm text-text-primary"><option>All Subscribers</option></select></div>
-        <div><label className="text-sm text-text-secondary">Content</label><textarea className="w-full mt-1 rounded-lg border border-dark-500 bg-dark-800 px-3 py-2 text-sm text-text-primary h-40" /></div>
-        <div className="flex gap-3"><button className="px-4 py-2 rounded-lg bg-brand-primary text-white text-sm font-medium">Send Email</button><button className="px-4 py-2 rounded-lg bg-dark-600 text-text-primary text-sm border border-dark-500">Send Test</button></div>
+    <div className="max-w-2xl space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Email Broadcast</h1>
+        <p className="text-text-muted text-sm mt-1">Send email to your subscribers.</p>
       </div>
+      <Card>
+        <CardHeader><CardTitle>Compose Email</CardTitle><CardDescription>Send a broadcast to all subscribers</CardDescription></CardHeader>
+        <CardContent className="space-y-4">
+          <div><label className="text-sm font-medium mb-1 block">Subject</label><Input placeholder="Email subject..." /></div>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Recipients</label>
+            <select className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm text-text-primary"><option>All Subscribers</option></select>
+          </div>
+          <div><label className="text-sm font-medium mb-1 block">Content</label><Textarea rows={8} placeholder="Write your email content..." /></div>
+          <div className="flex gap-3">
+            <Button onClick={() => { setSending(true); setTimeout(() => { setSending(false); setSent(true); setTimeout(() => setSent(false), 2000) }, 1500) }} disabled={sending} className="gradient-bg text-white">
+              {sending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+              {sent ? 'Sent!' : sending ? 'Sending...' : 'Send Email'}
+            </Button>
+            <Button variant="secondary">Send Test</Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
