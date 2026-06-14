@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const body = await req.json()
     const slug = body.slug || generateSlug(body.title)

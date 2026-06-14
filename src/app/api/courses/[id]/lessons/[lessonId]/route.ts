@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string; 
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string; lessonId: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const body = await req.json()
     const lesson = await Lesson.findByIdAndUpdate(params.lessonId, body, { new: true })
@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string; 
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string; lessonId: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const lesson = await Lesson.findByIdAndDelete(params.lessonId)
     if (!lesson) return apiError('Lesson not found', 404)

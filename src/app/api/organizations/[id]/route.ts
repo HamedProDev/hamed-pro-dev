@@ -1,14 +1,14 @@
 import { NextRequest } from 'next/server'
 import { connectDB } from '@/lib/db/connect'
-import { Job } from '@/lib/db/models/Job'
+import Organization from '@/lib/db/models/Organization'
 import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await connectDB()
-    const job = await Job.findById(params.id).lean()
-    if (!job) return apiError('Job not found', 404)
-    return apiSuccess(job)
+    const org = await Organization.findById(params.id).lean()
+    if (!org) return apiError('Not found', 404)
+    return apiSuccess(org)
   } catch (error: any) {
     return apiError(error.message, 500)
   }
@@ -19,9 +19,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     await requireAdmin(req)
     await connectDB()
     const body = await req.json()
-    const job = await Job.findByIdAndUpdate(params.id, body, { new: true })
-    if (!job) return apiError('Job not found', 404)
-    return apiSuccess(job, 'Job updated')
+    const org = await Organization.findByIdAndUpdate(params.id, body, { new: true })
+    if (!org) return apiError('Not found', 404)
+    return apiSuccess(org, 'Organization updated')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
@@ -31,9 +31,9 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   try {
     await requireAdmin(req)
     await connectDB()
-    const job = await Job.findByIdAndDelete(params.id)
-    if (!job) return apiError('Job not found', 404)
-    return apiSuccess(null, 'Job deleted')
+    const org = await Organization.findByIdAndDelete(params.id)
+    if (!org) return apiError('Not found', 404)
+    return apiSuccess(null, 'Organization deleted')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }

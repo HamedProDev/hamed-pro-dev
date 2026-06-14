@@ -5,7 +5,7 @@ import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const user = await User.findById(params.id).lean()
     if (!user) return apiError('User not found', 404)
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const body = await req.json()
     const user = await User.findByIdAndUpdate(params.id, body, { new: true })
@@ -30,7 +30,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     await User.findByIdAndDelete(params.id)
     return apiSuccess(null, 'User deleted')

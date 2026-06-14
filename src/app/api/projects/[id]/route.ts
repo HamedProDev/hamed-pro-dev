@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const body = await req.json()
     const project = await Project.findByIdAndUpdate(params.id, body, { new: true })
@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const project = await Project.findByIdAndDelete(params.id)
     if (!project) return apiError('Project not found', 404)

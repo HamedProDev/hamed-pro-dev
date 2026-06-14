@@ -3,7 +3,7 @@ import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
 
 export async function POST(req: NextRequest) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     const body = await req.json()
     const timestamp = Math.round(Date.now() / 1000)
     const paramsToSign = { timestamp, folder: 'hamedpro', ...body }

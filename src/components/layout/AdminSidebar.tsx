@@ -4,19 +4,20 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
 import {
-  LayoutDashboard, FolderOpen, GraduationCap, FileText, Briefcase,
+  LayoutDashboard, GraduationCap, Briefcase,
   Users, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight,
-  Zap, Trophy, LogOut
+  Zap, Trophy, Building2, LogOut
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAdminAuth } from '@/components/admin/AdminGate'
 
 const links = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/blog', label: 'Blog', icon: FileText },
+  { href: '/admin/courses', label: 'Courses', icon: GraduationCap },
   { href: '/admin/jobs', label: 'Jobs', icon: Briefcase },
   { href: '/admin/skills', label: 'Skills', icon: Zap },
   { href: '/admin/achievements', label: 'Achievements', icon: Trophy },
+  { href: '/admin/organizations', label: 'Organizations', icon: Building2 },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/seo', label: 'SEO', icon: Search },
   { href: '/admin/about', label: 'About Page', icon: UserCircle },

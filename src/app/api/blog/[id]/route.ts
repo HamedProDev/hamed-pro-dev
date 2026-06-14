@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const body = await req.json()
     if (body.content) body.readingTime = readingTime(body.content)
@@ -31,7 +31,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const post = await BlogPost.findByIdAndDelete(params.id)
     if (!post) return apiError('Post not found', 404)

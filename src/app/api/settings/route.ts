@@ -24,7 +24,7 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const body = await req.json()
     let settings = await SiteSettings.findOne()

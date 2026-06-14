@@ -3,9 +3,9 @@ import { connectDB } from '@/lib/db/connect'
 import { Analytics } from '@/lib/db/models/Analytics'
 import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)

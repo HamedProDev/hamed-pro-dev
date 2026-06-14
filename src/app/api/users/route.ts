@@ -4,9 +4,9 @@ import { User } from '@/lib/db/models/User'
 import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
 import bcrypt from 'bcryptjs'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const session = await requireAdmin()
+    const session = await requireAdmin(req)
     await connectDB()
     const users = await User.find().sort({ createdAt: -1 }).lean()
     return apiSuccess(users)

@@ -15,9 +15,9 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const session = await requireAdmin()
+    const session = await requireAdmin(req)
     await connectDB()
     const messages = await Contact.find().sort({ createdAt: -1 }).lean()
     return apiSuccess(messages)

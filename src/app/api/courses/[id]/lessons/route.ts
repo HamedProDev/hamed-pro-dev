@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireAdmin()
+    await requireAdmin(req)
     await connectDB()
     const body = await req.json()
     const slug = body.slug || generateSlug(body.title)
