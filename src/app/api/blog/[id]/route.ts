@@ -40,3 +40,9 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
 }
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  const body = await req.clone().json().catch(() => ({}))
+  if (body._method === 'DELETE') return DELETE(req, { params })
+  return PUT(req, { params })
+}

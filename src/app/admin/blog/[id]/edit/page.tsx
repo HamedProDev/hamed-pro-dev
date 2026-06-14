@@ -43,7 +43,7 @@ export default function EditBlogPostPage() {
     setSaving(true)
     try {
       const res = await fetch(`/api/blog/${id}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: form.title,

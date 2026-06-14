@@ -29,7 +29,7 @@ export default function AdminStatsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this stat?')) return
-    await fetch(`/api/stats/${id}`, { method: 'DELETE' })
+    await fetch(`/api/stats/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) })
     fetchStats()
   }
 

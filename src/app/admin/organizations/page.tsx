@@ -31,7 +31,7 @@ export default function AdminOrganizationsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this organization?')) return
-    await fetch(`/api/organizations/${id}`, { method: 'DELETE' })
+    await fetch(`/api/organizations/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) })
     fetchData()
   }
 

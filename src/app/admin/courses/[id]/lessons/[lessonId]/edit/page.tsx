@@ -36,7 +36,7 @@ export default function EditLessonPage() {
     setError('')
     try {
       const res = await fetch(`/api/courses/${courseId}/lessons/${lessonId}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, duration: Number(form.duration) || 0 }),
       })

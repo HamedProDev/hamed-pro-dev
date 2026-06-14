@@ -47,7 +47,7 @@ export default function EditCoursePage() {
     setError('')
     try {
       const res = await fetch(`/api/courses/${id}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,

@@ -37,7 +37,7 @@ export default function EditAchievementPage({ params }: { params: { id: string }
     e.preventDefault()
     setSaving(true)
     const res = await fetch(`/api/achievements/${params.id}`, {
-      method: 'PUT',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     })
@@ -47,7 +47,7 @@ export default function EditAchievementPage({ params }: { params: { id: string }
 
   const handleDelete = async () => {
     if (!confirm('Delete this achievement?')) return
-    await fetch(`/api/achievements/${params.id}`, { method: 'DELETE' })
+    await fetch(`/api/achievements/${params.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) })
     router.push('/admin/achievements')
   }
 

@@ -33,7 +33,7 @@ export default function AdminSkillsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this skill?')) return
-    await fetch(`/api/skills/${id}`, { method: 'DELETE' })
+    await fetch(`/api/skills/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) })
     fetchSkills()
   }
 

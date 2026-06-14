@@ -44,7 +44,7 @@ export default function EditOrganizationPage() {
     setError('')
     try {
       const res = await fetch(`/api/organizations/${id}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,

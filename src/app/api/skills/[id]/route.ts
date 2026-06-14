@@ -50,3 +50,9 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     return NextResponse.json({ success: false, error: error.message }, { status: 500 })
   }
 }
+
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+  const body = await request.clone().json().catch(() => ({}))
+  if (body._method === 'DELETE') return DELETE(request, { params })
+  return PUT(request, { params })
+}

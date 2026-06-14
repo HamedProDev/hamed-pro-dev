@@ -24,7 +24,7 @@ export default function AdminJobsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this job?')) return
-    await fetch(`/api/jobs/${id}`, { method: 'DELETE' })
+    await fetch(`/api/jobs/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) })
     fetchData()
   }
 

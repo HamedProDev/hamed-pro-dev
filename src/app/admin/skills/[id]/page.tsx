@@ -48,7 +48,7 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
     e.preventDefault()
     setSaving(true)
     const res = await fetch(`/api/skills/${params.id}`, {
-      method: 'PUT',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     })
@@ -58,7 +58,7 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
 
   const handleDelete = async () => {
     if (!confirm('Delete this skill?')) return
-    await fetch(`/api/skills/${params.id}`, { method: 'DELETE' })
+    await fetch(`/api/skills/${params.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) })
     router.push('/admin/skills')
   }
 

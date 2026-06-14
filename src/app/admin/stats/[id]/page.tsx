@@ -25,7 +25,7 @@ export default function EditStatPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    const res = await fetch(`/api/stats/${params.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
+    const res = await fetch(`/api/stats/${params.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
     if (res.ok) router.push('/admin/stats')
     else setSaving(false)
   }

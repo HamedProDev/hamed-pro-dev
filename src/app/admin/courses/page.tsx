@@ -24,7 +24,7 @@ export default function AdminCoursesPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this course?')) return
-    await fetch(`/api/courses/${id}`, { method: 'DELETE' })
+    await fetch(`/api/courses/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) })
     fetchData()
   }
 

@@ -45,7 +45,7 @@ export default function EditProjectPage() {
     setError('')
     try {
       const res = await fetch(`/api/projects/${id}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,

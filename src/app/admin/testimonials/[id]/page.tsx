@@ -23,7 +23,7 @@ export default function EditTestimonialPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    const res = await fetch(`/api/testimonials/${params.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
+    const res = await fetch(`/api/testimonials/${params.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
     if (res.ok) router.push('/admin/testimonials')
     else setSaving(false)
   }

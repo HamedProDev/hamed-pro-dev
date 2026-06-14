@@ -13,7 +13,7 @@ async function getSettings() {
   return settings
 }
 
-export async function GET() {
+async function handleGet() {
   try {
     const settings = await getSettings()
     return apiSuccess(settings)
@@ -22,7 +22,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: NextRequest) {
+async function handleSave(req: NextRequest) {
   try {
     await requireAdmin(req)
     await connectDB()
@@ -62,3 +62,7 @@ export async function PUT(req: NextRequest) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
 }
+
+export const GET = handleGet
+export const POST = handleSave
+export const PUT = handleSave

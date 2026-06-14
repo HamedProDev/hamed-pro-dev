@@ -38,7 +38,7 @@ export default function AdminAchievementsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this achievement?')) return
-    await fetch(`/api/achievements/${id}`, { method: 'DELETE' })
+    await fetch(`/api/achievements/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) })
     fetchAchievements()
   }
 
