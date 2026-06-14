@@ -33,6 +33,9 @@ export async function POST(req: NextRequest) {
     await requireAdmin(req)
     await connectDB()
     const body = await req.json()
+    if (!body.expiresAt) {
+      body.expiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+    }
     const job = await Job.create(body)
     return apiSuccess(job, 'Job created')
   } catch (error: any) {

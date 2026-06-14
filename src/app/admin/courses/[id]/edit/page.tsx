@@ -19,6 +19,7 @@ export default function EditCoursePage() {
   const [form, setForm] = useState({
     title: '', description: '', longDescription: '', coverImage: '', category: 'Frontend',
     level: 'beginner', type: 'free', price: '0', duration: '', rating: '', tags: '', prerequisites: '', outcomes: '',
+    youtubePlaylistUrl: '',
   })
 
   const update = (key: string, value: any) => setForm(f => ({ ...f, [key]: value }))
@@ -31,8 +32,9 @@ export default function EditCoursePage() {
           title: c.title || '', description: c.description || '', longDescription: c.longDescription || '',
           coverImage: c.coverImage || '', category: c.category || 'Frontend', level: c.level || 'beginner',
           type: c.type || 'free', price: String(c.price || 0), duration: String(c.duration || 0),
-          rating: String(c.rating || ''), tags: (c.tags || []).join(', '),
+          rating: String(c.rating || ''),           tags: (c.tags || []).join(', '),
           prerequisites: (c.prerequisites || []).join(', '), outcomes: (c.outcomes || []).join(', '),
+          youtubePlaylistUrl: c.youtubePlaylistUrl || '',
         })
       }
       setLoading(false)
@@ -76,7 +78,7 @@ export default function EditCoursePage() {
           <CardContent className="space-y-4">
             <div><label className="text-sm font-medium mb-1 block">Title *</label><Input required value={form.title} onChange={e => update('title', e.target.value)} /></div>
             <div><label className="text-sm font-medium mb-1 block">Description *</label><Input required value={form.description} onChange={e => update('description', e.target.value)} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Long Description</label><Textarea rows={5} value={form.longDescription} onChange={e => update('longDescription', e.target.value)} /></div>
+            <div><label className="text-sm font-medium mb-1 block">Long Description (Markdown supported)</label><Textarea rows={5} value={form.longDescription} onChange={e => update('longDescription', e.target.value)} /></div>
             <div><label className="text-sm font-medium mb-1 block">Cover Image</label><ImageUpload value={form.coverImage} onChange={v => update('coverImage', v)} folder="hamedpro/courses" /></div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className="text-sm font-medium mb-1 block">Category</label><select value={form.category} onChange={e => update('category', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm"><option>Frontend</option><option>Backend</option><option>AI / ML</option><option>Mobile</option><option>DevOps</option></select></div>
@@ -91,6 +93,7 @@ export default function EditCoursePage() {
             <div><label className="text-sm font-medium mb-1 block">Tags (comma separated)</label><Input value={form.tags} onChange={e => update('tags', e.target.value)} /></div>
             <div><label className="text-sm font-medium mb-1 block">Prerequisites (comma separated)</label><Input value={form.prerequisites} onChange={e => update('prerequisites', e.target.value)} /></div>
             <div><label className="text-sm font-medium mb-1 block">Outcomes (comma separated)</label><Input value={form.outcomes} onChange={e => update('outcomes', e.target.value)} /></div>
+            <div><label className="text-sm font-medium mb-1 block">YouTube Playlist URL</label><Input value={form.youtubePlaylistUrl} onChange={e => update('youtubePlaylistUrl', e.target.value)} placeholder="https://youtube.com/playlist?list=..." /></div>
           </CardContent>
         </Card>
         {error && <p className="text-red-400 text-sm">{error}</p>}

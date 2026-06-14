@@ -13,6 +13,7 @@ import { useAdminAuth } from '@/components/admin/AdminGate'
 
 const links = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/projects', label: 'Projects', icon: Building2 },
   { href: '/admin/courses', label: 'Courses', icon: GraduationCap },
   { href: '/admin/jobs', label: 'Jobs', icon: Briefcase },
   { href: '/admin/skills', label: 'Skills', icon: Zap },

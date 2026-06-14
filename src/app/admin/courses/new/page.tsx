@@ -16,6 +16,7 @@ export default function NewCoursePage() {
   const [form, setForm] = useState({
     title: '', description: '', longDescription: '', coverImage: '', category: 'Frontend',
     level: 'beginner', type: 'free', price: '0', duration: '', tags: '', prerequisites: '', outcomes: '',
+    youtubePlaylistUrl: '', rating: '',
   })
 
   const update = (key: string, value: any) => setForm(f => ({ ...f, [key]: value }))
@@ -33,6 +34,7 @@ export default function NewCoursePage() {
           price: Number(form.price),
           duration: Number(form.duration) || 0,
           rating: Number((form as any).rating) || 0,
+          youtubePlaylistUrl: form.youtubePlaylistUrl || undefined,
           tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
           prerequisites: form.prerequisites.split(',').map(t => t.trim()).filter(Boolean),
           outcomes: form.outcomes.split(',').map(t => t.trim()).filter(Boolean),
@@ -56,7 +58,7 @@ export default function NewCoursePage() {
           <CardContent className="space-y-4">
             <div><label className="text-sm font-medium mb-1 block">Title *</label><Input required value={form.title} onChange={e => update('title', e.target.value)} placeholder="Course Title" /></div>
             <div><label className="text-sm font-medium mb-1 block">Description *</label><Input required value={form.description} onChange={e => update('description', e.target.value)} placeholder="Short description" /></div>
-            <div><label className="text-sm font-medium mb-1 block">Long Description</label><Textarea rows={5} value={form.longDescription} onChange={e => update('longDescription', e.target.value)} placeholder="Detailed course description..." /></div>
+            <div><label className="text-sm font-medium mb-1 block">Long Description (Markdown supported)</label><Textarea rows={5} value={form.longDescription} onChange={e => update('longDescription', e.target.value)} placeholder="Detailed course description... (supports **bold**, *italic*, lists)" /></div>
             <div><label className="text-sm font-medium mb-1 block">Cover Image</label><ImageUpload value={form.coverImage} onChange={v => update('coverImage', v)} folder="hamedpro/courses" /></div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className="text-sm font-medium mb-1 block">Category</label><select value={form.category} onChange={e => update('category', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm"><option>Frontend</option><option>Backend</option><option>AI / ML</option><option>Mobile</option><option>DevOps</option></select></div>
@@ -71,6 +73,7 @@ export default function NewCoursePage() {
             <div><label className="text-sm font-medium mb-1 block">Tags (comma separated)</label><Input value={form.tags} onChange={e => update('tags', e.target.value)} placeholder="React, JavaScript, Frontend" /></div>
             <div><label className="text-sm font-medium mb-1 block">Prerequisites (comma separated)</label><Input value={form.prerequisites} onChange={e => update('prerequisites', e.target.value)} placeholder="Basic JavaScript" /></div>
             <div><label className="text-sm font-medium mb-1 block">Outcomes (comma separated)</label><Input value={form.outcomes} onChange={e => update('outcomes', e.target.value)} placeholder="Build React apps from scratch" /></div>
+            <div><label className="text-sm font-medium mb-1 block">YouTube Playlist URL</label><Input value={form.youtubePlaylistUrl} onChange={e => update('youtubePlaylistUrl', e.target.value)} placeholder="https://youtube.com/playlist?list=..." /></div>
           </CardContent>
         </Card>
         {error && <p className="text-red-400 text-sm">{error}</p>}

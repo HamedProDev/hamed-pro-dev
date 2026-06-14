@@ -14,37 +14,46 @@ interface ImageUploadProps {
 export function ImageUpload({ value, onChange, folder = 'hamedpro', className }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+  const [error, setError] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const upload = async (file: File) => {
     setUploading(true)
+    setError('')
     try {
-      const timestamp = Math.round(Date.now() / 1000)
-      const paramsToSign = { timestamp, folder }
       const sigRes = await fetch('/api/media/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paramsToSign),
+        body: JSON.stringify({ folder }),
       })
       const sigData = await sigRes.json()
+      if (!sigData.success) {
+        setError('Upload config error')
+        setUploading(false)
+        return
+      }
+      const { timestamp, signature, api_key, cloud_name } = sigData.data
 
       const formData = new FormData()
       formData.append('file', file)
       formData.append('folder', folder)
       formData.append('timestamp', String(timestamp))
-      formData.append('api_key', sigData.data.api_key)
-      formData.append('signature', sigData.data.signature)
-      formData.append('cloud_name', sigData.data.cloud_name)
+      formData.append('api_key', api_key)
+      formData.append('signature', signature)
+      formData.append('cloud_name', cloud_name)
 
-      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${sigData.data.cloud_name}/image/upload`, {
+      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
         method: 'POST',
         body: formData,
       })
       const uploaded = await uploadRes.json()
       if (uploaded.secure_url) {
         onChange(uploaded.secure_url)
+      } else {
+        setError(uploaded.error?.message || 'Upload failed')
       }
     } catch (err) {
+      setError('Upload failed')
       console.error('Upload failed:', err)
     }
     setUploading(false)
@@ -71,6 +80,7 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
           <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()}>Replace</Button>
           <Button size="sm" variant="destructive" onClick={() => onChange('')}><X className="h-4 w-4" /></Button>
         </div>
+        {error && <div className="absolute bottom-0 left-0 right-0 bg-red-500/90 text-white text-xs p-2 text-center">{error}</div>}
         <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={e => { if (e.target.files?.[0]) handleFile(e.target.files[0]) }} />
       </div>
     )
@@ -91,6 +101,7 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
           <div className="h-12 w-12 rounded-xl bg-surface-tertiary flex items-center justify-center"><Upload className="h-5 w-5 text-text-muted" /></div>
           <p className="text-sm text-text-secondary">Click or drag to upload image</p>
           <p className="text-xs text-text-muted">PNG, JPG up to 5MB</p>
+          {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
         </div>
       )}
       <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={e => { if (e.target.files?.[0]) handleFile(e.target.files[0]) }} />
