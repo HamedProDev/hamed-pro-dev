@@ -65,7 +65,7 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
 
   if (value) {
     return (
-      <div className={cn('relative group rounded-xl overflow-hidden border border-white/10', className)}>
+      <div className={cn('relative group rounded-xl overflow-hidden border border-border-primary', className)}>
         <img src={value} alt="Uploaded" className="w-full h-48 object-cover" />
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
           <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()}>Replace</Button>
@@ -78,7 +78,7 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
 
   return (
     <div
-      className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-brand-primary bg-brand-primary/5' : 'border-white/10 hover:border-white/20', className)}
+      className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-brand-primary bg-brand-primary/5' : 'border-border-primary hover:border-border-primary', className)}
       onDragOver={e => { e.preventDefault(); setDragOver(true) }}
       onDragLeave={() => setDragOver(false)}
       onDrop={handleDrop}

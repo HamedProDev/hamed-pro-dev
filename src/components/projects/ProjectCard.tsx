@@ -30,7 +30,7 @@ const statusDotColors: Record<string, string> = {
 }
 
 export function ProjectCard({ title, slug, description, techStack, status, demoUrl, sourceUrl, imageUrl, gradientClass }: ProjectCardProps) {
-  const defaultGradient = 'bg-gradient-to-br from-dark-700 to-dark-800' // Default gradient
+  const defaultGradient = 'bg-gradient-to-br from-surface-card to-surface-secondary' // Default gradient
   return (
     <Link href={`/projects/${slug}`}>
       <Card className="h-full card-hover group">

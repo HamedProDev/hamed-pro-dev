@@ -18,12 +18,12 @@ const categoryLabels: Record<string, string> = {
 }
 
 const gradients = [
-  'from-green-600/30 via-surface-card to-dark-800',
-  'from-blue-600/30 via-indigo-700/20 to-dark-800',
-  'from-purple-600/30 via-pink-700/20 to-dark-800',
-  'from-cyan-600/30 via-blue-700/20 to-dark-800',
-  'from-amber-600/30 via-orange-700/20 to-dark-800',
-  'from-teal-600/30 via-emerald-700/20 to-dark-800',
+  'from-green-600/30 via-surface-card to-surface-secondary',
+  'from-blue-600/30 via-indigo-700/20 to-surface-secondary',
+  'from-purple-600/30 via-pink-700/20 to-surface-secondary',
+  'from-cyan-600/30 via-blue-700/20 to-surface-secondary',
+  'from-amber-600/30 via-orange-700/20 to-surface-secondary',
+  'from-teal-600/30 via-emerald-700/20 to-surface-secondary',
 ]
 
 interface Project {

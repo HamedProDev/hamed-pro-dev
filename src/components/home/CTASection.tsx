@@ -14,7 +14,7 @@ export function CTASection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           whileHover={{ y: -4 }}
-          className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-dark-700 to-dark-800 p-8 md:p-16 text-center overflow-hidden group"
+          className="relative rounded-2xl border border-border-primary bg-gradient-to-br from-surface-card to-surface-secondary p-8 md:p-16 text-center overflow-hidden group"
         >
           <motion.div
             animate={{ opacity: [0.12, 0.2, 0.12] }}

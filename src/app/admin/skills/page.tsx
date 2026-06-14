@@ -73,7 +73,7 @@ export default function AdminSkillsPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="h-5 w-5 rounded-full border border-white/10" style={{ backgroundColor: skill.color }} />
+                    <div className="h-5 w-5 rounded-full border border-border-primary" style={{ backgroundColor: skill.color }} />
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">

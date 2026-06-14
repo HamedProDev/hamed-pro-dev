@@ -82,7 +82,7 @@ export default function CoursesPage() {
           </div>
           <div className="relative hidden md:flex justify-center items-center">
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-secondary/10 to-transparent rounded-3xl blur-3xl" />
-            <div className="relative w-80 h-80 rounded-2xl bg-gradient-to-br from-surface-card to-dark-800 border border-border-primary overflow-hidden flex items-center justify-center">
+            <div className="relative w-80 h-80 rounded-2xl bg-gradient-to-br from-surface-card to-surface-secondary border border-border-primary overflow-hidden flex items-center justify-center">
               <div className="text-6xl opacity-30">💻</div>
             </div>
             {[{ name: 'React', x: '-10%', y: '20%', icon: '⚛️' }, { name: 'Node.js', x: '80%', y: '10%', icon: '🟢' }, { name: 'Python', x: '-5%', y: '70%', icon: '🐍' }, { name: 'TypeScript', x: '85%', y: '65%', icon: 'TS' }].map((b, i) => (
@@ -148,7 +148,7 @@ export default function CoursesPage() {
                 {filtered.map((c, i) => (
                   <motion.div key={c._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                     <Card className="h-full card-hover group overflow-hidden">
-                      <div className="h-40 rounded-t-xl bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-dark-800 relative flex items-center justify-center">
+                      <div className="h-40 rounded-t-xl bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-surface-secondary relative flex items-center justify-center">
                         <span className="text-5xl opacity-60">📚</span>
                         <Badge className="absolute top-3 left-3 bg-brand-primary/90 text-white border-0 text-xs">{c.category}</Badge>
                         {c.type === 'premium' && <Badge className="absolute top-3 right-3 bg-amber-500/90 text-white border-0 text-xs">⭐ Premium</Badge>}

@@ -12,12 +12,12 @@ import { cn } from '@/lib/utils/cn'
 const tabs = ['All', 'Startups', 'Agencies', 'Companies', 'Open Source']
 
 const orgs = [
-  { name: 'NovaSoft Solutions', type: 'Agency', desc: 'Full-service software development agency specializing in web, mobile, and AI solutions for businesses across Africa.', location: 'Kigali, Rwanda', team: '15-30', roles: 12, gradient: 'from-blue-600/30 via-indigo-700/20 to-dark-800', tech: ['Next.js', 'React', 'Python'], hiring: true },
-  { name: 'InnoHub Africa', type: 'Startup', desc: 'Innovation hub building digital tools for agriculture and financial inclusion across East Africa.', location: 'Nairobi, Kenya', team: '10-20', roles: 8, gradient: 'from-purple-600/30 via-pink-700/20 to-dark-800', tech: ['React', 'Node.js', 'AWS'], hiring: true },
-  { name: 'FarmConnect', type: 'Startup', desc: 'Digital marketplace connecting Rwandan farmers directly with buyers, eliminating middlemen.', location: 'Kigali, Rwanda', team: '5-10', roles: 5, gradient: 'from-green-600/30 via-emerald-700/20 to-dark-800', tech: ['React Native', 'Firebase', 'Stripe'], hiring: true },
-  { name: 'TechStart Rwanda', type: 'Company', desc: 'Leading tech company providing enterprise solutions and cloud infrastructure for Rwandan businesses.', location: 'Kigali, Rwanda', team: '50-100', roles: 6, gradient: 'from-amber-600/30 via-orange-700/20 to-dark-800', tech: ['Java', 'AWS', 'Kubernetes'], hiring: true },
-  { name: 'CloudRwanda', type: 'Company', desc: 'Cloud infrastructure provider offering hosting, DevOps, and managed services for the African market.', location: 'Kigali, Rwanda', team: '20-50', roles: 3, gradient: 'from-cyan-600/30 via-sky-700/20 to-dark-800', tech: ['Docker', 'Kubernetes', 'Terraform'], hiring: false },
-  { name: 'OpenDev Rwanda', type: 'Open Source', desc: 'Community-driven organization building open-source tools and contributing to global projects.', location: 'Remote', team: '30+', roles: 0, gradient: 'from-teal-600/30 via-emerald-700/20 to-dark-800', tech: ['TypeScript', 'Go', 'Rust'], hiring: false },
+  { name: 'NovaSoft Solutions', type: 'Agency', desc: 'Full-service software development agency specializing in web, mobile, and AI solutions for businesses across Africa.', location: 'Kigali, Rwanda', team: '15-30', roles: 12, gradient: 'from-blue-600/30 via-indigo-700/20 to-surface-secondary', tech: ['Next.js', 'React', 'Python'], hiring: true },
+  { name: 'InnoHub Africa', type: 'Startup', desc: 'Innovation hub building digital tools for agriculture and financial inclusion across East Africa.', location: 'Nairobi, Kenya', team: '10-20', roles: 8, gradient: 'from-purple-600/30 via-pink-700/20 to-surface-secondary', tech: ['React', 'Node.js', 'AWS'], hiring: true },
+  { name: 'FarmConnect', type: 'Startup', desc: 'Digital marketplace connecting Rwandan farmers directly with buyers, eliminating middlemen.', location: 'Kigali, Rwanda', team: '5-10', roles: 5, gradient: 'from-green-600/30 via-emerald-700/20 to-surface-secondary', tech: ['React Native', 'Firebase', 'Stripe'], hiring: true },
+  { name: 'TechStart Rwanda', type: 'Company', desc: 'Leading tech company providing enterprise solutions and cloud infrastructure for Rwandan businesses.', location: 'Kigali, Rwanda', team: '50-100', roles: 6, gradient: 'from-amber-600/30 via-orange-700/20 to-surface-secondary', tech: ['Java', 'AWS', 'Kubernetes'], hiring: true },
+  { name: 'CloudRwanda', type: 'Company', desc: 'Cloud infrastructure provider offering hosting, DevOps, and managed services for the African market.', location: 'Kigali, Rwanda', team: '20-50', roles: 3, gradient: 'from-cyan-600/30 via-sky-700/20 to-surface-secondary', tech: ['Docker', 'Kubernetes', 'Terraform'], hiring: false },
+  { name: 'OpenDev Rwanda', type: 'Open Source', desc: 'Community-driven organization building open-source tools and contributing to global projects.', location: 'Remote', team: '30+', roles: 0, gradient: 'from-teal-600/30 via-emerald-700/20 to-surface-secondary', tech: ['TypeScript', 'Go', 'Rust'], hiring: false },
 ]
 
 export default function StartupsPage() {
@@ -111,7 +111,7 @@ export default function StartupsPage() {
 
         {filtered.length === 0 && <p className="text-center text-text-muted py-12">No organizations found.</p>}
 
-        <div className="mt-16 rounded-2xl border border-border-primary bg-gradient-to-r from-surface-card to-dark-800 p-8 text-center">
+        <div className="mt-16 rounded-2xl border border-border-primary bg-gradient-to-r from-surface-card to-surface-secondary p-8 text-center">
           <h3 className="text-2xl font-bold mb-2">Want to list your organization?</h3>
           <p className="text-text-secondary mb-6">Join our network of tech companies and reach talented developers.</p>
           <Button asChild className="gradient-bg text-white"><Link href="/contact">Get Listed →</Link></Button>

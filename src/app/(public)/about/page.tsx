@@ -91,7 +91,7 @@ export default function AboutPage() {
           </div>
           <div className="relative flex justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-secondary/10 to-transparent rounded-3xl blur-3xl" />
-            <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-surface-card to-dark-800 border border-border-primary flex items-center justify-center overflow-hidden">
+            <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-surface-card to-surface-secondary border border-border-primary flex items-center justify-center overflow-hidden">
               {settings.profilePhoto ? (
                 <img src={settings.profilePhoto} alt="Profile" className="w-full h-full object-cover" />
               ) : (
@@ -186,7 +186,7 @@ export default function AboutPage() {
           </div>
         )}
 
-        <div className="mt-16 rounded-2xl border border-border-primary bg-gradient-to-r from-surface-card to-dark-800 p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="mt-16 rounded-2xl border border-border-primary bg-gradient-to-r from-surface-card to-surface-secondary p-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div><h3 className="text-2xl font-bold mb-2">Let&apos;s work together</h3><p className="text-text-secondary">Have a project in mind? Let&apos;s build something amazing.</p></div>
           <Button asChild className="gradient-bg text-white shrink-0"><Link href="/contact">Start a Project <ArrowRight className="h-4 w-4 ml-1" /></Link></Button>
         </div>
