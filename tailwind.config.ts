@@ -11,16 +11,16 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: '#6366f1',
-          secondary: '#8b5cf6',
-          accent: '#06b6d4',
+          primary: '#3B82F6',
+          secondary: '#2563EB',
+          accent: '#60A5FA',
         },
         dark: {
-          900: '#0a0a0f',
-          800: '#0f0f1a',
-          700: '#14142b',
-          600: '#1a1a3a',
-          500: '#252550',
+          900: '#0a0a1a',
+          800: '#0f0f2a',
+          700: '#151535',
+          600: '#1a1a40',
+          500: '#252560',
         },
         text: {
           primary: '#f8fafc',
@@ -37,7 +37,7 @@ const config: Config = {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.5s ease-out',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        blink: 'blink 1s step-end infinite', // Added blink animation
+        blink: 'blink 1s step-end infinite',
       },
       keyframes: {
         fadeIn: {

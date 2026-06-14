@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
 import {
   LayoutDashboard, FolderOpen, GraduationCap, FileText, Briefcase,
-  Users, Image, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight
+  Users, Image, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight,
+  Zap, Trophy
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -15,6 +16,8 @@ const links = [
   { href: '/admin/courses', label: 'Courses', icon: GraduationCap },
   { href: '/admin/blog', label: 'Blog', icon: FileText },
   { href: '/admin/jobs', label: 'Jobs', icon: Briefcase },
+  { href: '/admin/skills', label: 'Skills', icon: Zap },
+  { href: '/admin/achievements', label: 'Achievements', icon: Trophy },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/media', label: 'Media', icon: Image },
   { href: '/admin/seo', label: 'SEO', icon: Search },
@@ -38,7 +41,7 @@ export function AdminSidebar() {
               href={link.href}
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                active ? 'bg-brand-primary/10 text-brand-primary' : 'text-text-secondary hover:bg-dark-700 hover:text-text-primary',
+                active ? 'bg-blue-500/10 text-blue-400' : 'text-text-secondary hover:bg-dark-700 hover:text-text-primary',
                 collapsed && 'justify-center px-2'
               )}
               title={collapsed ? link.label : undefined}

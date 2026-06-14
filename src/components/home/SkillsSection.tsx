@@ -7,6 +7,7 @@ const skillCategories = [
   {
     name: 'Frontend',
     color: 'text-blue-500',
+    border: 'hover:border-blue-500/30',
     skills: [
       { name: 'Next.js', icon: 'N', iconBg: 'bg-white text-black' },
       { name: 'React', icon: '⚛', iconBg: 'bg-cyan-500/20 text-cyan-400' },
@@ -17,6 +18,7 @@ const skillCategories = [
   {
     name: 'Backend',
     color: 'text-green-500',
+    border: 'hover:border-green-500/30',
     skills: [
       { name: 'Node.js', icon: 'N', iconBg: 'bg-green-500/20 text-green-400' },
       { name: 'Python', icon: '🐍', iconBg: 'bg-yellow-500/20 text-yellow-400' },
@@ -27,6 +29,7 @@ const skillCategories = [
   {
     name: 'Database',
     color: 'text-orange-500',
+    border: 'hover:border-orange-500/30',
     skills: [
       { name: 'PostgreSQL', icon: 'Pg', iconBg: 'bg-blue-600/20 text-blue-400' },
       { name: 'MongoDB', icon: 'M', iconBg: 'bg-green-600/20 text-green-400' },
@@ -37,6 +40,7 @@ const skillCategories = [
   {
     name: 'AI/ML',
     color: 'text-purple-500',
+    border: 'hover:border-purple-500/30',
     skills: [
       { name: 'TensorFlow', icon: 'TF', iconBg: 'bg-orange-500/20 text-orange-400' },
       { name: 'PyTorch', icon: 'PT', iconBg: 'bg-red-500/20 text-red-400' },
@@ -46,7 +50,8 @@ const skillCategories = [
   },
   {
     name: 'DevOps',
-    color: 'text-brand-accent',
+    color: 'text-cyan-500',
+    border: 'hover:border-cyan-500/30',
     skills: [
       { name: 'Docker', icon: 'D', iconBg: 'bg-blue-500/20 text-blue-400' },
       { name: 'AWS', icon: 'aws', iconBg: 'bg-orange-500/20 text-orange-400' },
@@ -60,24 +65,35 @@ export function SkillsSection() {
   return (
     <section className="section-padding">
       <div className="container-wide">
-        <div className="text-center mb-12">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Tech Stack</h2>
           <p className="text-text-secondary">Technologies I work with daily</p>
-        </div>
+        </motion.div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {skillCategories.map((cat, i) => (
-            <motion.div key={cat.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <Card className="h-full card-hover border-white/5">
+            <motion.div
+              key={cat.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+              whileHover={{ y: -6, scale: 1.02 }}
+            >
+              <Card className={cn('h-full border-white/5 transition-all duration-300', cat.border)}>
                 <CardContent className="p-5">
                   <h3 className={cn('text-sm font-bold mb-4 uppercase tracking-wider', cat.color)}>{cat.name}</h3>
                   <div className="space-y-3">
                     {cat.skills.map(skill => (
-                      <div key={skill.name} className="flex items-center gap-3">
+                      <motion.div
+                        key={skill.name}
+                        whileHover={{ x: 4 }}
+                        className="flex items-center gap-3 cursor-default"
+                      >
                         <span className={cn('h-7 w-7 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0', skill.iconBg)}>
                           {skill.icon}
                         </span>
                         <span className="text-sm text-text-secondary">{skill.name}</span>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CardContent>

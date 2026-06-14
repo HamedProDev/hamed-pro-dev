@@ -9,7 +9,7 @@ const iconColors = [
   { color: 'text-yellow-500', bg: 'bg-yellow-500/10' },
   { color: 'text-green-500', bg: 'bg-green-500/10' },
   { color: 'text-purple-500', bg: 'bg-purple-500/10' },
-  { color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
+  { color: 'text-blue-400', bg: 'bg-blue-400/10' },
 ]
 
 function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
@@ -38,16 +38,30 @@ export function StatsBar() {
     { icon: <ThumbsUp className="h-5 w-5" />, value: 100, label: 'Client Satisfaction', suffix: '%' },
   ]
   return (
-    <section className="py-12 border-y border-white/5">
+    <section className="py-12 border-y border-white/5 bg-dark-800/30">
       <div className="container-wide">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
           {stats.map((stat, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
-              <div className={cn(
-                "inline-flex items-center justify-center h-10 w-10 rounded-xl mb-3",
-                iconColors[i].bg,
-                iconColors[i].color
-              )}>{stat.icon}</div>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+              whileHover={{ y: -4, scale: 1.05 }}
+              className="text-center cursor-default"
+            >
+              <motion.div
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                className={cn(
+                  "inline-flex items-center justify-center h-12 w-12 rounded-xl mb-3 transition-shadow duration-300",
+                  iconColors[i].bg,
+                  iconColors[i].color
+                )}
+              >
+                {stat.icon}
+              </motion.div>
               <div className="text-2xl md:text-3xl font-bold text-text-primary"><AnimatedNumber value={stat.value} suffix={stat.suffix} /></div>
               <div className="text-xs text-text-secondary mt-1">{stat.label}</div>
             </motion.div>

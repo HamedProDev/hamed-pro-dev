@@ -5,6 +5,8 @@ import { Project } from '@/lib/db/models/Project'
 import { Course } from '@/lib/db/models/Course'
 import { Job } from '@/lib/db/models/Job'
 import { SiteSettings } from '@/lib/db/models/SiteSettings'
+import Skill from '@/lib/db/models/Skill'
+import Achievement from '@/lib/db/models/Achievement'
 import bcrypt from 'bcryptjs'
 
 export async function GET() {
@@ -12,7 +14,6 @@ export async function GET() {
     await connectDB()
     const results: string[] = []
 
-    // 1. Admin user
     const adminEmail = 'hamedpro.work@gmail.com'
     let adminUser = await User.findOne({ email: adminEmail })
     if (!adminUser) {
@@ -32,7 +33,6 @@ export async function GET() {
       results.push('Admin user exists')
     }
 
-    // 2. Projects
     const projectCount = await Project.countDocuments()
     if (projectCount === 0) {
       await Project.insertMany([
@@ -48,7 +48,6 @@ export async function GET() {
       results.push(`${projectCount} projects exist`)
     }
 
-    // 3. Courses
     const courseCount = await Course.countDocuments()
     if (courseCount === 0) {
       await Course.insertMany([
@@ -67,7 +66,6 @@ export async function GET() {
       results.push(`${courseCount} courses exist`)
     }
 
-    // 4. Jobs
     const jobCount = await Job.countDocuments()
     if (jobCount === 0) {
       const now = new Date()
@@ -85,7 +83,6 @@ export async function GET() {
       results.push(`${jobCount} jobs exist`)
     }
 
-    // 5. Site Settings
     const settingsCount = await SiteSettings.countDocuments()
     if (settingsCount === 0) {
       await SiteSettings.create({
@@ -119,6 +116,50 @@ export async function GET() {
       results.push('Site settings created')
     } else {
       results.push('Site settings exist')
+    }
+
+    const skillCount = await Skill.countDocuments()
+    if (skillCount === 0) {
+      await Skill.insertMany([
+        { name: 'Next.js', category: 'Frontend', proficiency: 95, color: '#ffffff', order: 1, featured: true },
+        { name: 'React', category: 'Frontend', proficiency: 95, color: '#61dafb', order: 2, featured: true },
+        { name: 'TypeScript', category: 'Frontend', proficiency: 90, color: '#3178c6', order: 3, featured: true },
+        { name: 'Tailwind CSS', category: 'Frontend', proficiency: 92, color: '#06b6d4', order: 4, featured: true },
+        { name: 'HTML/CSS', category: 'Frontend', proficiency: 98, color: '#e34f26', order: 5, featured: false },
+        { name: 'Node.js', category: 'Backend', proficiency: 88, color: '#339933', order: 6, featured: true },
+        { name: 'Python', category: 'Backend', proficiency: 85, color: '#3776ab', order: 7, featured: true },
+        { name: 'Express.js', category: 'Backend', proficiency: 87, color: '#ffffff', order: 8, featured: false },
+        { name: 'MongoDB', category: 'Database', proficiency: 85, color: '#47a248', order: 9, featured: true },
+        { name: 'PostgreSQL', category: 'Database', proficiency: 80, color: '#4169e1', order: 10, featured: false },
+        { name: 'Firebase', category: 'Database', proficiency: 78, color: '#ffca28', order: 11, featured: false },
+        { name: 'Docker', category: 'DevOps', proficiency: 82, color: '#2496ed', order: 12, featured: true },
+        { name: 'AWS', category: 'DevOps', proficiency: 75, color: '#ff9900', order: 13, featured: false },
+        { name: 'Git', category: 'Tools', proficiency: 92, color: '#f05032', order: 14, featured: false },
+        { name: 'Figma', category: 'Tools', proficiency: 70, color: '#f24e1e', order: 15, featured: false },
+        { name: 'React Native', category: 'Mobile', proficiency: 80, color: '#61dafb', order: 16, featured: true },
+        { name: 'Flutter', category: 'Mobile', proficiency: 72, color: '#02569b', order: 17, featured: false },
+        { name: 'TensorFlow', category: 'AI/ML', proficiency: 70, color: '#ff6f00', order: 18, featured: false },
+      ])
+      results.push('18 skills seeded')
+    } else {
+      results.push(`${skillCount} skills exist`)
+    }
+
+    const achievementCount = await Achievement.countDocuments()
+    if (achievementCount === 0) {
+      await Achievement.insertMany([
+        { title: 'AWS Certified Cloud Practitioner', description: 'Earned AWS Cloud Practitioner certification demonstrating cloud computing knowledge.', year: '2024', type: 'certification', order: 1, featured: true },
+        { title: 'Best Innovation Award — Rwanda Tech Summit', description: 'Won first place for FarmConnect platform at the annual Rwanda Technology Summit.', year: '2024', type: 'award', order: 2, featured: true },
+        { title: '100+ GitHub Stars on OpenDev CLI', description: 'Open-source CLI tool reached 100+ stars on GitHub, used by 500+ developers.', year: '2024', type: 'milestone', order: 3, featured: true },
+        { title: 'FarmConnect — 5000+ Farmers Onboarded', description: 'Digital marketplace platform reached milestone of 5000+ active farmers.', year: '2023', type: 'milestone', order: 4, featured: true },
+        { title: 'Google Developer Student Club Lead', description: 'Led GDSC at university, organizing workshops and hackathons for 200+ students.', year: '2023', type: 'milestone', order: 5, featured: false },
+        { title: 'MongoDB Associate Developer Certification', description: 'Certified MongoDB developer, proficient in database design and aggregation.', year: '2023', type: 'certification', order: 6, featured: false },
+        { title: 'Published Research — AI in Healthcare', description: 'Co-authored paper on ML-based health screening deployed in rural clinics.', year: '2023', type: 'publication', order: 7, featured: false },
+        { title: 'Hackathon Winner — Africa Code Week', description: 'First place at Africa Code Week hackathon for EduConnect platform.', year: '2022', type: 'award', order: 8, featured: false },
+      ])
+      results.push('8 achievements seeded')
+    } else {
+      results.push(`${achievementCount} achievements exist`)
     }
 
     return NextResponse.json({ success: true, data: { results, loginUrl: '/login', credentials: { email: adminEmail, password: '@He00Ri#Ga4Da' } } })

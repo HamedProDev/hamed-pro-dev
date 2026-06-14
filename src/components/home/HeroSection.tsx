@@ -41,22 +41,30 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(99,102,241,0.15),transparent_60%)]" />
-      <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(rgba(99,102,241,0.03) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+      <motion.div
+        animate={{ opacity: [0.15, 0.25, 0.15] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(59,130,246,0.15),transparent_60%)]"
+      />
+      <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(rgba(59,130,246,0.03) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
 
       <div className="container-wide relative z-10 grid md:grid-cols-2 gap-8 items-center">
         <div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-1.5 mb-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}>
+            <motion.div
+              animate={{ boxShadow: ['0 0 15px rgba(34,197,94,0.1)', '0 0 25px rgba(34,197,94,0.2)', '0 0 15px rgba(34,197,94,0.1)'] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-1.5 mb-6"
+            >
               <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" /><span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" /></span>
               <span className="text-sm text-green-400">Available for work</span>
-            </div>
+            </motion.div>
           </motion.div>
 
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-2 leading-tight">
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }} className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-2 leading-tight">
             Hi, I&apos;m
           </motion.h1>
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4 leading-tight gradient-text">
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }} className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4 leading-tight gradient-text">
             {settings.heroName || 'Hamed Hussein'}
           </motion.h1>
 
@@ -68,23 +76,38 @@ export function HeroSection() {
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="flex flex-wrap items-center gap-4 mb-8">
-            <Button size="lg" asChild className="gradient-bg text-white hover:shadow-lg hover:shadow-brand-primary/30 transition-all duration-200">
-              <Link href="/projects">View My Work <ExternalLink className="ml-2 h-4 w-4" /></Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/cv">Download CV <Download className="ml-2 h-4 w-4" /></Link>
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button size="lg" asChild className="gradient-bg text-white hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
+                <Link href="/projects">View My Work <ExternalLink className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button size="lg" variant="outline" asChild className="hover:border-blue-500/40 hover:text-blue-400 transition-all duration-300">
+                <Link href="/cv">Download CV <Download className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </motion.div>
           </motion.div>
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.4 }}>
             <p className="text-sm text-text-muted mb-3">Let&apos;s connect</p>
             <div className="flex items-center gap-3">
-              {socialEntries.map(([key, url]) => {
+              {socialEntries.map(([key, url], i) => {
                 const Icon = iconMap[key] || Send
                 return (
-                  <a key={key} href={url as string} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center h-9 w-9 rounded-lg bg-white/5 text-text-secondary hover:bg-brand-primary/20 hover:text-brand-primary transition-all duration-200">
+                  <motion.a
+                    key={key}
+                    href={url as string}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + i * 0.08, type: 'spring', stiffness: 300, damping: 15 }}
+                    whileHover={{ scale: 1.15, y: -3 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/5 text-text-secondary hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200 shadow-md shadow-transparent hover:shadow-blue-500/10"
+                  >
                     <Icon className="h-4 w-4" />
-                  </a>
+                  </motion.a>
                 )
               })}
             </div>
@@ -92,29 +115,51 @@ export function HeroSection() {
         </div>
 
         <div className="relative flex justify-center items-center hidden md:flex">
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.2 }} className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-brand-accent/30 rounded-full blur-3xl scale-75 opacity-60" />
-            <div className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-dark-700 via-dark-600 to-dark-800 border-2 border-brand-primary/20 overflow-hidden flex items-center justify-center">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }} className="relative">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-0 bg-gradient-to-br from-blue-500/30 via-cyan-500/20 to-blue-600/30 rounded-full blur-3xl scale-75 opacity-60"
+            />
+            <motion.div
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-dark-700 via-dark-600 to-dark-800 border-2 border-blue-500/20 overflow-hidden flex items-center justify-center shadow-2xl shadow-blue-500/10"
+            >
               {settings.profilePhoto ? (
                 <img src={settings.profilePhoto} alt={settings.heroName || 'Profile'} className="w-full h-full object-cover" />
               ) : (
-                <div className="text-6xl font-bold text-brand-primary/30">HP</div>
+                <div className="text-6xl font-bold text-blue-500/30">HP</div>
               )}
-            </div>
+            </motion.div>
 
             {mounted && techBadges.map((badge, i) => (
-              <motion.div key={badge.name} initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, delay: badge.delay }} className="absolute" style={{ left: badge.x, top: badge.y }}>
+              <motion.div key={badge.name} initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: badge.delay, type: 'spring', stiffness: 300 }} className="absolute" style={{ left: badge.x, top: badge.y }}>
                 <div className="animate-float" style={{ animationDelay: `${i * 0.5}s` }}>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-white/10 bg-dark-800/90 backdrop-blur-sm shadow-lg">
+                  <motion.div
+                    whileHover={{ scale: 1.1, y: -3 }}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl border border-white/10 bg-dark-800/90 backdrop-blur-sm shadow-lg cursor-default"
+                  >
                     <span className={`h-7 w-7 rounded-lg ${badge.color} flex items-center justify-center text-xs font-bold`}>{badge.icon}</span>
                     <span className="text-sm font-medium text-text-primary whitespace-nowrap">{badge.name}</span>
-                  </div>
+                  </motion.div>
                 </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      >
+        <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
+          <ArrowDown className="h-5 w-5 text-text-muted" />
+        </motion.div>
+      </motion.div>
     </section>
   )
 }

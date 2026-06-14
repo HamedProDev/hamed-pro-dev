@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 10 10 15;
+    --background: 10 10 26;
     --foreground: 248 250 252;
   }
 
@@ -30,7 +30,7 @@
   }
 
   ::selection {
-    @apply bg-brand-primary/40 text-white; /* More prominent indigo */
+    @apply bg-blue-500/40 text-white;
   }
 
   ::-webkit-scrollbar {
@@ -43,25 +43,25 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-brand-primary/50 rounded-full; /* Branded scrollbar */
+    @apply bg-blue-500/50 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-brand-primary/70;
+    @apply bg-blue-500/70;
   }
 }
 
 @layer components {
   .card-hover {
-    @apply transition-all duration-200 hover:border-brand-primary/40 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand-primary/20; /* Card hover lift + glow */
+    @apply transition-all duration-200 hover:border-blue-500/40 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/20;
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-accent bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-500 via-blue-400 to-cyan-400 bg-clip-text text-transparent;
   }
 
   .gradient-bg {
-    @apply bg-gradient-to-r from-brand-primary to-brand-secondary;
+    @apply bg-gradient-to-r from-blue-600 to-blue-500;
   }
 
   .glass {
