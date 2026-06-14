@@ -91,15 +91,16 @@ export default function ProjectsPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((p, i) => (
-              <motion.div key={p._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                  <motion.div key={p._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                    <Link href={`/projects/${p.slug}`} className="block h-full">
                 <Card className="h-full card-hover group overflow-hidden">
                   <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', gradients[i % gradients.length])}>
                     {p.coverImage ? (
                       <img src={p.coverImage} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
-                      <div className="absolute inset-4 rounded-lg bg-dark-900/40 border border-border-primary p-3">
-                        <div className="h-2 w-16 bg-surface-tertiary rounded mb-2" />
-                        <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-surface-tertiary/50 rounded" /><div className="h-10 bg-surface-tertiary/50 rounded" /></div>
+                      <div className="absolute inset-4 rounded-lg bg-dark-900/20 border border-border-primary p-3">
+                        <div className="h-2 w-16 bg-surface-tertiary/60 rounded mb-2" />
+                        <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-surface-tertiary/30 rounded" /><div className="h-10 bg-surface-tertiary/30 rounded" /></div>
                       </div>
                     )}
                     {p.featured && <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs z-10">Featured</Badge>}
@@ -117,8 +118,9 @@ export default function ProjectsPage() {
                       <ArrowRight className="h-4 w-4 text-text-muted ml-auto group-hover:text-brand-primary group-hover:translate-x-1 transition-all" />
                     </div>
                   </CardContent>
-                </Card>
-              </motion.div>
+                  </Card>
+                    </Link>
+                </motion.div>
             ))}
           </div>
         )}

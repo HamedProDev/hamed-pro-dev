@@ -33,7 +33,13 @@ const reasons = [
 
 export default function ContactPage() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
-  const [form, setForm] = useState({ name: '', email: '', subject: '', reason: '', message: '' })
+  const [form, setForm] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      return { name: '', email: '', subject: params.get('subject') || '', reason: params.get('reason') || '', message: params.get('message') || '' }
+    }
+    return { name: '', email: '', subject: '', reason: '', message: '' }
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

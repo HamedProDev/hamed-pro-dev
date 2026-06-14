@@ -72,7 +72,7 @@ export function FeaturedProjects() {
                   ) : (
                     <>
                       <motion.div
-                        className="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent"
+                        className="absolute inset-0 bg-gradient-to-t from-dark-900/40 to-transparent"
                         initial={{ opacity: 0 }}
                         whileHover={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}

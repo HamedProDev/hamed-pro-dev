@@ -147,6 +147,7 @@ export default function CoursesPage() {
               <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filtered.map((c, i) => (
                   <motion.div key={c._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                    <Link href={`/courses/${c.slug}`} className="block h-full">
                     <Card className="h-full card-hover group overflow-hidden">
                       <div className="h-40 rounded-t-xl bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-surface-secondary relative flex items-center justify-center overflow-hidden">
                         {c.coverImage ? (
@@ -180,6 +181,7 @@ export default function CoursesPage() {
                         </div>
                       </CardContent>
                     </Card>
+                    </Link>
                   </motion.div>
                 ))}
               </div>

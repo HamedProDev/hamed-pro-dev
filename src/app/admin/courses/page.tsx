@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Plus, Pencil, Trash2, Eye, Star } from 'lucide-react'
+import { Plus, Pencil, Trash2, Eye, Star, BookOpen } from 'lucide-react'
 
 interface Course {
   _id: string; title: string; category: string; level: string; enrolled: number; rating: number; type: string; price: number
@@ -50,7 +50,8 @@ export default function AdminCoursesPage() {
                   <td className="px-4 py-3 text-amber-500 flex items-center gap-1"><Star className="h-3 w-3 fill-current" /> {c.rating}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin/courses/${c._id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
+                      <Link href={`/admin/courses/${c._id}/lessons`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors" title="Manage Lessons"><BookOpen className="h-4 w-4" /></Link>
+                      <Link href={`/admin/courses/${c._id}/edit`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
                       <button onClick={() => handleDelete(c._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>

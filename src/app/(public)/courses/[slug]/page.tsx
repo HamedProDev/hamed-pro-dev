@@ -61,7 +61,11 @@ export default function CourseDetailPage() {
             <ul className="space-y-2">{course.prerequisites.map((p: string, i: number) => <li key={i} className="text-sm text-text-secondary">• {p}</li>)}</ul>
           </CardContent></Card>
         )}
-        <Button asChild className="gradient-bg text-white"><Link href="/contact">Enroll Now</Link></Button>
+        {course.type === 'premium' ? (
+          <Button asChild className="gradient-bg text-white"><Link href={`/contact?subject=I%20want%20to%20enroll%20in%20${encodeURIComponent(course.title)}&message=I%27m%20interested%20in%20the%20premium%20course%3A%20${encodeURIComponent(course.title)}.%20Please%20send%20me%20details%20about%20pricing%20and%20enrollment.`}>Contact for Enrollment</Link></Button>
+        ) : (
+          <Button asChild className="gradient-bg text-white"><Link href="/contact">Enroll Now</Link></Button>
+        )}
       </div>
     </div>
   )

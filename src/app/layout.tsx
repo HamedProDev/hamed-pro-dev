@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     images: ['/og/default.png'],
   },
   robots: { index: true, follow: true },
-  icons: { icon: '/favicon.ico' },
+  icons: { icon: '/favicon.ico', shortcut: '/favicon.png', apple: '/apple-touch-icon.png' },
 }
 
 export const viewport: Viewport = {

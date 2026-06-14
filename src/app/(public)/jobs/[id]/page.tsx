@@ -65,7 +65,7 @@ export default function JobDetailPage() {
           {job.applicationUrl ? (
             <Button className="gradient-bg text-white" asChild><a href={job.applicationUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4 mr-2" /> Apply Now</a></Button>
           ) : (
-            <Button className="gradient-bg text-white" asChild><Link href="/contact">Apply Now</Link></Button>
+            <Button className="gradient-bg text-white" asChild><Link href={`/contact?subject=Job%20Application%3A%20${encodeURIComponent(job.title)}&message=I%27m%20applying%20for%20the%20${encodeURIComponent(job.title)}%20position%20at%20${encodeURIComponent(job.company)}.`}>Apply Now</Link></Button>
           )}
         </div>
       </div>
