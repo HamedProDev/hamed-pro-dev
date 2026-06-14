@@ -1,15 +1,24 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Star } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 
-const testimonials = [
+const fallbackTestimonials = [
   { name: 'Jean Claude', role: 'CTO', company: 'AgriTech Rwanda', content: 'Hamed delivered exceptional work. Outstanding fullstack skills and great communication.', rating: 5 },
   { name: 'Sarah Uwase', role: 'CEO', company: 'Kwanda Facility', content: 'Transformed our business with a powerful system. Highly recommended!', rating: 5 },
   { name: 'David N.', role: 'Founder', company: 'HealthPlus', content: 'Top-notch technical expertise and professionalism. A pleasure to work with!', rating: 5 },
 ]
 
 export function Testimonials() {
+  const [testimonials, setTestimonials] = useState(fallbackTestimonials)
+  useEffect(() => {
+    fetch('/api/testimonials')
+      .then(r => r.json())
+      .then(d => { if (d.success && d.data.length > 0) setTestimonials(d.data) })
+      .catch(() => {})
+  }, [])
+
   return (
     <section className="section-padding">
       <div className="container-wide text-center">

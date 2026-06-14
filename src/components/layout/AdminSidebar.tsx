@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils/cn'
 import {
   LayoutDashboard, GraduationCap, Briefcase,
   Users, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight,
-  Zap, Trophy, Building2, LogOut
+  Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAdminAuth } from '@/components/admin/AdminGate'
@@ -18,6 +18,8 @@ const links = [
   { href: '/admin/skills', label: 'Skills', icon: Zap },
   { href: '/admin/achievements', label: 'Achievements', icon: Trophy },
   { href: '/admin/organizations', label: 'Organizations', icon: Building2 },
+  { href: '/admin/stats', label: 'Stats', icon: BarChart3 },
+  { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquare },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/seo', label: 'SEO', icon: Search },
   { href: '/admin/about', label: 'About Page', icon: UserCircle },

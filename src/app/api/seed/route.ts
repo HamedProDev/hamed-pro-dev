@@ -7,6 +7,8 @@ import { Job } from '@/lib/db/models/Job'
 import { SiteSettings } from '@/lib/db/models/SiteSettings'
 import Skill from '@/lib/db/models/Skill'
 import Achievement from '@/lib/db/models/Achievement'
+import SiteStats from '@/lib/db/models/SiteStats'
+import Testimonial from '@/lib/db/models/Testimonial'
 import bcrypt from 'bcryptjs'
 
 export async function GET() {
@@ -160,6 +162,32 @@ export async function GET() {
       results.push('8 achievements seeded')
     } else {
       results.push(`${achievementCount} achievements exist`)
+    }
+
+    const siteStatsCount = await SiteStats.countDocuments()
+    if (siteStatsCount === 0) {
+      await SiteStats.insertMany([
+        { label: 'Projects Completed', value: 30, suffix: '+', icon: 'FolderOpen', order: 1 },
+        { label: 'GitHub Stars', value: 150, suffix: '+', icon: 'Star', order: 2 },
+        { label: 'Courses Created', value: 10, suffix: '', icon: 'BookOpen', order: 3 },
+        { label: 'Years Experience', value: 5, suffix: '', icon: 'Calendar', order: 4 },
+        { label: 'Client Satisfaction', value: 100, suffix: '%', icon: 'ThumbsUp', order: 5 },
+      ])
+      results.push('5 site stats seeded')
+    } else {
+      results.push(`${siteStatsCount} site stats exist`)
+    }
+
+    const testimonialCount = await Testimonial.countDocuments()
+    if (testimonialCount === 0) {
+      await Testimonial.insertMany([
+        { name: 'Jean Claude', role: 'CTO', company: 'AgriTech Rwanda', content: 'Hamed delivered exceptional work on our FarmConnect platform. His fullstack skills and attention to detail are outstanding. Great communication throughout the project.', rating: 5, order: 1, featured: true },
+        { name: 'Sarah Uwase', role: 'CEO', company: 'Kwanda Facility', content: 'Hamed transformed our business operations with the Kwanda EMS system. His ability to understand complex requirements and deliver elegant solutions is remarkable.', rating: 5, order: 2, featured: true },
+        { name: 'David N.', role: 'Founder', company: 'HealthPlus', content: 'Working with Hamed was a pleasure. His technical expertise in AI/ML and fullstack development helped us build a health screening tool that reaches thousands.', rating: 5, order: 3, featured: true },
+      ])
+      results.push('3 testimonials seeded')
+    } else {
+      results.push(`${testimonialCount} testimonials exist`)
     }
 
     return NextResponse.json({ success: true, data: { results, loginUrl: '/login', credentials: { email: adminEmail, password: '@He00Ri#Ga4Da' } } })

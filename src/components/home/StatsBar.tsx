@@ -1,8 +1,12 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FolderOpen, Star, BookOpen, Calendar, ThumbsUp } from 'lucide-react'
+import { FolderOpen, Star, BookOpen, Calendar, ThumbsUp, Users, Code, Rocket, Award, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
+
+const iconMap: Record<string, any> = {
+  FolderOpen, Star, BookOpen, Calendar, ThumbsUp, Users, Code, Rocket, Award, Globe,
+}
 
 const iconColors = [
   { color: 'text-blue-500', bg: 'bg-blue-500/10' },
@@ -10,6 +14,17 @@ const iconColors = [
   { color: 'text-green-500', bg: 'bg-green-500/10' },
   { color: 'text-purple-500', bg: 'bg-purple-500/10' },
   { color: 'text-blue-400', bg: 'bg-blue-400/10' },
+  { color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
+  { color: 'text-pink-500', bg: 'bg-pink-500/10' },
+  { color: 'text-orange-500', bg: 'bg-orange-500/10' },
+]
+
+const fallbackStats = [
+  { icon: 'FolderOpen', value: 30, label: 'Projects Completed', suffix: '+' },
+  { icon: 'Star', value: 150, label: 'GitHub Stars', suffix: '+' },
+  { icon: 'BookOpen', value: 10, label: 'Courses Created', suffix: '' },
+  { icon: 'Calendar', value: 5, label: 'Years Experience', suffix: '' },
+  { icon: 'ThumbsUp', value: 100, label: 'Client Satisfaction', suffix: '%' },
 ]
 
 function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
@@ -30,42 +45,47 @@ function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string
 }
 
 export function StatsBar() {
-  const stats = [
-    { icon: <FolderOpen className="h-5 w-5" />, value: 30, label: 'Projects Completed', suffix: '+' },
-    { icon: <Star className="h-5 w-5" />, value: 150, label: 'GitHub Stars', suffix: '+' },
-    { icon: <BookOpen className="h-5 w-5" />, value: 10, label: 'Courses Created' },
-    { icon: <Calendar className="h-5 w-5" />, value: 5, label: 'Years Experience' },
-    { icon: <ThumbsUp className="h-5 w-5" />, value: 100, label: 'Client Satisfaction', suffix: '%' },
-  ]
+  const [stats, setStats] = useState(fallbackStats)
+  useEffect(() => {
+    fetch('/api/stats')
+      .then(r => r.json())
+      .then(d => { if (d.success && d.data.length > 0) setStats(d.data) })
+      .catch(() => {})
+  }, [])
+
   return (
     <section className="py-12 border-y border-border-primary bg-surface-secondary/30">
       <div className="container-wide">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-              whileHover={{ y: -4, scale: 1.05 }}
-              className="text-center cursor-default"
-            >
+          {stats.map((stat, i) => {
+            const IconComp = iconMap[stat.icon] || FolderOpen
+            const colorSet = iconColors[i % iconColors.length]
+            return (
               <motion.div
-                whileHover={{ rotate: 10, scale: 1.1 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-                className={cn(
-                  "inline-flex items-center justify-center h-12 w-12 rounded-xl mb-3 transition-shadow duration-300",
-                  iconColors[i].bg,
-                  iconColors[i].color
-                )}
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                whileHover={{ y: -4, scale: 1.05 }}
+                className="text-center cursor-default"
               >
-                {stat.icon}
+                <motion.div
+                  whileHover={{ rotate: 10, scale: 1.1 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                  className={cn(
+                    "inline-flex items-center justify-center h-12 w-12 rounded-xl mb-3 transition-shadow duration-300",
+                    colorSet.bg,
+                    colorSet.color
+                  )}
+                >
+                  <IconComp className="h-5 w-5" />
+                </motion.div>
+                <div className="text-2xl md:text-3xl font-bold text-text-primary"><AnimatedNumber value={stat.value} suffix={stat.suffix} /></div>
+                <div className="text-xs text-text-secondary mt-1">{stat.label}</div>
               </motion.div>
-              <div className="text-2xl md:text-3xl font-bold text-text-primary"><AnimatedNumber value={stat.value} suffix={stat.suffix} /></div>
-              <div className="text-xs text-text-secondary mt-1">{stat.label}</div>
-            </motion.div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
