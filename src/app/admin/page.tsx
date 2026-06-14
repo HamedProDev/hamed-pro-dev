@@ -1,57 +1,116 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { FolderOpen, GraduationCap, Briefcase, Users, FileText, Settings } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { FolderOpen, GraduationCap, Briefcase, Users, FileText, Settings, Zap, Trophy, TrendingUp, Eye } from 'lucide-react'
+
+interface Stats {
+  projects: number
+  courses: number
+  jobs: number
+  users: number
+  skills: number
+  achievements: number
+  blog: number
+}
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ projects: 0, courses: 0, jobs: 0, users: 0 })
+  const [stats, setStats] = useState<Stats>({ projects: 0, courses: 0, jobs: 0, users: 0, skills: 0, achievements: 0, blog: 0 })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/projects?limit=1').then(r => r.json()),
-      fetch('/api/courses?limit=1').then(r => r.json()),
-      fetch('/api/jobs?limit=1').then(r => r.json()),
-    ]).then(([p, c, j]) => {
+      fetch('/api/projects').then(r => r.json()),
+      fetch('/api/courses').then(r => r.json()),
+      fetch('/api/jobs').then(r => r.json()),
+      fetch('/api/skills').then(r => r.json()),
+      fetch('/api/achievements').then(r => r.json()),
+      fetch('/api/blog').then(r => r.json()),
+      fetch('/api/users').then(r => r.json()),
+    ]).then(([p, c, j, s, a, b, u]) => {
       setStats({
-        projects: p.pagination?.total || p.data?.length || 0,
-        courses: c.pagination?.total || c.data?.length || 0,
-        jobs: j.pagination?.total || j.data?.length || 0,
-        users: 0,
+        projects: p.data?.length || 0,
+        courses: c.data?.length || 0,
+        jobs: j.data?.length || 0,
+        skills: s.data?.length || 0,
+        achievements: a.data?.length || 0,
+        blog: b.data?.length || 0,
+        users: u.data?.length || 0,
       })
-    }).catch(() => {})
+      setLoading(false)
+    }).catch(() => setLoading(false))
   }, [])
 
   const cards = [
     { label: 'Projects', value: stats.projects, icon: FolderOpen, href: '/admin/projects', color: 'text-blue-500', bg: 'bg-blue-500/10' },
     { label: 'Courses', value: stats.courses, icon: GraduationCap, href: '/admin/courses', color: 'text-green-500', bg: 'bg-green-500/10' },
     { label: 'Jobs', value: stats.jobs, icon: Briefcase, href: '/admin/jobs', color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { label: 'Skills', value: stats.skills, icon: Zap, href: '/admin/skills', color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
+    { label: 'Achievements', value: stats.achievements, icon: Trophy, href: '/admin/achievements', color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { label: 'Blog Posts', value: stats.blog, icon: FileText, href: '/admin/blog', color: 'text-pink-500', bg: 'bg-pink-500/10' },
+    { label: 'Users', value: stats.users, icon: Users, href: '/admin/users', color: 'text-orange-500', bg: 'bg-orange-500/10' },
+    { label: 'Settings', value: null, icon: Settings, href: '/admin/settings', color: 'text-gray-500', bg: 'bg-gray-500/10' },
+  ]
+
+  const quickActions = [
+    { label: 'New Project', href: '/admin/projects/new' },
+    { label: 'New Course', href: '/admin/courses/new' },
+    { label: 'New Job', href: '/admin/jobs/new' },
+    { label: 'New Skill', href: '/admin/skills/new' },
+    { label: 'New Achievement', href: '/admin/achievements/new' },
+    { label: 'New Blog Post', href: '/admin/blog/new' },
+    { label: 'Site Settings', href: '/admin/settings' },
   ]
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-        {cards.map(s => (
-          <Link key={s.label} href={s.href} className="rounded-xl border border-white/5 bg-dark-700 p-4 text-center hover:bg-dark-600 transition-colors">
-            <s.icon className={`h-6 w-6 mx-auto mb-2 ${s.color}`} />
-            <p className="text-2xl font-bold text-brand-primary">{s.value}</p>
-            <p className="text-sm text-text-secondary">{s.label}</p>
-          </Link>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-text-primary mb-1">Admin Dashboard</h1>
+        <p className="text-text-muted">Manage your entire platform from here</p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {cards.map((s, i) => (
+          <motion.div
+            key={s.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+          >
+            <Link href={s.href} className="block admin-card hover:shadow-lg transition-all duration-200 group">
+              <s.icon className={`h-5 w-5 mb-2 ${s.color} group-hover:scale-110 transition-transform`} />
+              <p className="text-2xl font-bold text-text-primary">{loading ? '...' : s.value ?? '—'}</p>
+              <p className="text-sm text-text-muted">{s.label}</p>
+            </Link>
+          </motion.div>
         ))}
       </div>
+
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="rounded-xl border border-white/5 bg-dark-700 p-6">
-          <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
+        <div className="admin-card">
+          <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-blue-500" />
+            Quick Actions
+          </h2>
           <div className="flex flex-wrap gap-2">
-            <Link href="/admin/projects/new" className="px-3 py-1.5 rounded-lg bg-brand-primary/10 text-brand-primary text-sm hover:bg-brand-primary/20 transition-colors">New Project</Link>
-            <Link href="/admin/courses/new" className="px-3 py-1.5 rounded-lg bg-brand-primary/10 text-brand-primary text-sm hover:bg-brand-primary/20 transition-colors">New Course</Link>
-            <Link href="/admin/jobs/new" className="px-3 py-1.5 rounded-lg bg-brand-primary/10 text-brand-primary text-sm hover:bg-brand-primary/20 transition-colors">New Job</Link>
-            <Link href="/admin/settings" className="px-3 py-1.5 rounded-lg bg-brand-primary/10 text-brand-primary text-sm hover:bg-brand-primary/20 transition-colors">Settings</Link>
+            {quickActions.map(a => (
+              <Link key={a.href} href={a.href} className="px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-sm hover:bg-blue-500/20 transition-colors">
+                {a.label}
+              </Link>
+            ))}
           </div>
         </div>
-        <div className="rounded-xl border border-white/5 bg-dark-700 p-6">
-          <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
-          <p className="text-sm text-text-muted">No recent activity.</p>
+        <div className="admin-card">
+          <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
+            <Eye className="h-5 w-5 text-green-500" />
+            Platform Overview
+          </h2>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between"><span className="text-text-muted">Total Content</span><span className="text-text-primary font-medium">{stats.projects + stats.courses + stats.blog + stats.skills + stats.achievements} items</span></div>
+            <div className="flex justify-between"><span className="text-text-muted">Total Users</span><span className="text-text-primary font-medium">{stats.users}</span></div>
+            <div className="flex justify-between"><span className="text-text-muted">Job Listings</span><span className="text-text-primary font-medium">{stats.jobs}</span></div>
+            <div className="flex justify-between"><span className="text-text-muted">Skills</span><span className="text-text-primary font-medium">{stats.skills}</span></div>
+          </div>
         </div>
       </div>
     </div>

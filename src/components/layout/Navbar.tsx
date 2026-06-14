@@ -31,7 +31,7 @@ export function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-dark-900/80 backdrop-blur-xl">
+      <header className="fixed top-0 z-50 w-full border-b border-border-primary bg-surface-primary/80 backdrop-blur-xl">
         <div className="container-wide flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
             <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
@@ -50,7 +50,7 @@ export function Navbar() {
                 className={cn(
                   'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                   pathname === link.href || pathname.startsWith(link.href + '/')
-                    ? 'text-blue-400 bg-blue-500/10'
+                    ? 'text-blue-500 bg-blue-500/10'
                     : 'text-text-secondary hover:text-text-primary'
                 )}
               >
@@ -60,27 +60,13 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <span className="hidden md:flex items-center gap-1 text-xs text-text-secondary mr-1">
-              EN
-            </span>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="hidden md:flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+              className="h-8 w-8 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-tertiary transition-all"
             >
-              {mounted ? (
-                theme === 'dark' ? (
-                  <Sun className="h-4 w-4" />
-                ) : (
-                  <Moon className="h-4 w-4" />
-                )
-              ) : (
-                <div className="h-4 w-4" />
-              )}
+              {mounted ? (theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />) : <div className="h-4 w-4" />}
             </button>
-            <Button
-              asChild
-              className="hidden md:flex bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200"
-            >
+            <Button asChild className="hidden md:flex gradient-bg text-white hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200">
               <Link href="/hire">Hire Me</Link>
             </Button>
             <div className="hidden md:block ml-1">

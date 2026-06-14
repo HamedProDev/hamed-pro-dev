@@ -83,7 +83,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-white/5 bg-dark-900">
+    <footer className="border-t border-border-primary bg-surface-secondary">
       <div className="container-wide py-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">
@@ -101,7 +101,7 @@ export function Footer() {
             <p className="text-sm text-text-secondary mb-3">
               Building innovative solutions from {settings.location || 'Kigali, Rwanda'}.
             </p>
-            <div className="inline-flex items-center gap-1.5 text-xs text-green-400 mb-4">
+            <div className="inline-flex items-center gap-1.5 text-xs text-green-500 mb-4">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
@@ -147,7 +147,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-text-secondary hover:text-blue-400 transition-all duration-200 hover:translate-x-1 inline-block"
+                      className="text-sm text-text-secondary hover:text-blue-500 transition-all duration-200 hover:translate-x-1 inline-block"
                     >
                       {link.label}
                     </Link>
@@ -170,7 +170,7 @@ export function Footer() {
                 <p className="text-xs text-text-muted">UTC +2</p>
               </div>
             </div>
-            <div className="h-20 rounded-lg bg-dark-700 border border-white/5 overflow-hidden relative">
+            <div className="h-20 rounded-lg bg-surface-tertiary border border-border-primary overflow-hidden relative">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
               </div>
@@ -186,7 +186,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 pt-8 border-t border-border-primary flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-text-muted">
             &copy; {new Date().getFullYear()} {settings.siteName || 'HamedProDev'}. All rights
             reserved.

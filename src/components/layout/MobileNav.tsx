@@ -31,9 +31,9 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-[280px] p-0">
-        <SheetHeader className="border-b border-white/5 p-4">
-          <SheetTitle>Navigation</SheetTitle>
+      <SheetContent side="right" className="w-[280px] p-0 bg-surface-primary">
+        <SheetHeader className="border-b border-border-primary p-4">
+          <SheetTitle className="text-text-primary">Navigation</SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col p-4 gap-1">
           {navLinks.map(link => (
@@ -44,62 +44,39 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               className={cn(
                 'px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                 pathname === link.href
-                  ? 'text-blue-400 bg-blue-500/10'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-dark-600'
+                  ? 'text-blue-500 bg-blue-500/10'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary'
               )}
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <div className="border-t border-white/5 p-4 mt-auto">
+        <div className="border-t border-border-primary p-4 mt-auto">
           {isAuthenticated ? (
             <div className="space-y-2">
-              <Link
-                href="/dashboard"
-                onClick={onClose}
-                className="block px-4 py-3 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-dark-600"
-              >
+              <Link href="/dashboard" onClick={onClose} className="block px-4 py-3 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-tertiary">
                 Dashboard
               </Link>
-              <Link
-                href="/my-courses"
-                onClick={onClose}
-                className="block px-4 py-3 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-dark-600"
-              >
+              <Link href="/my-courses" onClick={onClose} className="block px-4 py-3 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-tertiary">
                 My Courses
               </Link>
               {user?.role === 'admin' && (
-                <Link
-                  href="/admin"
-                  onClick={onClose}
-                  className="block px-4 py-3 rounded-lg text-sm font-medium text-blue-400 hover:bg-blue-500/10"
-                >
+                <Link href="/admin" onClick={onClose} className="block px-4 py-3 rounded-lg text-sm font-medium text-blue-500 hover:bg-blue-500/10">
                   Admin Panel
                 </Link>
               )}
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() => {
-                  signOut({ callbackUrl: '/' })
-                  onClose()
-                }}
-              >
+              <Button variant="ghost" className="w-full justify-start" onClick={() => { signOut({ callbackUrl: '/' }); onClose() }}>
                 Sign Out
               </Button>
             </div>
           ) : (
             <div className="space-y-2">
-              <Button asChild className="w-full bg-blue-600 text-white hover:bg-blue-700">
-                <Link href="/register" onClick={onClose}>
-                  <UserPlus className="h-4 w-4 mr-2" /> Sign Up
-                </Link>
+              <Button asChild className="w-full gradient-bg text-white">
+                <Link href="/register" onClick={onClose}><UserPlus className="h-4 w-4 mr-2" /> Sign Up</Link>
               </Button>
               <Button asChild variant="outline" className="w-full">
-                <Link href="/login" onClick={onClose}>
-                  <LogIn className="h-4 w-4 mr-2" /> Sign In
-                </Link>
+                <Link href="/login" onClick={onClose}><LogIn className="h-4 w-4 mr-2" /> Sign In</Link>
               </Button>
             </div>
           )}

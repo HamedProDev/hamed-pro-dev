@@ -63,7 +63,7 @@ export default function AdminSettingsPage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-brand-primary" /></div>
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
 
   return (
     <div className="max-w-4xl space-y-6">

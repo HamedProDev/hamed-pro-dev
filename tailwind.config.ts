@@ -23,9 +23,15 @@ const config: Config = {
           500: '#252560',
         },
         text: {
-          primary: '#f8fafc',
-          secondary: '#94a3b8',
-          muted: '#64748b',
+          primary: 'var(--text-heading)',
+          secondary: 'var(--text-body)',
+          muted: 'var(--text-muted)',
+        },
+        surface: {
+          primary: 'var(--bg-primary)',
+          secondary: 'var(--bg-secondary)',
+          tertiary: 'var(--bg-tertiary)',
+          card: 'var(--bg-card)',
         },
       },
       fontFamily: {

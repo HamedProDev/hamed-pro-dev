@@ -6,9 +6,10 @@ import { cn } from '@/lib/utils/cn'
 import {
   LayoutDashboard, FolderOpen, GraduationCap, FileText, Briefcase,
   Users, Image, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight,
-  Zap, Trophy
+  Zap, Trophy, LogOut
 } from 'lucide-react'
 import { useState } from 'react'
+import { useAdminAuth } from '@/components/admin/AdminGate'
 
 const links = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -19,7 +20,6 @@ const links = [
   { href: '/admin/skills', label: 'Skills', icon: Zap },
   { href: '/admin/achievements', label: 'Achievements', icon: Trophy },
   { href: '/admin/users', label: 'Users', icon: Users },
-  { href: '/admin/media', label: 'Media', icon: Image },
   { href: '/admin/seo', label: 'SEO', icon: Search },
   { href: '/admin/about', label: 'About Page', icon: UserCircle },
   { href: '/admin/email', label: 'Email', icon: Mail },
@@ -29,9 +29,10 @@ const links = [
 export function AdminSidebar() {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
+  const { lock } = useAdminAuth()
 
   return (
-    <aside className={cn('sticky top-16 h-[calc(100vh-4rem)] border-r border-dark-500 bg-dark-800 transition-all', collapsed ? 'w-16' : 'w-60')}>
+    <aside className={cn('sticky top-16 h-[calc(100vh-4rem)] border-r border-border-primary bg-surface-secondary transition-all', collapsed ? 'w-16' : 'w-60')}>
       <nav className="flex flex-col p-2 gap-1">
         {links.map(link => {
           const active = pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href))
@@ -41,7 +42,7 @@ export function AdminSidebar() {
               href={link.href}
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                active ? 'bg-blue-500/10 text-blue-400' : 'text-text-secondary hover:bg-dark-700 hover:text-text-primary',
+                active ? 'bg-blue-500/10 text-blue-500' : 'text-text-secondary hover:bg-surface-tertiary hover:text-text-primary',
                 collapsed && 'justify-center px-2'
               )}
               title={collapsed ? link.label : undefined}
@@ -52,6 +53,19 @@ export function AdminSidebar() {
           )
         })}
       </nav>
+      <div className="absolute bottom-12 left-0 w-full px-2">
+        <button
+          onClick={lock}
+          className={cn(
+            'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium w-full text-text-secondary hover:bg-red-500/10 hover:text-red-400 transition-colors',
+            collapsed && 'justify-center px-2'
+          )}
+          title={collapsed ? 'Lock Admin' : undefined}
+        >
+          <LogOut className="h-5 w-5 shrink-0" />
+          {!collapsed && <span>Lock Admin</span>}
+        </button>
+      </div>
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="absolute bottom-4 left-1/2 -translate-x-1/2 text-text-muted hover:text-text-primary"

@@ -88,7 +88,7 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
         <div className="flex flex-col items-center gap-2"><Loader2 className="h-8 w-8 animate-spin text-brand-primary" /><p className="text-sm text-text-muted">Uploading...</p></div>
       ) : (
         <div className="flex flex-col items-center gap-2">
-          <div className="h-12 w-12 rounded-xl bg-dark-600 flex items-center justify-center"><Upload className="h-5 w-5 text-text-muted" /></div>
+          <div className="h-12 w-12 rounded-xl bg-surface-tertiary flex items-center justify-center"><Upload className="h-5 w-5 text-text-muted" /></div>
           <p className="text-sm text-text-secondary">Click or drag to upload image</p>
           <p className="text-xs text-text-muted">PNG, JPG up to 5MB</p>
         </div>
