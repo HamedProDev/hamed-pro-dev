@@ -1,15 +1,58 @@
-import type { Metadata } from 'next'
+'use client'
+import { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
+import Link from 'next/link'
+import { ArrowLeft, ExternalLink, Github, Loader2, MapPin, Calendar, Tag } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  return { title: params.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }
-}
+export default function ProjectDetailPage() {
+  const params = useParams()
+  const slug = params?.slug as string
+  const [project, setProject] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
-export default function ProjectDetailPage({ params }: { params: { slug: string } }) {
+  useEffect(() => {
+    fetch('/api/projects').then(r => r.json()).then(d => {
+      if (d.success) {
+        const found = d.data.find((p: any) => p.slug === slug || p._id === slug)
+        if (found) setProject(found)
+      }
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [slug])
+
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+
+  if (!project) return (
+    <div className="section-padding text-center">
+      <h1 className="text-4xl font-bold mb-4">Project Not Found</h1>
+      <Button asChild><Link href="/projects">Back to Projects</Link></Button>
+    </div>
+  )
+
   return (
-    <div className="section-padding">
+    <div className="section-padding pt-24">
       <div className="container-wide max-w-4xl">
-        <h1 className="text-4xl font-bold mb-4 capitalize">{params.slug.replace(/-/g, ' ')}</h1>
-        <p className="text-text-secondary">Project details will be loaded from MongoDB.</p>
+        <Link href="/projects" className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary mb-6"><ArrowLeft className="h-4 w-4" /> Back to Projects</Link>
+        {project.coverImage && <img src={project.coverImage} alt={project.title} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{project.category}</Badge>
+          {project.featured && <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Featured</Badge>}
+        </div>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">{project.title}</h1>
+        <p className="text-lg text-text-secondary mb-8">{project.description}</p>
+        {project.longDescription && <div className="prose prose-invert max-w-none mb-8"><p className="text-text-secondary leading-relaxed whitespace-pre-wrap">{project.longDescription}</p></div>}
+        {project.tags?.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-8">
+            {project.tags.map((t: string) => <Badge key={t} variant="outline" className="text-xs"><Tag className="h-3 w-3 mr-1" />{t}</Badge>)}
+          </div>
+        )}
+        <div className="flex gap-3">
+          {project.liveUrl && <Button asChild><a href={project.liveUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4 mr-2" /> Live Demo</a></Button>}
+          {project.githubUrl && <Button asChild variant="outline"><a href={project.githubUrl} target="_blank" rel="noopener noreferrer"><Github className="h-4 w-4 mr-2" /> Source Code</a></Button>}
+        </div>
       </div>
     </div>
   )
