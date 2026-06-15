@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils/cn'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 const categories = ['All', 'large', 'mini', 'school']
 
@@ -64,8 +66,10 @@ export default function ProjectsPage() {
   })
 
   return (
-    <div className="section-padding">
+    <main id="main-content" className="section-padding">
       <div className="container-wide">
+        <MetadataInjector title="Projects" description="Explore my portfolio of web applications, mobile apps, and AI/ML projects built by Hamed Hussein." url="/projects" />
+        <Breadcrumbs items={[{ label: 'Projects' }]} />
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2">Featured <span className="gradient-text">Projects</span></h1>
@@ -96,7 +100,7 @@ export default function ProjectsPage() {
                 <Card className="h-full card-hover group overflow-hidden">
                   <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', gradients[i % gradients.length])}>
                     {p.coverImage ? (
-                      <img src={p.coverImage} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                      <img src={p.coverImage} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
                       <div className="absolute inset-4 rounded-lg bg-dark-900/20 border border-border-primary p-3">
                         <div className="h-2 w-16 bg-surface-tertiary/60 rounded mb-2" />
@@ -132,6 +136,6 @@ export default function ProjectsPage() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   )
 }

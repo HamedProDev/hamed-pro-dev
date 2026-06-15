@@ -1,7 +1,12 @@
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
+
 export default function CVPage() {
   return (
-    <div className="section-padding">
+    <main id="main-content" className="section-padding">
       <div className="container-wide max-w-3xl">
+        <MetadataInjector title="Resume / CV" description="Hamed Hussein — Fullstack & AI/ML Engineer. Resume with experience, education, skills, and achievements." url="/cv" />
+        <Breadcrumbs items={[{ label: 'Resume / CV' }]} />
         <h1 className="text-4xl font-bold mb-2">Hamed Hussein</h1>
         <p className="text-brand-primary text-lg mb-1">Fullstack & AI/ML Engineer</p>
         <p className="text-text-secondary mb-8">Kigali, Rwanda • hello@hamedpro.rw • github.com/hamedProDev</p>
@@ -11,6 +16,6 @@ export default function CVPage() {
           <section><h2 className="text-xl font-bold border-b border-dark-500 pb-2 mb-4">Education</h2><p className="font-semibold">Computer Science</p><p className="text-sm text-text-secondary">University — Focus on AI/ML</p></section>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

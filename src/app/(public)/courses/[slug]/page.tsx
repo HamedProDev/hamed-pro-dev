@@ -2,10 +2,13 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, Clock, Users, Star, BookOpen, CheckCircle } from 'lucide-react'
+import { Loader2, Clock, Star, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
+import { CourseJsonLd } from '@/components/shared/JsonLd'
 
 export default function CourseDetailPage() {
   const params = useParams()
@@ -33,10 +36,12 @@ export default function CourseDetailPage() {
   )
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide max-w-4xl">
-        <Link href="/courses" className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary mb-6"><ArrowLeft className="h-4 w-4" /> Back to Courses</Link>
-        {course.coverImage && <img src={course.coverImage} alt={course.title} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        <MetadataInjector title={course.title} description={course.description} url={`/courses/${slug}`} />
+        <Breadcrumbs items={[{ label: 'Courses', href: '/courses' }, { label: course.title }]} />
+        <CourseJsonLd name={course.title} description={course.description} provider="Hamed Hussein" url={typeof window !== 'undefined' ? window.location.href : `/courses/${slug}`} />
+        {course.coverImage && <img src={course.coverImage} alt={`${course.title} course cover`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{course.category}</Badge>
           <Badge variant="outline">{course.level}</Badge>
@@ -67,6 +72,6 @@ export default function CourseDetailPage() {
           <Button asChild className="gradient-bg text-white"><Link href="/contact">Enroll Now</Link></Button>
         )}
       </div>
-    </div>
+    </main>
   )
 }

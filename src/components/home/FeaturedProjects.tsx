@@ -68,7 +68,7 @@ export function FeaturedProjects() {
                 <Card className="h-full group overflow-hidden border-border-primary hover:border-blue-500/30 transition-all duration-300">
                 <div className={cn('h-52 rounded-t-xl bg-gradient-to-br relative overflow-hidden', gradients[i % gradients.length])}>
                   {p.coverImage ? (
-                    <img src={p.coverImage} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={p.coverImage} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                   ) : (
                     <>
                       <motion.div

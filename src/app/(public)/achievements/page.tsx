@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ExternalLink, Download, Trophy, Award, Star, Milestone, BookOpen } from 'lucide-react'
 import { FadeIn, ScaleIn, PopupIn, GlowPulse } from '@/components/shared/Animations'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 interface Achievement {
   _id: string
@@ -54,8 +56,10 @@ export default function AchievementsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-primary py-20">
+    <main id="main-content" className="min-h-screen bg-surface-primary py-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <MetadataInjector title="Achievements" description="Milestones, awards, and recognitions along my journey as a developer." url="/achievements" />
+        <Breadcrumbs items={[{ label: 'Achievements' }]} />
         <FadeIn className="text-center mb-16">
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }}
@@ -206,6 +210,6 @@ export default function AchievementsPage() {
           </motion.div>
         </PopupIn>
       </div>
-    </div>
+    </main>
   )
 }

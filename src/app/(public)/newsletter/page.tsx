@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 export default function NewsletterPage() {
   const [email, setEmail] = useState('')
@@ -19,8 +21,10 @@ export default function NewsletterPage() {
   }
 
   return (
-    <div className="section-padding">
+    <main id="main-content" className="section-padding">
       <div className="container-wide max-w-2xl text-center">
+        <MetadataInjector title="Newsletter" description="Join 500+ developers getting weekly insights on web development, AI/ML, and tech opportunities in Rwanda." url="/newsletter" />
+        <Breadcrumbs items={[{ label: 'Newsletter' }]} />
         <h1 className="text-4xl font-bold mb-4">Newsletter</h1>
         <p className="text-text-secondary mb-8">Join 500+ developers getting weekly insights on web development, AI/ML, and tech opportunities in Rwanda.</p>
         {status === 'success' ? (
@@ -33,6 +37,6 @@ export default function NewsletterPage() {
           </form>
         )}
       </div>
-    </div>
+    </main>
   )
 }

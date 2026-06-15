@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils/cn'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 const categoryTabs = ['All Courses', 'Frontend', 'Backend', 'AI / ML', 'Mobile', 'DevOps']
 const levels = ['All Levels', 'beginner', 'intermediate', 'advanced']
@@ -59,8 +61,10 @@ export default function CoursesPage() {
   })
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide">
+        <MetadataInjector title="Courses" description="Practical project-based courses for developers to master in-demand skills. Free and premium courses on React, Next.js, AI/ML, and more." url="/courses" />
+        <Breadcrumbs items={[{ label: 'Courses' }]} />
         <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
           <div>
             <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">🚀 Level up your skills</Badge>
@@ -151,7 +155,7 @@ export default function CoursesPage() {
                     <Card className="h-full card-hover group overflow-hidden">
                       <div className="h-40 rounded-t-xl bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-surface-secondary relative flex items-center justify-center overflow-hidden">
                         {c.coverImage ? (
-                          <img src={c.coverImage} alt={c.title} className="absolute inset-0 w-full h-full object-cover" />
+                          <img src={c.coverImage} alt={`${c.title} course cover`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                         ) : (
                           <span className="text-5xl opacity-60">📚</span>
                         )}
@@ -206,6 +210,6 @@ export default function CoursesPage() {
           ))}
         </div>
       </div>
-    </div>
+    </main>
   )
 }

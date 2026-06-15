@@ -2,10 +2,13 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { ArrowLeft, Loader2, MapPin, Building2, Briefcase, ExternalLink, DollarSign } from 'lucide-react'
+import { Loader2, MapPin, Building2, Briefcase, ExternalLink, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
+import { JobPostingJsonLd } from '@/components/shared/JsonLd'
 
 export default function JobDetailPage() {
   const params = useParams()
@@ -33,9 +36,11 @@ export default function JobDetailPage() {
   const benefits = job.niceToHave || job.benefits || []
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide max-w-4xl">
-        <Link href="/jobs" className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary mb-6"><ArrowLeft className="h-4 w-4" /> Back to Jobs</Link>
+        <MetadataInjector title={`${job.title} at ${job.company}`} description={job.description} url={`/jobs/${id}`} />
+        <Breadcrumbs items={[{ label: 'Jobs', href: '/jobs' }, { label: `${job.title} at ${job.company}` }]} />
+        <JobPostingJsonLd title={job.title} description={job.description} datePosted={job.createdAt} jobLocation={job.location} employmentType={job.type} salaryMin={job.salaryMin} salaryMax={job.salaryMax} currency={job.salaryCurrency} />
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{job.type}</Badge>
           <Badge variant="outline">{job.locationType}</Badge>
@@ -47,7 +52,7 @@ export default function JobDetailPage() {
           <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {job.location}</span>
           {salary && <span className="flex items-center gap-1 text-green-500 font-medium"><DollarSign className="h-4 w-4" /> {salary}</span>}
         </div>
-        {job.companyLogo && <img src={job.companyLogo} alt={job.company} className="h-16 rounded-lg mb-6" />}
+        {job.companyLogo && <img src={job.companyLogo} alt={`${job.company} logo`} loading="lazy" className="h-16 rounded-lg mb-6" />}
         <p className="text-lg text-text-secondary mb-8">{job.description}</p>
         {job.requirements?.length > 0 && (
           <Card className="mb-6"><CardContent className="p-6">
@@ -69,6 +74,6 @@ export default function JobDetailPage() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   )
 }

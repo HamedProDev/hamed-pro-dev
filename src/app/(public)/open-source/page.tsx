@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 import { generateSEOMetadata } from '@/lib/utils/seo'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 export const metadata: Metadata = generateSEOMetadata({ title: 'Open Source', description: 'My open source contributions, repositories, and projects.', url: '/open-source' })
 
 export default function OpenSourcePage() {
   return (
-    <div className="section-padding">
+    <main id="main-content" className="section-padding">
       <div className="container-wide">
+        <Breadcrumbs items={[{ label: 'Open Source' }]} />
         <h1 className="text-4xl font-bold mb-4">Open Source</h1>
         <p className="text-text-secondary mb-8">My contributions to the open source community.</p>
         <div className="grid md:grid-cols-2 gap-6">
@@ -18,6 +20,6 @@ export default function OpenSourcePage() {
           ))}
         </div>
       </div>
-    </div>
+    </main>
   )
 }

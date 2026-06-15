@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import type { Metadata } from 'next'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 const tools = [
   { id: 'regex', name: 'Regex Tester', description: 'Test regular expressions with real-time matching' },
@@ -107,8 +108,10 @@ export default function ToolsPage() {
   const [activeTool, setActiveTool] = useState('json')
   const ActiveComponent = toolComponents[activeTool]
   return (
-    <div className="section-padding">
+    <main id="main-content" className="section-padding">
       <div className="container-wide">
+        <MetadataInjector title="Developer Tools" description="Free browser-based developer tools — regex tester, JSON formatter, Base64 encoder, JWT decoder, color picker, cron builder, markdown previewer." url="/tools" />
+        <Breadcrumbs items={[{ label: 'Tools' }]} />
         <h1 className="text-4xl font-bold mb-4">Developer Tools</h1>
         <p className="text-text-secondary mb-8">Free browser-based tools for developers.</p>
         <div className="flex flex-wrap gap-2 mb-8">
@@ -122,6 +125,6 @@ export default function ToolsPage() {
           {ActiveComponent && <ActiveComponent />}
         </div>
       </div>
-    </div>
+    </main>
   )
 }

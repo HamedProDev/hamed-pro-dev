@@ -2,10 +2,11 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ExternalLink, Github, Loader2, MapPin, Calendar, Tag } from 'lucide-react'
+import { ExternalLink, Github, Loader2, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 export default function ProjectDetailPage() {
   const params = useParams()
@@ -44,10 +45,11 @@ export default function ProjectDetailPage() {
   const sourceUrl = project.sourceUrl || project.githubUrl || ''
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide max-w-4xl">
-        <Link href="/projects" className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary mb-6"><ArrowLeft className="h-4 w-4" /> Back to Projects</Link>
-        {project.coverImage && <img src={project.coverImage} alt={project.title} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        <MetadataInjector title={project.title} description={project.description} url={`/projects/${slug}`} />
+        <Breadcrumbs items={[{ label: 'Projects', href: '/projects' }, { label: project.title }]} />
+        {project.coverImage && <img src={project.coverImage} alt={`${project.title} project screenshot`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{project.category}</Badge>
           {project.featured && <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Featured</Badge>}
@@ -66,6 +68,6 @@ export default function ProjectDetailPage() {
           {sourceUrl && <Button asChild variant="outline"><a href={sourceUrl} target="_blank" rel="noopener noreferrer"><Github className="h-4 w-4 mr-2" /> Source Code</a></Button>}
         </div>
       </div>
-    </div>
+    </main>
   )
 }

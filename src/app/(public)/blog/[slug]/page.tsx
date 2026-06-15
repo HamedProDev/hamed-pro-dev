@@ -2,9 +2,12 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, Eye, Calendar } from 'lucide-react'
+import { Loader2, Eye, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
+import { BlogPostingJsonLd } from '@/components/shared/JsonLd'
 
 export default function BlogPostPage() {
   const params = useParams()
@@ -32,10 +35,12 @@ export default function BlogPostPage() {
   )
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide max-w-3xl">
-        <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary mb-6"><ArrowLeft className="h-4 w-4" /> Back to Blog</Link>
-        {post.coverImage && <img src={post.coverImage} alt={post.title} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        <MetadataInjector title={post.title} description={post.excerpt || post.description} image={post.coverImage} url={`/blog/${slug}`} />
+        <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
+        <BlogPostingJsonLd headline={post.title} description={post.excerpt || post.description} author="Hamed Hussein" datePublished={post.createdAt} image={post.coverImage} url={typeof window !== 'undefined' ? window.location.href : `/blog/${slug}`} />
+        {post.coverImage && <img src={post.coverImage} alt={`${post.title} blog cover`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
         <div className="flex items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{post.category}</Badge>
           <span className="flex items-center gap-1 text-xs text-text-muted"><Eye className="h-3 w-3" /> {post.views || 0}</span>
@@ -51,6 +56,6 @@ export default function BlogPostPage() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   )
 }

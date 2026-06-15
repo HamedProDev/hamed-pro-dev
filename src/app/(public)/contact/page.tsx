@@ -8,6 +8,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils/cn'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 const contactInfo = [
   { icon: Mail, label: 'Email', value: 'hamed@novasoft.rw', href: 'mailto:hamed@novasoft.rw', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
@@ -66,8 +68,10 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide">
+        <MetadataInjector title="Contact" description="Get in touch with Hamed Hussein for web development, AI/ML, consulting, or collaboration opportunities." url="/contact" />
+        <Breadcrumbs items={[{ label: 'Contact' }]} />
         <div className="text-center max-w-2xl mx-auto mb-12">
           <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">📬 Get in Touch</Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Let&apos;s Start a <span className="gradient-text">Conversation</span></h1>
@@ -169,6 +173,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

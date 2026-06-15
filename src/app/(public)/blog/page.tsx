@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { Eye, Loader2, Calendar } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 interface Post {
   _id: string
@@ -28,8 +30,10 @@ export default function BlogPage() {
   }, [])
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide">
+        <MetadataInjector title="Blog" description="Thoughts, tutorials, and insights on web development, AI/ML, and technology by Hamed Hussein." url="/blog" />
+        <Breadcrumbs items={[{ label: 'Blog' }]} />
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
           <p className="text-text-secondary text-lg">Thoughts, tutorials, and insights on development.</p>
@@ -43,7 +47,7 @@ export default function BlogPage() {
             {posts.map(p => (
               <Link key={p._id} href={`/blog/${p.slug || p._id}`}>
                 <Card className="card-hover h-full overflow-hidden">
-                  {p.coverImage && <img src={p.coverImage} alt={p.title} className="w-full h-48 object-cover" />}
+                  {p.coverImage && <img src={p.coverImage} alt={`${p.title} blog cover`} loading="lazy" className="w-full h-48 object-cover" />}
                   <CardContent className="p-5">
                     <Badge className="mb-2 text-xs">{p.category}</Badge>
                     <h3 className="text-lg font-semibold mb-2 line-clamp-2">{p.title}</h3>
@@ -59,6 +63,6 @@ export default function BlogPage() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   )
 }

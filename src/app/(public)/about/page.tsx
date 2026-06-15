@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils/cn'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
+import { PersonJsonLd } from '@/components/shared/JsonLd'
 
 const iconMap: Record<string, any> = {
   github: Github, twitter: Twitter, linkedin: Linkedin, youtube: Youtube,
@@ -60,9 +63,14 @@ export default function AboutPage() {
     { value: '10+', label: 'Technologies', icon: Award },
   ]
 
+  const socialUrls = activeSocials.map(([, url]) => url as string)
+
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide">
+        <MetadataInjector title="About Me" description={`About ${settings.heroName || 'Hamed Hussein'} — ${settings.heroTitle || 'Fullstack & AI/ML Engineer based in Kigali, Rwanda'}`} url="/about" />
+        <Breadcrumbs items={[{ label: 'About' }]} />
+        <PersonJsonLd name={settings.heroName || 'Hamed Hussein'} jobTitle={settings.heroTitle || 'Fullstack & AI/ML Engineer'} url={typeof window !== 'undefined' ? window.location.href : '/about'} image={settings.profilePhoto} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
         <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
           <div>
             <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">👋 About Me</Badge>
@@ -93,7 +101,7 @@ export default function AboutPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-secondary/10 to-transparent rounded-3xl blur-3xl" />
             <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-surface-card to-surface-secondary border border-border-primary flex items-center justify-center overflow-hidden">
               {settings.profilePhoto ? (
-                <img src={settings.profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+                  <img src={settings.profilePhoto} alt="Profile photo of Hamed Hussein" loading="lazy" className="w-full h-full object-cover" />
               ) : (
                 <div className="text-center">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">HH</div>
@@ -126,14 +134,14 @@ export default function AboutPage() {
         {activeTab === 'About' && (
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
-              <h3 className="text-xl font-semibold mb-4">My Journey</h3>
+              <h2 className="text-xl font-semibold mb-4">My Journey</h2>
               <div className="space-y-4 text-text-secondary">
                 <p>{settings.description || 'I started my programming journey in university, building simple websites and falling in love with the power of code. Over the past 5+ years, I\'ve evolved into a fullstack developer with expertise spanning frontend frameworks, backend systems, cloud infrastructure, and AI/ML.'}</p>
                 <p>Based in {settings.location || 'Kigali, Rwanda'}, I&apos;m passionate about building technology that solves real problems in Africa. From agricultural marketplaces to enterprise management systems, I focus on creating solutions that are both technically excellent and impactful.</p>
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4">Technical Skills</h3>
+              <h2 className="text-xl font-semibold mb-4">Technical Skills</h2>
               <div className="space-y-4">
                 {skills.map((s: any, i: number) => (
                   <div key={s.name}>
@@ -191,6 +199,6 @@ export default function AboutPage() {
           <Button asChild className="gradient-bg text-white shrink-0"><Link href="/contact">Start a Project <ArrowRight className="h-4 w-4 ml-1" /></Link></Button>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import { Providers } from '@/components/providers'
 import { Toaster } from 'sonner'
 import { ScrollToTop } from '@/components/shared/ScrollToTop'
+import { WebSiteJsonLd } from '@/components/shared/JsonLd'
 import './globals.css'
 
 export const dynamic = 'force-dynamic'
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
   keywords: ['Hamed Hussein', 'Fullstack Developer', 'AI/ML Engineer', 'Rwanda', 'Kigali', 'React', 'Next.js', 'Python', 'Kwanda Facility'],
   authors: [{ name: 'Hamed Hussein' }],
   creator: 'Hamed Hussein',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://hamedpro.rw'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.onrender.com'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -56,6 +57,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className={inter.variable}>
         <Providers>
+          <WebSiteJsonLd />
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-primary focus:text-white focus:rounded-lg">Skip to main content</a>
           {children}
           <Toaster position="bottom-right" theme="dark" richColors />
           <ScrollToTop />

@@ -1,80 +1,96 @@
-interface JsonLdProps {
-  data: Record<string, any>
+export function WebSiteJsonLd() {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.onrender.com'
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'HamedProDev',
+    url: baseUrl,
+    description: 'Personal developer ecosystem of Hamed Hussein — Fullstack & AI/ML Engineer',
+    author: { '@type': 'Person', name: 'Hamed Hussein' },
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
-export function JsonLd({ data }: JsonLdProps) {
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  )
-}
-
-export function PersonJsonLd({ profile }: { profile: any }) {
+export function PersonJsonLd({ name, jobTitle, url, image, sameAs }: {
+  name: string; jobTitle: string; url: string; image?: string; sameAs?: string[]
+}) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: profile.name,
-    jobTitle: profile.tagline,
-    url: 'https://hamedpro.rw',
-    image: profile.avatar,
-    email: profile.email,
-    address: { '@type': 'PostalAddress', addressLocality: 'Kigali', addressCountry: 'RW' },
-    sameAs: [profile.github, profile.linkedin, profile.twitter].filter(Boolean),
-    knowsAbout: profile.skills?.flatMap((s: any) => s.items?.map((i: any) => i.name) || []) || [],
+    name,
+    jobTitle,
+    url,
+    image,
+    sameAs,
   }
-  return <JsonLd data={schema} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
-export function ArticleJsonLd({ post }: { post: any }) {
+export function BlogPostingJsonLd({ headline, description, author, datePublished, image, url }: {
+  headline: string; description: string; author: string; datePublished: string; image?: string; url?: string
+}) {
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.excerpt,
-    image: post.coverImage,
-    datePublished: post.publishedAt,
-    dateModified: post.updatedAt,
-    author: { '@type': 'Person', name: 'Hamed Hussein', url: 'https://hamedpro.rw' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'HamedProDev',
-      logo: { '@type': 'ImageObject', url: 'https://hamedpro.rw/logo.png' },
-    },
+    '@type': 'BlogPosting',
+    headline,
+    description,
+    author: { '@type': 'Person', name: author },
+    datePublished,
+    image,
+    url,
   }
-  return <JsonLd data={schema} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
-export function CourseJsonLd({ course }: { course: any }) {
+export function CourseJsonLd({ name, description, provider, url }: {
+  name: string; description: string; provider: string; url: string
+}) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Course',
-    name: course.title,
-    description: course.description,
-    image: course.coverImage,
-    provider: { '@type': 'Organization', name: 'HamedProDev' },
-    offers: {
-      '@type': 'Offer',
-      price: course.price || 0,
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/OnlineOnly',
-    },
+    name,
+    description,
+    provider: { '@type': 'Person', name: provider },
+    url,
   }
-  return <JsonLd data={schema} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
-export function JobPostingJsonLd({ job }: { job: any }) {
-  const schema = {
+export function JobPostingJsonLd({ title, description, datePosted, jobLocation, employmentType, salaryMin, salaryMax, currency }: {
+  title: string; description: string; datePosted: string; jobLocation: string; employmentType?: string; salaryMin?: number; salaryMax?: number; currency?: string
+}) {
+  const schema: any = {
     '@context': 'https://schema.org',
     '@type': 'JobPosting',
-    title: job.title,
-    description: job.description,
-    datePosted: job.createdAt,
-    validThrough: job.expiresAt,
-    employmentType: job.type?.toUpperCase().replace('-', '_'),
-    hiringOrganization: { '@type': 'Organization', name: job.company },
-    jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: job.location } },
+    title,
+    description,
+    datePosted,
+    jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: jobLocation } },
   }
-  return <JsonLd data={schema} />
+  if (employmentType) schema.employmentType = employmentType
+  if (salaryMin || salaryMax) schema.baseSalary = {
+    '@type': 'MonetaryAmount',
+    currency: currency || 'USD',
+    value: {
+      '@type': 'QuantitativeValue',
+      ...(salaryMin ? { minValue: salaryMin } : {}),
+      ...(salaryMax ? { maxValue: salaryMax } : {}),
+      unitText: 'YEAR',
+    },
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
+export function BreadcrumbJsonLd({ items }: { items: { name: string; url: string }[] }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }

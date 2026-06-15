@@ -2,12 +2,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Search, MapPin, Briefcase, Clock, Building2, ArrowRight, Code2, Users, TrendingUp, Loader2 } from 'lucide-react'
+import { Search, MapPin, Briefcase, Building2, ArrowRight, Users, TrendingUp, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils/cn'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 const jobTypes = ['All Types', 'full-time', 'part-time', 'contract', 'internship']
 const jobLevels = ['All Levels', 'junior', 'mid', 'senior']
@@ -60,8 +62,10 @@ export default function JobsPage() {
   })
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide">
+        <MetadataInjector title="Jobs" description="Curated developer job opportunities in Rwanda and across Africa. Full-time, remote, and hybrid positions." url="/jobs" />
+        <Breadcrumbs items={[{ label: 'Jobs' }]} />
         <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
           <div>
             <Badge className="mb-4 bg-green-500/10 text-green-500 border-green-500/20">🟢 Actively hiring</Badge>
@@ -158,6 +162,6 @@ export default function JobsPage() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   )
 }

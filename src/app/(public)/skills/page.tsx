@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FadeIn, PopupIn, StaggerContainer, StaggerItem } from '@/components/shared/Animations'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 interface Skill {
   _id: string
@@ -45,8 +47,10 @@ export default function SkillsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-primary py-20">
+    <main id="main-content" className="min-h-screen bg-surface-primary py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <MetadataInjector title="Skills & Expertise" description="Technologies and tools I work with daily — React, Next.js, TypeScript, Node.js, Python, AI/ML, and more." url="/skills" />
+        <Breadcrumbs items={[{ label: 'Skills' }]} />
         <FadeIn className="text-center mb-12">
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }}
@@ -177,6 +181,6 @@ export default function SkillsPage() {
           </div>
         </FadeIn>
       </div>
-    </div>
+    </main>
   )
 }

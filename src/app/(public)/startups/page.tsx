@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils/cn'
+import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 const tabs = ['All', 'Startup', 'Agency', 'Company', 'Open Source']
 
@@ -38,8 +40,10 @@ export default function StartupsPage() {
   })
 
   return (
-    <div className="section-padding pt-24">
+    <main id="main-content" className="section-padding pt-24">
       <div className="container-wide">
+        <MetadataInjector title="Startups & Organizations" description="Discover innovative startups, agencies, and companies building the future in Rwanda and across Africa." url="/startups" />
+        <Breadcrumbs items={[{ label: 'Startups & Organizations' }]} />
         <div className="text-center max-w-2xl mx-auto mb-10">
           <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">Trusted Partners</Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Startups & <span className="gradient-text">Organizations</span></h1>
@@ -96,6 +100,6 @@ export default function StartupsPage() {
           <Button asChild className="gradient-bg text-white"><Link href="/contact">Get Listed</Link></Button>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
