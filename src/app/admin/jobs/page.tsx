@@ -14,7 +14,7 @@ export default function AdminJobsPage() {
   const [loading, setLoading] = useState(true)
 
   const fetchData = () => {
-    fetch('/api/jobs').then(r => r.json()).then(d => {
+    fetch('/api/jobs?all=true').then(r => r.json()).then(d => {
       if (d.success) setJobs(d.data || [])
       setLoading(false)
     }).catch(() => setLoading(false))

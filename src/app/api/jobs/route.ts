@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('category')
     const search = searchParams.get('search')
 
-    const filter: any = { status: 'active', expiresAt: { $gt: new Date() } }
+    const filter: any = searchParams.get('all') ? {} : { status: 'active', expiresAt: { $gt: new Date() } }
     if (locationType) filter.locationType = locationType
     if (category) filter.category = category
     if (search) filter.title = { $regex: search, $options: 'i' }

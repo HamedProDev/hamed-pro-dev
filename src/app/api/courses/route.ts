@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('category')
     const level = searchParams.get('level')
 
-    const filter: any = { isPublished: true }
+    const filter: any = searchParams.get('all') ? {} : { isPublished: true }
     if (category) filter.category = category
     if (level) filter.level = level
 

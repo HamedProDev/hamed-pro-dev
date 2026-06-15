@@ -14,7 +14,7 @@ export default function AdminCoursesPage() {
   const [loading, setLoading] = useState(true)
 
   const fetchData = () => {
-    fetch('/api/courses').then(r => r.json()).then(d => {
+    fetch('/api/courses?all=true').then(r => r.json()).then(d => {
       if (d.success) setCourses(d.data || [])
       setLoading(false)
     }).catch(() => setLoading(false))

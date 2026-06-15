@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { FolderOpen, GraduationCap, Briefcase, Users, FileText, Settings, Zap, Trophy, TrendingUp, Eye, BarChart3, MessageSquare } from 'lucide-react'
+import { FolderOpen, GraduationCap, Briefcase, Users, FileText, Settings, Zap, Trophy, TrendingUp, Eye, BarChart3, MessageSquare, Database, Loader2 } from 'lucide-react'
 
 interface Stats {
   projects: number
@@ -20,11 +20,14 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats>({ projects: 0, courses: 0, jobs: 0, users: 0, skills: 0, achievements: 0, blog: 0, siteStats: 0, testimonials: 0 })
   const [loading, setLoading] = useState(true)
 
+  const [seeding, setSeeding] = useState(false)
+  const [seedMsg, setSeedMsg] = useState('')
+
   useEffect(() => {
     Promise.all([
       fetch('/api/projects').then(r => r.json()),
-      fetch('/api/courses').then(r => r.json()),
-      fetch('/api/jobs').then(r => r.json()),
+      fetch('/api/courses?all=true').then(r => r.json()),
+      fetch('/api/jobs?all=true').then(r => r.json()),
       fetch('/api/skills').then(r => r.json()),
       fetch('/api/achievements').then(r => r.json()),
       fetch('/api/blog').then(r => r.json()),
@@ -46,6 +49,19 @@ export default function AdminDashboard() {
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [])
+
+  const handleSeed = async () => {
+    if (!confirm('Reset database with seed data? This will NOT delete existing data (it only inserts if empty).')) return
+    setSeeding(true)
+    setSeedMsg('')
+    try {
+      const res = await fetch('/api/seed', { method: 'POST' })
+      const d = await res.json()
+      if (d.success) setSeedMsg('Seed completed: ' + (d.data?.results || []).join(', '))
+      else setSeedMsg('Error: ' + d.error)
+    } catch { setSeedMsg('Failed to connect') }
+    setSeeding(false)
+  }
 
   const cards = [
     { label: 'Projects', value: stats.projects, icon: FolderOpen, href: '/admin/projects', color: 'text-blue-500', bg: 'bg-blue-500/10' },
@@ -108,7 +124,13 @@ export default function AdminDashboard() {
                 {a.label}
               </Link>
             ))}
+            <div className="w-full border-t border-border-primary my-2" />
+            <button onClick={handleSeed} disabled={seeding} className="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-500 text-sm hover:bg-amber-500/20 transition-colors flex items-center gap-1">
+              {seeding ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Database className="h-3.5 w-3.5" />}
+              {seeding ? 'Seeding...' : 'Seed Database'}
+            </button>
           </div>
+          {seedMsg && <p className="mt-3 text-xs text-text-muted">{seedMsg}</p>}
         </div>
         <div className="admin-card">
           <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">

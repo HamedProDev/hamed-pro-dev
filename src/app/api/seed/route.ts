@@ -11,7 +11,7 @@ import SiteStats from '@/lib/db/models/SiteStats'
 import Testimonial from '@/lib/db/models/Testimonial'
 import bcrypt from 'bcryptjs'
 
-export async function GET() {
+export async function POST() {
   try {
     await connectDB()
     const results: string[] = []
