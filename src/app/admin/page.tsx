@@ -2,12 +2,11 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { FolderOpen, GraduationCap, Briefcase, Users, FileText, Settings, Zap, Trophy, TrendingUp, Eye, BarChart3, MessageSquare, Database, Loader2 } from 'lucide-react'
+  import { FolderOpen, GraduationCap, Users, FileText, Settings, Zap, Trophy, TrendingUp, Eye, BarChart3, MessageSquare, Database, Loader2 } from 'lucide-react'
 
 interface Stats {
   projects: number
   courses: number
-  jobs: number
   users: number
   skills: number
   achievements: number
@@ -17,7 +16,7 @@ interface Stats {
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stats>({ projects: 0, courses: 0, jobs: 0, users: 0, skills: 0, achievements: 0, blog: 0, siteStats: 0, testimonials: 0 })
+  const [stats, setStats] = useState<Stats>({ projects: 0, courses: 0, users: 0, skills: 0, achievements: 0, blog: 0, siteStats: 0, testimonials: 0 })
   const [loading, setLoading] = useState(true)
 
   const [seeding, setSeeding] = useState(false)
@@ -27,18 +26,16 @@ export default function AdminDashboard() {
     Promise.all([
       fetch('/api/projects').then(r => r.json()),
       fetch('/api/courses?all=true').then(r => r.json()),
-      fetch('/api/jobs?all=true').then(r => r.json()),
       fetch('/api/skills').then(r => r.json()),
       fetch('/api/achievements').then(r => r.json()),
       fetch('/api/blog').then(r => r.json()),
       fetch('/api/users').then(r => r.json()),
       fetch('/api/stats').then(r => r.json()),
       fetch('/api/testimonials').then(r => r.json()),
-    ]).then(([p, c, j, s, a, b, u, st, t]) => {
+    ]).then(([p, c, s, a, b, u, st, t]) => {
       setStats({
         projects: p.data?.length || 0,
         courses: c.data?.length || 0,
-        jobs: j.data?.length || 0,
         skills: s.data?.length || 0,
         achievements: a.data?.length || 0,
         blog: b.data?.length || 0,
@@ -66,7 +63,6 @@ export default function AdminDashboard() {
   const cards = [
     { label: 'Projects', value: stats.projects, icon: FolderOpen, href: '/admin/projects', color: 'text-blue-500', bg: 'bg-blue-500/10' },
     { label: 'Courses', value: stats.courses, icon: GraduationCap, href: '/admin/courses', color: 'text-green-500', bg: 'bg-green-500/10' },
-    { label: 'Jobs', value: stats.jobs, icon: Briefcase, href: '/admin/jobs', color: 'text-amber-500', bg: 'bg-amber-500/10' },
     { label: 'Skills', value: stats.skills, icon: Zap, href: '/admin/skills', color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
     { label: 'Achievements', value: stats.achievements, icon: Trophy, href: '/admin/achievements', color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { label: 'Blog Posts', value: stats.blog, icon: FileText, href: '/admin/blog', color: 'text-pink-500', bg: 'bg-pink-500/10' },
@@ -79,7 +75,6 @@ export default function AdminDashboard() {
   const quickActions = [
     { label: 'New Project', href: '/admin/projects/new' },
     { label: 'New Course', href: '/admin/courses/new' },
-    { label: 'New Job', href: '/admin/jobs/new' },
     { label: 'New Skill', href: '/admin/skills/new' },
     { label: 'New Achievement', href: '/admin/achievements/new' },
     { label: 'New Blog Post', href: '/admin/blog/new' },
@@ -140,7 +135,6 @@ export default function AdminDashboard() {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-text-muted">Total Content</span><span className="text-text-primary font-medium">{stats.projects + stats.courses + stats.blog + stats.skills + stats.achievements} items</span></div>
             <div className="flex justify-between"><span className="text-text-muted">Total Users</span><span className="text-text-primary font-medium">{stats.users}</span></div>
-            <div className="flex justify-between"><span className="text-text-muted">Job Listings</span><span className="text-text-primary font-medium">{stats.jobs}</span></div>
             <div className="flex justify-between"><span className="text-text-muted">Skills</span><span className="text-text-primary font-medium">{stats.skills}</span></div>
           </div>
         </div>

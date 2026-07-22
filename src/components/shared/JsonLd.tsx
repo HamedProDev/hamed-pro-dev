@@ -56,31 +56,6 @@ export function CourseJsonLd({ name, description, provider, url }: {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
-export function JobPostingJsonLd({ title, description, datePosted, jobLocation, employmentType, salaryMin, salaryMax, currency }: {
-  title: string; description: string; datePosted: string; jobLocation: string; employmentType?: string; salaryMin?: number; salaryMax?: number; currency?: string
-}) {
-  const schema: any = {
-    '@context': 'https://schema.org',
-    '@type': 'JobPosting',
-    title,
-    description,
-    datePosted,
-    jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: jobLocation } },
-  }
-  if (employmentType) schema.employmentType = employmentType
-  if (salaryMin || salaryMax) schema.baseSalary = {
-    '@type': 'MonetaryAmount',
-    currency: currency || 'USD',
-    value: {
-      '@type': 'QuantitativeValue',
-      ...(salaryMin ? { minValue: salaryMin } : {}),
-      ...(salaryMax ? { maxValue: salaryMax } : {}),
-      unitText: 'YEAR',
-    },
-  }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-}
-
 export function BreadcrumbJsonLd({ items }: { items: { name: string; url: string }[] }) {
   const schema = {
     '@context': 'https://schema.org',

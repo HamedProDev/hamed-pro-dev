@@ -3,7 +3,7 @@ import { useAuth } from '@/lib/hooks/useAuth'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { BookMarked, Bookmark, Award, User, Mail, Shield, ArrowRight, Loader2 } from 'lucide-react'
+import { BookMarked, Award, User, Mail, Shield, ArrowRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils/cn'
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth()
-  const [stats, setStats] = useState({ courses: 0, jobs: 0, certs: 0 })
+  const [stats, setStats] = useState({ courses: 0, certs: 0 })
 
   useEffect(() => {
     if (user) {
@@ -19,7 +19,6 @@ export default function DashboardPage() {
         if (d.data) {
           setStats({
             courses: d.data.enrolledCourses?.length || 0,
-            jobs: d.data.savedJobs?.length || 0,
             certs: 0,
           })
         }
@@ -62,11 +61,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
+      <div className="grid md:grid-cols-1 gap-6 mb-8">
         {[
           { icon: BookMarked, label: 'My Courses', value: stats.courses, color: 'text-brand-primary', bg: 'bg-brand-primary/10', href: '/my-courses' },
-          { icon: Bookmark, label: 'Saved Jobs', value: stats.jobs, color: 'text-green-500', bg: 'bg-green-500/10', href: '/saved-jobs' },
-          { icon: Award, label: 'Certificates', value: stats.certs, color: 'text-amber-500', bg: 'bg-amber-500/10', href: '#' },
         ].map((s, i) => (
           <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
             <Card className="card-hover"><CardContent className="p-6">
@@ -86,7 +83,6 @@ export default function DashboardPage() {
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Browse Courses', desc: 'Explore available courses', href: '/courses', icon: '📚' },
-          { label: 'Find Jobs', desc: 'Discover job opportunities', href: '/jobs', icon: '💼' },
           { label: 'View Projects', desc: 'See portfolio projects', href: '/projects', icon: '🚀' },
           { label: 'Contact Me', desc: 'Get in touch', href: '/contact', icon: '📬' },
         ].map(a => (

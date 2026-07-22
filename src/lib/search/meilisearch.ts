@@ -23,11 +23,10 @@ export async function searchIndex(indexName: string, query: string, limit: numbe
 }
 
 export async function globalSearch(query: string) {
-  const [projects, posts, courses, jobs] = await Promise.all([
+  const [projects, posts, courses] = await Promise.all([
     searchIndex('projects', query),
     searchIndex('blogposts', query),
     searchIndex('courses', query),
-    searchIndex('jobs', query),
   ])
-  return { projects, posts, courses, jobs }
+  return { projects, posts, courses }
 }

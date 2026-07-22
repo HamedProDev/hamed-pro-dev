@@ -64,7 +64,6 @@ export function Footer() {
     platform: [
       { label: 'Projects', href: '/projects' },
       { label: 'Courses', href: '/courses' },
-      { label: 'Get Job', href: '/jobs' },
       { label: 'Startups / Orgs', href: '/startups' },
       { label: 'Skills', href: '/skills' },
       { label: 'Achievements', href: '/achievements' },

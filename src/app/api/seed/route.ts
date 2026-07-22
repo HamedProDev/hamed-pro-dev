@@ -7,7 +7,7 @@ export async function POST() {
     const results: string[] = []
     const supabase = createServiceClient()
 
-    const adminEmail = 'hamedpro.work@gmail.com'
+    const adminEmail = 'hamussein01@gmail.com'
     let adminUser: any = null
     const { data: existingUsers } = await supabase.auth.admin.listUsers()
     const found = existingUsers?.users?.find(u => u.email === adminEmail)
@@ -62,24 +62,6 @@ export async function POST() {
       results.push('9 courses seeded')
     } else {
       results.push(`${courseCount} courses exist`)
-    }
-
-    const jobCount = await countDocuments('jobs')
-    if (jobCount === 0) {
-      const now = new Date()
-      const deadline = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000)
-      const jobs = [
-        { title: 'Frontend Developer', company: 'TechStart Rwanda', location: 'Kigali, Rwanda', location_type: 'onsite', type: 'full-time', category: 'frontend', description: 'Build modern web applications using React and Next.js.', skills: ['React', 'TypeScript', 'Tailwind CSS'], salary_min: 800, salary_max: 1500, status: 'active', featured: true, is_approved: true, views: 234, applications: 18, posted_by: adminUser.id, deadline, expires_at: deadline },
-        { title: 'Fullstack Engineer', company: 'InnoHub Africa', location: 'Remote, Africa', location_type: 'remote', type: 'full-time', category: 'fullstack', description: 'Build end-to-end solutions for agritech platforms.', skills: ['Next.js', 'Node.js', 'PostgreSQL'], salary_min: 2000, salary_max: 3500, status: 'active', featured: true, is_approved: true, views: 189, applications: 24, posted_by: adminUser.id, deadline, expires_at: deadline },
-        { title: 'Mobile Developer', company: 'FarmConnect', location: 'Kigali, Rwanda', location_type: 'hybrid', type: 'full-time', category: 'mobile', description: 'Develop cross-platform mobile apps.', skills: ['React Native', 'TypeScript', 'Firebase'], salary_min: 600, salary_max: 1200, status: 'active', featured: false, is_approved: true, views: 156, applications: 12, posted_by: adminUser.id, deadline, expires_at: deadline },
-        { title: 'Backend Developer', company: 'NovaSoft Solutions', location: 'Remote, Global', location_type: 'remote', type: 'contract', category: 'backend', description: 'Build scalable backend services and APIs.', skills: ['Python', 'Django', 'AWS'], salary_min: 1500, salary_max: 2800, status: 'active', featured: false, is_approved: true, views: 198, applications: 15, posted_by: adminUser.id, deadline, expires_at: deadline },
-        { title: 'DevOps Engineer', company: 'CloudRwanda', location: 'Kigali, Rwanda', location_type: 'onsite', type: 'full-time', category: 'devops', description: 'Manage cloud infrastructure and CI/CD pipelines.', skills: ['Docker', 'Kubernetes', 'AWS'], salary_min: 2500, salary_max: 4000, status: 'active', featured: false, is_approved: true, views: 112, applications: 8, posted_by: adminUser.id, deadline, expires_at: deadline },
-        { title: 'AI/ML Engineer', company: 'DataKigali', location: 'Hybrid, Kigali', location_type: 'hybrid', type: 'full-time', category: 'ai-ml', description: 'Build and deploy ML models for healthcare.', skills: ['Python', 'TensorFlow', 'PyTorch'], salary_min: 3000, salary_max: 5000, status: 'active', featured: true, is_approved: true, views: 167, applications: 11, posted_by: adminUser.id, deadline, expires_at: deadline },
-      ]
-      await Promise.all(jobs.map(j => createDocument('jobs', j)))
-      results.push('6 jobs seeded')
-    } else {
-      results.push(`${jobCount} jobs exist`)
     }
 
     const settingsCount = await countDocuments('settings')

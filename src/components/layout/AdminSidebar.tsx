@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
 import {
-  LayoutDashboard, GraduationCap, Briefcase,
+  LayoutDashboard, GraduationCap,
   Users, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight,
   Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare
 } from 'lucide-react'
@@ -15,7 +15,6 @@ const links = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/projects', label: 'Projects', icon: Building2 },
   { href: '/admin/courses', label: 'Courses', icon: GraduationCap },
-  { href: '/admin/jobs', label: 'Jobs', icon: Briefcase },
   { href: '/admin/skills', label: 'Skills', icon: Zap },
   { href: '/admin/achievements', label: 'Achievements', icon: Trophy },
   { href: '/admin/organizations', label: 'Organizations', icon: Building2 },

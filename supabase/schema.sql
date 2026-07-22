@@ -313,11 +313,11 @@ CREATE OR REPLACE TRIGGER on_auth_user_created
   FOR EACH ROW
   EXECUTE FUNCTION handle_new_user();
 
--- Auto-set admin role for specified email
+-- Auto-set admin role for specified emails
 CREATE OR REPLACE FUNCTION set_admin_role()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF NEW.email = 'hamedpro.work@gmail.com' THEN
+  IF NEW.email IN ('hamedpro.work@gmail.com', 'hamussein01@gmail.com') THEN
     UPDATE profiles SET role = 'admin' WHERE id = NEW.id;
   END IF;
   RETURN NEW;

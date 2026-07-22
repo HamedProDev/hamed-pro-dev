@@ -10,7 +10,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/projects`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.9 },
     { url: `${baseUrl}/courses`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.9 },
     { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.9 },
-    { url: `${baseUrl}/jobs`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.8 },
     { url: `${baseUrl}/skills`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.7 },
     { url: `${baseUrl}/achievements`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.6 },
     { url: `${baseUrl}/startups`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.6 },
@@ -24,17 +23,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   try {
-    const [projects, courses, jobs, posts] = await Promise.all([
+    const [projects, courses, posts] = await Promise.all([
       getDocuments('projects', { filters: [{ field: 'is_published', operator: 'eq', value: true }] }),
       getDocuments('courses', { filters: [{ field: 'is_published', operator: 'eq', value: true }] }),
-      getDocuments('jobs'),
       getDocuments('blog_posts', { filters: [{ field: 'is_published', operator: 'eq', value: true }] }),
     ])
 
     const dynamicPages: MetadataRoute.Sitemap = [
       ...projects.map(p => ({ url: `${baseUrl}/projects/${p.slug}`, lastModified: p.updated_at || new Date(), changeFrequency: 'monthly' as const, priority: 0.7 })),
       ...courses.map(c => ({ url: `${baseUrl}/courses/${c.slug}`, lastModified: c.updated_at || new Date(), changeFrequency: 'monthly' as const, priority: 0.7 })),
-      ...jobs.map(j => ({ url: `${baseUrl}/jobs/${j.id}`, lastModified: j.updated_at || new Date(), changeFrequency: 'weekly' as const, priority: 0.6 })),
       ...posts.map(p => ({ url: `${baseUrl}/blog/${p.slug}`, lastModified: p.updated_at || new Date(), changeFrequency: 'monthly' as const, priority: 0.8 })),
     ]
 

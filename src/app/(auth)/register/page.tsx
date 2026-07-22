@@ -47,7 +47,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="border-dark-500 bg-dark-700">
+    <Card>
       <CardHeader className="text-center">
         <Link href="/" className="inline-flex items-center justify-center gap-2 mb-2"><Code2 className="h-8 w-8 text-brand-primary" /></Link>
         <CardTitle className="text-2xl">Create Account</CardTitle>
