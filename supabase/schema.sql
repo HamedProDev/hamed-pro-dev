@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Profiles (users)
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email TEXT UNIQUE NOT NULL,
   name TEXT,
@@ -21,7 +21,7 @@ CREATE TABLE profiles (
 );
 
 -- Projects
-CREATE TABLE projects (
+CREATE TABLE IF NOT EXISTS projects (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE projects (
 );
 
 -- Courses
-CREATE TABLE courses (
+CREATE TABLE IF NOT EXISTS courses (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE courses (
 );
 
 -- Lessons
-CREATE TABLE lessons (
+CREATE TABLE IF NOT EXISTS lessons (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE lessons (
 );
 
 -- Blog Posts
-CREATE TABLE blog_posts (
+CREATE TABLE IF NOT EXISTS blog_posts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE blog_posts (
 );
 
 -- Jobs
-CREATE TABLE jobs (
+CREATE TABLE IF NOT EXISTS jobs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   company TEXT,
@@ -113,7 +113,7 @@ CREATE TABLE jobs (
 );
 
 -- Skills
-CREATE TABLE skills (
+CREATE TABLE IF NOT EXISTS skills (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   icon TEXT,
@@ -125,7 +125,7 @@ CREATE TABLE skills (
 );
 
 -- Achievements
-CREATE TABLE achievements (
+CREATE TABLE IF NOT EXISTS achievements (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   description TEXT,
@@ -140,7 +140,7 @@ CREATE TABLE achievements (
 );
 
 -- Organizations
-CREATE TABLE organizations (
+CREATE TABLE IF NOT EXISTS organizations (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE organizations (
 );
 
 -- Testimonials
-CREATE TABLE testimonials (
+CREATE TABLE IF NOT EXISTS testimonials (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   role TEXT,
@@ -173,7 +173,7 @@ CREATE TABLE testimonials (
 );
 
 -- Contacts
-CREATE TABLE contacts (
+CREATE TABLE IF NOT EXISTS contacts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   email TEXT NOT NULL,
@@ -184,7 +184,7 @@ CREATE TABLE contacts (
 );
 
 -- Newsletter Subscribers
-CREATE TABLE newsletter_subscribers (
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email TEXT UNIQUE NOT NULL,
   is_active BOOLEAN DEFAULT true,
@@ -192,7 +192,7 @@ CREATE TABLE newsletter_subscribers (
 );
 
 -- Settings (key-value store)
-CREATE TABLE settings (
+CREATE TABLE IF NOT EXISTS settings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   key TEXT UNIQUE NOT NULL,
   value JSONB NOT NULL DEFAULT '{}',
@@ -201,7 +201,7 @@ CREATE TABLE settings (
 );
 
 -- Site Stats
-CREATE TABLE site_stats (
+CREATE TABLE IF NOT EXISTS site_stats (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   label TEXT NOT NULL,
   value TEXT NOT NULL,
@@ -212,7 +212,7 @@ CREATE TABLE site_stats (
 );
 
 -- Analytics
-CREATE TABLE analytics (
+CREATE TABLE IF NOT EXISTS analytics (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   page TEXT,
   event TEXT,
@@ -223,10 +223,10 @@ CREATE TABLE analytics (
 );
 
 -- Full-text search indexes
-CREATE INDEX idx_projects_search ON projects USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
-CREATE INDEX idx_blog_posts_search ON blog_posts USING gin(to_tsvector('english', title || ' ' || coalesce(excerpt, '')));
-CREATE INDEX idx_courses_search ON courses USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
-CREATE INDEX idx_jobs_search ON jobs USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
+CREATE INDEX IF NOT EXISTS idx_projects_search ON projects USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
+CREATE INDEX IF NOT EXISTS idx_blog_posts_search ON blog_posts USING gin(to_tsvector('english', title || ' ' || coalesce(excerpt, '')));
+CREATE INDEX IF NOT EXISTS idx_courses_search ON courses USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
+CREATE INDEX IF NOT EXISTS idx_jobs_search ON jobs USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
 
 -- Updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -308,7 +308,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE OR REPLACE TRIGGER on_auth_user_created
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION handle_new_user();
@@ -324,7 +325,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE OR REPLACE TRIGGER on_auth_user_created_admin
+DROP TRIGGER IF EXISTS on_auth_user_created_admin ON auth.users;
+CREATE TRIGGER on_auth_user_created_admin
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION set_admin_role();

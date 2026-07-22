@@ -5,6 +5,11 @@ import { createServiceClient } from '@/lib/supabase/server'
 export async function POST() {
   try {
     const results: string[] = []
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return NextResponse.json({ success: false, error: 'Missing Supabase env vars — add them to Vercel first.' }, { status: 500 })
+    }
+
     const supabase = createServiceClient()
 
     const adminEmail = 'hamussein01@gmail.com'
@@ -21,11 +26,15 @@ export async function POST() {
         email_confirm: true,
         user_metadata: { display_name: 'Hamed Hussein' },
       })
+      if (error || !data?.user) {
+        throw new Error(error?.message || 'Failed to create admin user')
+      }
       adminUser = data.user
 
-      await supabase.auth.admin.updateUserById(adminUser.id, {
+      const { error: updateError } = await supabase.auth.admin.updateUserById(adminUser.id, {
         app_metadata: { role: 'admin' },
       })
+      if (updateError) throw new Error(updateError.message)
       results.push('Admin user created')
     }
 
