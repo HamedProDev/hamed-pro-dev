@@ -27,7 +27,7 @@ export async function POST() {
         user_metadata: { display_name: 'Hamed Hussein' },
       })
       if (error || !data?.user) {
-        throw new Error(error?.message || 'Failed to create admin user')
+        throw new Error(JSON.stringify(error) || 'Failed to create admin user')
       }
       adminUser = data.user
 
@@ -183,6 +183,7 @@ export async function POST() {
 
     return NextResponse.json({ success: true, data: { results, loginUrl: '/login', credentials: { email: adminEmail, password: '@He00Ri#Ga4Da' } } })
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    const message = typeof error?.message === 'string' ? error.message : JSON.stringify(error)
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }
