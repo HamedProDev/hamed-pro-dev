@@ -42,7 +42,6 @@ export default function DashboardPage() {
   }
 
   const initials = user.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'
-  const initials = user.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'
 
   return (
     <div>
