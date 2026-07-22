@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { getDocuments, createDocument, countDocuments } from '@/lib/firebase/firestore'
-import { requireAdmin, apiSuccess, apiError, apiPaginated } from '@/lib/firebase/auth'
+import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
+import { requireAdmin, apiSuccess, apiError, apiPaginated } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
 
 export async function GET(req: NextRequest) {
@@ -13,14 +13,14 @@ export async function GET(req: NextRequest) {
 
     const showAll = searchParams.get('all') === 'true'
     const filters: { field: string; operator: any; value: any }[] = []
-    if (!showAll) filters.push({ field: 'isPublished', operator: '==', value: true })
-    if (category) filters.push({ field: 'category', operator: '==', value: category })
-    if (level) filters.push({ field: 'level', operator: '==', value: level })
+    if (!showAll) filters.push({ field: 'is_published', operator: 'eq', value: true })
+    if (category) filters.push({ field: 'category', operator: 'eq', value: category })
+    if (level) filters.push({ field: 'level', operator: 'eq', value: level })
 
     const [courses, total] = await Promise.all([
       getDocuments('courses', {
         filters,
-        orderBy: { field: 'createdAt', direction: 'desc' },
+        orderBy: { field: 'created_at', direction: 'desc' },
         limit,
         offset: (page - 1) * limit,
       }),

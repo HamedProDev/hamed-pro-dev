@@ -9,6 +9,7 @@ interface ImageUploadProps {
   value: string
   onChange: (url: string) => void
   className?: string
+  folder?: string
 }
 
 export function ImageUpload({ value, onChange, className }: ImageUploadProps) {

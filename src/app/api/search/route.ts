@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { getDocuments } from '@/lib/firebase/firestore'
-import { apiSuccess, apiError } from '@/lib/firebase/auth'
+import { getDocuments } from '@/lib/supabase/db'
+import { apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,10 +10,10 @@ export async function GET(req: NextRequest) {
 
     const qLower = q.toLowerCase()
     const [projects, posts, courses, jobs] = await Promise.all([
-      getDocuments('projects', { filters: [{ field: 'isPublished', operator: '==', value: true }] }),
-      getDocuments('blogPosts', { filters: [{ field: 'isPublished', operator: '==', value: true }] }),
-      getDocuments('courses', { filters: [{ field: 'isPublished', operator: '==', value: true }] }),
-      getDocuments('jobs', { filters: [{ field: 'status', operator: '==', value: 'active' }] }),
+      getDocuments('projects', { filters: [{ field: 'is_published', operator: 'eq', value: true }] }),
+      getDocuments('blog_posts', { filters: [{ field: 'is_published', operator: 'eq', value: true }] }),
+      getDocuments('courses', { filters: [{ field: 'is_published', operator: 'eq', value: true }] }),
+      getDocuments('jobs', { filters: [{ field: 'status', operator: 'eq', value: 'active' }] }),
     ])
 
     return apiSuccess({

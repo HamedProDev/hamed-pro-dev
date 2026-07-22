@@ -26,7 +26,7 @@ interface MobileNavProps {
 
 export function MobileNav({ open, onClose }: MobileNavProps) {
   const pathname = usePathname()
-  const { user, isAuthenticated } = useAuth()
+  const { user, isAuthenticated, signOut } = useAuth()
 
   return (
     <Sheet open={open} onOpenChange={onClose}>

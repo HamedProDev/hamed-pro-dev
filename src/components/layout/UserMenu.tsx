@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { LogOut, User, LayoutDashboard, BookMarked } from 'lucide-react'
 
 export function UserMenu() {
-  const { user, isAuthenticated, isAdmin } = useAuth()
+  const { user, isAuthenticated, isAdmin, signOut } = useAuth()
 
   if (!isAuthenticated) {
     return (

@@ -12,3 +12,5 @@ export function useAuth() {
     signOut,
   }
 }
+
+export type { AuthUser } from '@/components/auth-provider'

@@ -1,10 +1,10 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { onAuthStateChanged, signOut as firebaseSignOut, User } from 'firebase/auth'
-import { getFirebaseClient } from '@/lib/firebase/client'
+import { createClient } from '@/lib/supabase/client'
+import type { User } from '@supabase/supabase-js'
 
-type AuthUser = {
+export type AuthUser = {
   uid: string
   email: string | null
   name: string | null
@@ -29,29 +29,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const { auth } = getFirebaseClient()
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: User | null) => {
-      if (firebaseUser) {
-        const token = await firebaseUser.getIdTokenResult()
-        setUser({
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || '',
-          image: firebaseUser.photoURL,
-          role: (token.claims.role as string) || 'visitor',
-        })
+    const supabase = createClient()
+
+    const getProfile = async (authUser: User) => {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('name, avatar_url, role')
+        .eq('id', authUser.id)
+        .single()
+
+      return {
+        uid: authUser.id,
+        email: authUser.email || null,
+        name: profile?.name || authUser.email?.split('@')[0] || '',
+        image: profile?.avatar_url || null,
+        role: profile?.role || 'visitor',
+      }
+    }
+
+    supabase.auth.getUser().then(async ({ data: { user: authUser } }) => {
+      if (authUser) {
+        setUser(await getProfile(authUser))
       } else {
         setUser(null)
       }
       setLoading(false)
     })
 
-    return () => unsubscribe()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        setUser(await getProfile(session.user))
+      } else {
+        setUser(null)
+      }
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const signOut = async () => {
-    const { auth } = getFirebaseClient()
-    await firebaseSignOut(auth)
+    const supabase = createClient()
+    await supabase.auth.signOut()
     await fetch('/api/auth/logout', { method: 'POST' })
     window.location.href = '/login'
   }

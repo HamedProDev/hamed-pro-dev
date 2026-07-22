@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Code2, Loader2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export default function RegisterPage() {
   const [error, setError] = useState('')
@@ -25,24 +26,20 @@ export default function RegisterPage() {
     }
 
     try {
-      const res = await fetch('/api/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          password: data.password,
-        }),
+      const supabase = createClient()
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: data.email as string,
+        password: data.password as string,
+        options: { data: { name: data.name as string } },
       })
 
-      if (!res.ok) {
-        const errData = await res.json()
-        setError(errData.error || 'Registration failed')
+      if (signUpError) {
+        setError(signUpError.message === 'User already registered' ? 'Email already registered' : signUpError.message)
         setLoading(false)
         return
       }
 
-      window.location.href = '/login'
+      window.location.href = '/login?registered=true'
     } catch {
       setError('Something went wrong')
       setLoading(false)

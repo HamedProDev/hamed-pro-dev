@@ -1,27 +1,18 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/lib/hooks/useAuth'
+import { useAuth } from '@/components/auth-provider'
 import Link from 'next/link'
 import { BookOpen, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
-interface Course {
-  _id: string
-  title: string
-  description: string
-  coverImage?: string
-  category: string
-  level: string
-}
-
 export default function MyCoursesPage() {
-  const { user, isLoading } = useAuth()
-  const [courses, setCourses] = useState<Course[]>([])
-  const [loading, setLoading] = useState(true)
+  const { user, loading } = useAuth()
+  const [courses, setCourses] = useState<any[]>([])
+  const [fetching, setFetching] = useState(true)
 
   useEffect(() => {
-    if (session?.user) {
+    if (user) {
       fetch('/api/users/me').then(r => r.json()).then(d => {
         if (d.data?.enrolledCourses?.length) {
           Promise.all(
@@ -30,20 +21,20 @@ export default function MyCoursesPage() {
             )
           ).then(results => {
             setCourses(results.filter(Boolean))
-            setLoading(false)
+            setFetching(false)
           })
         } else {
-          setLoading(false)
+          setFetching(false)
         }
-      }).catch(() => setLoading(false))
+      }).catch(() => setFetching(false))
     } else {
-      setLoading(false)
+      setFetching(false)
     }
-  }, [session])
+  }, [user])
 
-  if (status === 'loading' || loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (loading || fetching) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
 
-  if (!session) {
+  if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <h1 className="text-3xl font-bold mb-4">My Courses</h1>
@@ -65,8 +56,8 @@ export default function MyCoursesPage() {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.map(c => (
-            <Link key={c._id} href={`/courses/${c._id}`}>
+          {courses.map((c: any) => (
+            <Link key={c.id} href={`/courses/${c.id}`}>
               <Card className="card-hover h-full">
                 <CardContent className="p-5">
                   <h3 className="font-semibold mb-1">{c.title}</h3>

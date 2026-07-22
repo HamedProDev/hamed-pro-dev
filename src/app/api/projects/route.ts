@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { getDocuments, createDocument, countDocuments } from '@/lib/firebase/firestore'
-import { requireAdmin, apiSuccess, apiError, apiPaginated } from '@/lib/firebase/auth'
+import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
+import { requireAdmin, apiSuccess, apiError, apiPaginated } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
 
 export async function GET(req: NextRequest) {
@@ -13,15 +13,15 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get('search')
     const featured = searchParams.get('featured')
 
-    const filters: { field: string; operator: any; value: any }[] = [{ field: 'isPublished', operator: '==', value: true }]
-    if (category) filters.push({ field: 'category', operator: '==', value: category })
-    if (status) filters.push({ field: 'status', operator: '==', value: status })
-    if (featured === 'true') filters.push({ field: 'featured', operator: '==', value: true })
+    const filters: { field: string; operator: any; value: any }[] = [{ field: 'is_published', operator: 'eq', value: true }]
+    if (category) filters.push({ field: 'category', operator: 'eq', value: category })
+    if (status) filters.push({ field: 'status', operator: 'eq', value: status })
+    if (featured === 'true') filters.push({ field: 'featured', operator: 'eq', value: true })
 
     const [projects, total] = await Promise.all([
       getDocuments('projects', {
         filters,
-        orderBy: { field: 'order', direction: 'asc' },
+        orderBy: { field: 'order_index', direction: 'asc' },
         limit,
         offset: (page - 1) * limit,
       }),

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { getDocument, updateDocument, deleteDocument } from '@/lib/firebase/firestore'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
+import { getDocument, updateDocument, deleteDocument } from '@/lib/supabase/db'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string; lessonId: string } }) {
   try {

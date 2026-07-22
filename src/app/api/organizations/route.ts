@@ -1,10 +1,10 @@
 import { NextRequest } from 'next/server'
-import { getDocuments, createDocument } from '@/lib/firebase/firestore'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
+import { getDocuments, createDocument } from '@/lib/supabase/db'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function GET() {
   try {
-    const orgs = await getDocuments('organizations', { orderBy: { field: 'order', direction: 'asc' } })
+    const orgs = await getDocuments('organizations', { orderBy: { field: 'order_index', direction: 'asc' } })
     return apiSuccess(orgs)
   } catch (error: any) {
     return apiError(error.message, 500)

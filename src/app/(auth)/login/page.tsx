@@ -6,8 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Code2, Loader2 } from 'lucide-react'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { getFirebaseClient } from '@/lib/firebase/client'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const [error, setError] = useState('')
@@ -23,28 +22,18 @@ export default function LoginPage() {
     const password = formData.get('password') as string
 
     try {
-      const { auth } = getFirebaseClient()
-      const credential = await signInWithEmailAndPassword(auth, email, password)
-      const idToken = await credential.user.getIdToken()
+      const supabase = createClient()
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
-      const res = await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
-      })
-
-      const data = await res.json()
-
-      if (data.success) {
-        window.location.href = '/dashboard'
-      } else {
-        setError(data.error || 'Login failed')
+      if (authError) {
+        setError(authError.message === 'Invalid login credentials' ? 'Invalid email or password' : authError.message)
         setLoading(false)
+        return
       }
-    } catch (e: any) {
-      setError(e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'
-        ? 'Invalid email or password'
-        : e.message || 'Something went wrong')
+
+      window.location.href = '/dashboard'
+    } catch {
+      setError('Something went wrong')
       setLoading(false)
     }
   }

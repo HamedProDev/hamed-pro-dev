@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { getDocuments, createDocument, countDocuments } from '@/lib/firebase/firestore'
-import { requireAdmin, apiSuccess, apiError, apiPaginated } from '@/lib/firebase/auth'
+import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
+import { requireAdmin, apiSuccess, apiError, apiPaginated } from '@/lib/supabase/helpers'
 
 export async function GET(req: NextRequest) {
   try {
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     const [jobs, total] = await Promise.all([
       getDocuments('jobs', {
         filters,
-        orderBy: { field: 'createdAt', direction: 'desc' },
+        orderBy: { field: 'created_at', direction: 'desc' },
         limit,
         offset: (page - 1) * limit,
       }),

@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
+import { createClient } from '@/lib/supabase/server'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,21 +12,35 @@ export async function POST(req: NextRequest) {
       return apiError('No file provided', 400)
     }
 
+    if (!file.type.startsWith('image/')) {
+      return apiError('Only image files allowed', 400)
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      return apiError('File too large. Max 5MB', 400)
+    }
+
+    const ext = file.name.split('.').pop() || 'jpg'
+    const fileName = `${crypto.randomUUID()}.${ext}`
     const buffer = Buffer.from(await file.arrayBuffer())
-    const { getFirebaseAdmin } = await import('@/lib/firebase/config')
-    const { storage } = getFirebaseAdmin()
-    const bucket = storage.bucket()
-    const filename = `${Date.now()}-${file.name}`
-    const fileRef = bucket.file(`hamedpro/${filename}`)
 
-    await fileRef.save(buffer, {
-      metadata: { contentType: file.type },
-    })
+    const supabase = createClient()
+    const { data, error } = await supabase.storage
+      .from('uploads')
+      .upload(`images/${fileName}`, buffer, {
+        contentType: file.type,
+        upsert: false,
+      })
 
-    await fileRef.makePublic()
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/hamedpro/${filename}`
+    if (error) {
+      return apiError(error.message, 500)
+    }
 
-    return apiSuccess({ url: publicUrl, filename })
+    const { data: { publicUrl } } = supabase.storage
+      .from('uploads')
+      .getPublicUrl(`images/${fileName}`)
+
+    return apiSuccess({ url: publicUrl, filename: file.name })
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }

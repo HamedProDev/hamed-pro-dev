@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { getDocuments, createDocument, updateDocument } from '@/lib/firebase/firestore'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
+import { getDocuments, createDocument, updateDocument } from '@/lib/supabase/db'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 async function getSettings() {
   const docs = await getDocuments('settings')
@@ -28,26 +28,27 @@ async function handleSave(req: NextRequest) {
       const settings = await createDocument('settings', body)
       return apiSuccess(settings, 'Settings updated')
     }
-    const allowedFields = [
-      'siteName', 'tagline', 'description', 'keywords', 'logo', 'favicon', 'ogImage',
-      'profilePhoto', 'heroName', 'heroTitle', 'heroSubtitle',
-      'contactEmail', 'contactPhone', 'address', 'location',
-      'maintenanceMode', 'allowRegistration',
-    ]
+    const fieldMap: Record<string, string> = {
+      siteName: 'site_name', tagline: 'tagline', description: 'description', keywords: 'keywords',
+      logo: 'logo', favicon: 'favicon', ogImage: 'og_image',
+      profilePhoto: 'profile_photo', heroName: 'hero_name', heroTitle: 'hero_title', heroSubtitle: 'hero_subtitle',
+      contactEmail: 'contact_email', contactPhone: 'contact_phone', address: 'address', location: 'location',
+      maintenanceMode: 'maintenance_mode', allowRegistration: 'allow_registration',
+    }
     const updateData: any = {}
-    for (const field of allowedFields) {
-      if (body[field] !== undefined) {
-        updateData[field] = body[field]
+    for (const [camel, snake] of Object.entries(fieldMap)) {
+      if (body[camel] !== undefined) {
+        updateData[snake] = body[camel]
       }
     }
     if (body.socialLinks && typeof body.socialLinks === 'object') {
-      updateData.socialLinks = body.socialLinks
+      updateData.social_links = body.socialLinks
     }
     if (body.emailNotifications && typeof body.emailNotifications === 'object') {
-      updateData.emailNotifications = body.emailNotifications
+      updateData.email_notifications = body.emailNotifications
     }
     if (body.seoDefaults && typeof body.seoDefaults === 'object') {
-      updateData.seoDefaults = body.seoDefaults
+      updateData.seo_defaults = body.seoDefaults
     }
     if (body.integrations && typeof body.integrations === 'object') {
       updateData.integrations = body.integrations

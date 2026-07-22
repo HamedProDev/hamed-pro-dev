@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { createDocument, getDocuments } from '@/lib/firebase/firestore'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
+import { createDocument, getDocuments } from '@/lib/supabase/db'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     await requireAdmin(req)
-    const messages = await getDocuments('contacts', { orderBy: { field: 'createdAt', direction: 'desc' } })
+    const messages = await getDocuments('contacts', { orderBy: { field: 'created_at', direction: 'desc' } })
     return apiSuccess(messages)
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

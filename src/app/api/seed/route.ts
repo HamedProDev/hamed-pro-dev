@@ -1,37 +1,43 @@
 import { NextResponse } from 'next/server'
-import { createDocument, countDocuments } from '@/lib/firebase/firestore'
-import { getFirebaseAdmin } from '@/lib/firebase/config'
+import { createDocument, countDocuments } from '@/lib/supabase/db'
+import { createServiceClient } from '@/lib/supabase/server'
 
 export async function POST() {
   try {
     const results: string[] = []
-    const { auth: adminAuth } = getFirebaseAdmin()
+    const supabase = createServiceClient()
 
     const adminEmail = 'hamedpro.work@gmail.com'
     let adminUser: any = null
-    try {
-      adminUser = await adminAuth.getUserByEmail(adminEmail)
+    const { data: existingUsers } = await supabase.auth.admin.listUsers()
+    const found = existingUsers?.users?.find(u => u.email === adminEmail)
+    if (found) {
+      adminUser = found
       results.push('Admin user exists')
-    } catch {
-      const created = await adminAuth.createUser({
+    } else {
+      const { data, error } = await supabase.auth.admin.createUser({
         email: adminEmail,
         password: '@He00Ri#Ga4Da',
-        displayName: 'Hamed Hussein',
+        email_confirm: true,
+        user_metadata: { display_name: 'Hamed Hussein' },
       })
-      await adminAuth.setCustomUserClaims(created.uid, { role: 'admin' })
-      adminUser = created
+      adminUser = data.user
+
+      await supabase.auth.admin.updateUserById(adminUser.id, {
+        app_metadata: { role: 'admin' },
+      })
       results.push('Admin user created')
     }
 
     const projectCount = await countDocuments('projects')
     if (projectCount === 0) {
       const projects = [
-        { title: 'FarmConnect', slug: 'farmconnect', description: 'Digital marketplace connecting Rwandan farmers directly with buyers.', longDescription: 'A comprehensive platform eliminating middlemen.', category: 'large', subCategory: 'agriculture', coverImage: '', techStack: ['Next.js', 'TypeScript', 'MongoDB'], demoUrl: 'https://farmconnect.rw', status: 'live', featured: true, isPublished: true, isOpenSource: true, views: 342, likes: 56, createdBy: adminUser.id },
-        { title: 'Kwanda EMS', slug: 'kwanda-ems', description: 'Enterprise management system for Kwanda Facility operations.', longDescription: 'Full enterprise management solution.', category: 'large', subCategory: 'other', coverImage: '', techStack: ['Next.js', 'Express', 'PostgreSQL'], status: 'live', featured: true, isPublished: true, isOpenSource: false, views: 218, likes: 34, createdBy: adminUser.id },
-        { title: 'AI Health Assistant', slug: 'ai-health-assistant', description: 'ML-powered health screening tool for rural communities.', longDescription: 'Uses ML for health assessments.', category: 'large', subCategory: 'healthcare', coverImage: '', techStack: ['Python', 'TensorFlow', 'React Native'], status: 'in-progress', featured: true, isPublished: true, isOpenSource: true, views: 189, likes: 42, createdBy: adminUser.id },
-        { title: 'EduConnect Platform', slug: 'educonnect', description: 'Learning management system for schools across Rwanda.', longDescription: 'Modern LMS for Rwandan schools.', category: 'large', subCategory: 'education', coverImage: '', techStack: ['React', 'Node.js', 'Supabase'], status: 'live', featured: false, isPublished: true, isOpenSource: false, views: 156, likes: 28, createdBy: adminUser.id },
-        { title: 'PaySmart Mobile', slug: 'paysmart-mobile', description: 'Mobile payment solution for small businesses in East Africa.', longDescription: 'Digital payments for SMEs.', category: 'mini', subCategory: 'finance', coverImage: '', techStack: ['React Native', 'Firebase'], status: 'in-progress', featured: false, isPublished: true, isOpenSource: false, views: 98, likes: 15, createdBy: adminUser.id },
-        { title: 'OpenDev CLI', slug: 'opendev-cli', description: 'Command-line tool for scaffolding fullstack projects.', longDescription: 'CLI for project scaffolding.', category: 'mini', subCategory: 'other', coverImage: '', techStack: ['Go', 'TypeScript', 'Docker'], status: 'live', featured: false, isPublished: true, isOpenSource: true, views: 234, likes: 67, createdBy: adminUser.id },
+        { title: 'FarmConnect', slug: 'farmconnect', description: 'Digital marketplace connecting Rwandan farmers directly with buyers.', long_description: 'A comprehensive platform eliminating middlemen.', category: 'large', sub_category: 'agriculture', cover_image: '', tech_stack: ['Next.js', 'TypeScript', 'MongoDB'], demo_url: 'https://farmconnect.rw', status: 'live', featured: true, is_published: true, is_open_source: true, views: 342, likes: 56, created_by: adminUser.id },
+        { title: 'Kwanda EMS', slug: 'kwanda-ems', description: 'Enterprise management system for Kwanda Facility operations.', long_description: 'Full enterprise management solution.', category: 'large', sub_category: 'other', cover_image: '', tech_stack: ['Next.js', 'Express', 'PostgreSQL'], status: 'live', featured: true, is_published: true, is_open_source: false, views: 218, likes: 34, created_by: adminUser.id },
+        { title: 'AI Health Assistant', slug: 'ai-health-assistant', description: 'ML-powered health screening tool for rural communities.', long_description: 'Uses ML for health assessments.', category: 'large', sub_category: 'healthcare', cover_image: '', tech_stack: ['Python', 'TensorFlow', 'React Native'], status: 'in-progress', featured: true, is_published: true, is_open_source: true, views: 189, likes: 42, created_by: adminUser.id },
+        { title: 'EduConnect Platform', slug: 'educonnect', description: 'Learning management system for schools across Rwanda.', long_description: 'Modern LMS for Rwandan schools.', category: 'large', sub_category: 'education', cover_image: '', tech_stack: ['React', 'Node.js', 'Supabase'], status: 'live', featured: false, is_published: true, is_open_source: false, views: 156, likes: 28, created_by: adminUser.id },
+        { title: 'PaySmart Mobile', slug: 'paysmart-mobile', description: 'Mobile payment solution for small businesses in East Africa.', long_description: 'Digital payments for SMEs.', category: 'mini', sub_category: 'finance', cover_image: '', tech_stack: ['React Native', 'Firebase'], status: 'in-progress', featured: false, is_published: true, is_open_source: false, views: 98, likes: 15, created_by: adminUser.id },
+        { title: 'OpenDev CLI', slug: 'opendev-cli', description: 'Command-line tool for scaffolding fullstack projects.', long_description: 'CLI for project scaffolding.', category: 'mini', sub_category: 'other', cover_image: '', tech_stack: ['Go', 'TypeScript', 'Docker'], status: 'live', featured: false, is_published: true, is_open_source: true, views: 234, likes: 67, created_by: adminUser.id },
       ]
       await Promise.all(projects.map(p => createDocument('projects', p)))
       results.push('6 projects seeded')
@@ -42,15 +48,15 @@ export async function POST() {
     const courseCount = await countDocuments('courses')
     if (courseCount === 0) {
       const courses = [
-        { title: 'React.js — From Zero to Hero', slug: 'reactjs-from-zero-to-hero', description: 'Build modern web apps with React, Hooks, Context API.', longDescription: 'Complete React course.', category: 'Frontend', level: 'beginner', type: 'free', price: 0, duration: 8, enrolled: 245, rating: 4.9, featured: true, isPublished: true, certificate: true, tags: ['React', 'JavaScript'], coverImage: '', createdBy: adminUser.id },
-        { title: 'Node.js & Express — Complete Guide', slug: 'nodejs-express-complete-guide', description: 'Learn backend development with Node.js and Express.', longDescription: 'Master Node.js backend.', category: 'Backend', level: 'intermediate', type: 'premium', price: 59, duration: 10, enrolled: 178, rating: 4.8, featured: true, isPublished: true, certificate: true, tags: ['Node.js', 'Express'], coverImage: '', createdBy: adminUser.id },
-        { title: 'TypeScript — Master the Fundamentals', slug: 'typescript-master-fundamentals', description: 'Strongly type your JavaScript apps.', longDescription: 'Deep TypeScript dive.', category: 'Frontend', level: 'beginner', type: 'free', price: 0, duration: 4, enrolled: 312, rating: 4.9, featured: false, isPublished: true, certificate: true, tags: ['TypeScript'], coverImage: '', createdBy: adminUser.id },
-        { title: 'Python — For Developers', slug: 'python-for-developers', description: 'Learn Python for backend, automation, and AI.', longDescription: 'Practical Python course.', category: 'Backend', level: 'beginner', type: 'free', price: 0, duration: 6, enrolled: 198, rating: 4.7, featured: false, isPublished: true, certificate: true, tags: ['Python'], coverImage: '', createdBy: adminUser.id },
-        { title: 'Next.js 14 — The Complete Guide', slug: 'nextjs-14-complete-guide', description: 'Build production-ready apps with Next.js 14.', longDescription: 'Master Next.js 14.', category: 'Frontend', level: 'intermediate', type: 'premium', price: 59, duration: 7, enrolled: 156, rating: 4.8, featured: true, isPublished: true, certificate: true, tags: ['Next.js', 'React'], coverImage: '', createdBy: adminUser.id },
-        { title: 'Machine Learning A-Z', slug: 'machine-learning-az', description: 'From theory to deployment — learn ML models.', longDescription: 'Comprehensive ML course.', category: 'AI / ML', level: 'advanced', type: 'premium', price: 79, duration: 12, enrolled: 89, rating: 4.9, featured: false, isPublished: true, certificate: true, tags: ['Python', 'ML'], coverImage: '', createdBy: adminUser.id },
-        { title: 'Flutter & Dart — Build Mobile Apps', slug: 'flutter-dart-build-mobile-apps', description: 'Build cross-platform mobile apps.', longDescription: 'Complete Flutter course.', category: 'Mobile', level: 'intermediate', type: 'premium', price: 49, duration: 9, enrolled: 134, rating: 4.7, featured: false, isPublished: true, certificate: true, tags: ['Flutter', 'Dart'], coverImage: '', createdBy: adminUser.id },
-        { title: 'Docker & Kubernetes — Practical Guide', slug: 'docker-kubernetes-practical-guide', description: 'Containerization and orchestration for developers.', longDescription: 'Docker and K8s course.', category: 'DevOps', level: 'intermediate', type: 'premium', price: 59, duration: 6, enrolled: 76, rating: 4.8, featured: false, isPublished: true, certificate: true, tags: ['Docker', 'Kubernetes'], coverImage: '', createdBy: adminUser.id },
-        { title: 'Fullstack Project Bootcamp', slug: 'fullstack-project-bootcamp', description: 'Build a complete SaaS application from scratch.', longDescription: 'Hands-on SaaS bootcamp.', category: 'Frontend', level: 'advanced', type: 'premium', price: 99, duration: 15, enrolled: 67, rating: 4.9, featured: true, isPublished: true, certificate: true, tags: ['Fullstack', 'SaaS'], coverImage: '', createdBy: adminUser.id },
+        { title: 'React.js — From Zero to Hero', slug: 'reactjs-from-zero-to-hero', description: 'Build modern web apps with React, Hooks, Context API.', long_description: 'Complete React course.', category: 'Frontend', level: 'beginner', type: 'free', price: 0, duration: 8, enrolled: 245, rating: 4.9, featured: true, is_published: true, certificate: true, tags: ['React', 'JavaScript'], cover_image: '', created_by: adminUser.id },
+        { title: 'Node.js & Express — Complete Guide', slug: 'nodejs-express-complete-guide', description: 'Learn backend development with Node.js and Express.', long_description: 'Master Node.js backend.', category: 'Backend', level: 'intermediate', type: 'premium', price: 59, duration: 10, enrolled: 178, rating: 4.8, featured: true, is_published: true, certificate: true, tags: ['Node.js', 'Express'], cover_image: '', created_by: adminUser.id },
+        { title: 'TypeScript — Master the Fundamentals', slug: 'typescript-master-fundamentals', description: 'Strongly type your JavaScript apps.', long_description: 'Deep TypeScript dive.', category: 'Frontend', level: 'beginner', type: 'free', price: 0, duration: 4, enrolled: 312, rating: 4.9, featured: false, is_published: true, certificate: true, tags: ['TypeScript'], cover_image: '', created_by: adminUser.id },
+        { title: 'Python — For Developers', slug: 'python-for-developers', description: 'Learn Python for backend, automation, and AI.', long_description: 'Practical Python course.', category: 'Backend', level: 'beginner', type: 'free', price: 0, duration: 6, enrolled: 198, rating: 4.7, featured: false, is_published: true, certificate: true, tags: ['Python'], cover_image: '', created_by: adminUser.id },
+        { title: 'Next.js 14 — The Complete Guide', slug: 'nextjs-14-complete-guide', description: 'Build production-ready apps with Next.js 14.', long_description: 'Master Next.js 14.', category: 'Frontend', level: 'intermediate', type: 'premium', price: 59, duration: 7, enrolled: 156, rating: 4.8, featured: true, is_published: true, certificate: true, tags: ['Next.js', 'React'], cover_image: '', created_by: adminUser.id },
+        { title: 'Machine Learning A-Z', slug: 'machine-learning-az', description: 'From theory to deployment — learn ML models.', long_description: 'Comprehensive ML course.', category: 'AI / ML', level: 'advanced', type: 'premium', price: 79, duration: 12, enrolled: 89, rating: 4.9, featured: false, is_published: true, certificate: true, tags: ['Python', 'ML'], cover_image: '', created_by: adminUser.id },
+        { title: 'Flutter & Dart — Build Mobile Apps', slug: 'flutter-dart-build-mobile-apps', description: 'Build cross-platform mobile apps.', long_description: 'Complete Flutter course.', category: 'Mobile', level: 'intermediate', type: 'premium', price: 49, duration: 9, enrolled: 134, rating: 4.7, featured: false, is_published: true, certificate: true, tags: ['Flutter', 'Dart'], cover_image: '', created_by: adminUser.id },
+        { title: 'Docker & Kubernetes — Practical Guide', slug: 'docker-kubernetes-practical-guide', description: 'Containerization and orchestration for developers.', long_description: 'Docker and K8s course.', category: 'DevOps', level: 'intermediate', type: 'premium', price: 59, duration: 6, enrolled: 76, rating: 4.8, featured: false, is_published: true, certificate: true, tags: ['Docker', 'Kubernetes'], cover_image: '', created_by: adminUser.id },
+        { title: 'Fullstack Project Bootcamp', slug: 'fullstack-project-bootcamp', description: 'Build a complete SaaS application from scratch.', long_description: 'Hands-on SaaS bootcamp.', category: 'Frontend', level: 'advanced', type: 'premium', price: 99, duration: 15, enrolled: 67, rating: 4.9, featured: true, is_published: true, certificate: true, tags: ['Fullstack', 'SaaS'], cover_image: '', created_by: adminUser.id },
       ]
       await Promise.all(courses.map(c => createDocument('courses', c)))
       results.push('9 courses seeded')
@@ -63,12 +69,12 @@ export async function POST() {
       const now = new Date()
       const deadline = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000)
       const jobs = [
-        { title: 'Frontend Developer', company: 'TechStart Rwanda', location: 'Kigali, Rwanda', locationType: 'onsite', type: 'full-time', category: 'frontend', description: 'Build modern web applications using React and Next.js.', skills: ['React', 'TypeScript', 'Tailwind CSS'], salaryMin: 800, salaryMax: 1500, status: 'active', featured: true, isApproved: true, views: 234, applications: 18, postedBy: adminUser.id, deadline, expiresAt: deadline },
-        { title: 'Fullstack Engineer', company: 'InnoHub Africa', location: 'Remote, Africa', locationType: 'remote', type: 'full-time', category: 'fullstack', description: 'Build end-to-end solutions for agritech platforms.', skills: ['Next.js', 'Node.js', 'PostgreSQL'], salaryMin: 2000, salaryMax: 3500, status: 'active', featured: true, isApproved: true, views: 189, applications: 24, postedBy: adminUser.id, deadline, expiresAt: deadline },
-        { title: 'Mobile Developer', company: 'FarmConnect', location: 'Kigali, Rwanda', locationType: 'hybrid', type: 'full-time', category: 'mobile', description: 'Develop cross-platform mobile apps.', skills: ['React Native', 'TypeScript', 'Firebase'], salaryMin: 600, salaryMax: 1200, status: 'active', featured: false, isApproved: true, views: 156, applications: 12, postedBy: adminUser.id, deadline, expiresAt: deadline },
-        { title: 'Backend Developer', company: 'NovaSoft Solutions', location: 'Remote, Global', locationType: 'remote', type: 'contract', category: 'backend', description: 'Build scalable backend services and APIs.', skills: ['Python', 'Django', 'AWS'], salaryMin: 1500, salaryMax: 2800, status: 'active', featured: false, isApproved: true, views: 198, applications: 15, postedBy: adminUser.id, deadline, expiresAt: deadline },
-        { title: 'DevOps Engineer', company: 'CloudRwanda', location: 'Kigali, Rwanda', locationType: 'onsite', type: 'full-time', category: 'devops', description: 'Manage cloud infrastructure and CI/CD pipelines.', skills: ['Docker', 'Kubernetes', 'AWS'], salaryMin: 2500, salaryMax: 4000, status: 'active', featured: false, isApproved: true, views: 112, applications: 8, postedBy: adminUser.id, deadline, expiresAt: deadline },
-        { title: 'AI/ML Engineer', company: 'DataKigali', location: 'Hybrid, Kigali', locationType: 'hybrid', type: 'full-time', category: 'ai-ml', description: 'Build and deploy ML models for healthcare.', skills: ['Python', 'TensorFlow', 'PyTorch'], salaryMin: 3000, salaryMax: 5000, status: 'active', featured: true, isApproved: true, views: 167, applications: 11, postedBy: adminUser.id, deadline, expiresAt: deadline },
+        { title: 'Frontend Developer', company: 'TechStart Rwanda', location: 'Kigali, Rwanda', location_type: 'onsite', type: 'full-time', category: 'frontend', description: 'Build modern web applications using React and Next.js.', skills: ['React', 'TypeScript', 'Tailwind CSS'], salary_min: 800, salary_max: 1500, status: 'active', featured: true, is_approved: true, views: 234, applications: 18, posted_by: adminUser.id, deadline, expires_at: deadline },
+        { title: 'Fullstack Engineer', company: 'InnoHub Africa', location: 'Remote, Africa', location_type: 'remote', type: 'full-time', category: 'fullstack', description: 'Build end-to-end solutions for agritech platforms.', skills: ['Next.js', 'Node.js', 'PostgreSQL'], salary_min: 2000, salary_max: 3500, status: 'active', featured: true, is_approved: true, views: 189, applications: 24, posted_by: adminUser.id, deadline, expires_at: deadline },
+        { title: 'Mobile Developer', company: 'FarmConnect', location: 'Kigali, Rwanda', location_type: 'hybrid', type: 'full-time', category: 'mobile', description: 'Develop cross-platform mobile apps.', skills: ['React Native', 'TypeScript', 'Firebase'], salary_min: 600, salary_max: 1200, status: 'active', featured: false, is_approved: true, views: 156, applications: 12, posted_by: adminUser.id, deadline, expires_at: deadline },
+        { title: 'Backend Developer', company: 'NovaSoft Solutions', location: 'Remote, Global', location_type: 'remote', type: 'contract', category: 'backend', description: 'Build scalable backend services and APIs.', skills: ['Python', 'Django', 'AWS'], salary_min: 1500, salary_max: 2800, status: 'active', featured: false, is_approved: true, views: 198, applications: 15, posted_by: adminUser.id, deadline, expires_at: deadline },
+        { title: 'DevOps Engineer', company: 'CloudRwanda', location: 'Kigali, Rwanda', location_type: 'onsite', type: 'full-time', category: 'devops', description: 'Manage cloud infrastructure and CI/CD pipelines.', skills: ['Docker', 'Kubernetes', 'AWS'], salary_min: 2500, salary_max: 4000, status: 'active', featured: false, is_approved: true, views: 112, applications: 8, posted_by: adminUser.id, deadline, expires_at: deadline },
+        { title: 'AI/ML Engineer', company: 'DataKigali', location: 'Hybrid, Kigali', location_type: 'hybrid', type: 'full-time', category: 'ai-ml', description: 'Build and deploy ML models for healthcare.', skills: ['Python', 'TensorFlow', 'PyTorch'], salary_min: 3000, salary_max: 5000, status: 'active', featured: true, is_approved: true, views: 167, applications: 11, posted_by: adminUser.id, deadline, expires_at: deadline },
       ]
       await Promise.all(jobs.map(j => createDocument('jobs', j)))
       results.push('6 jobs seeded')
@@ -79,17 +85,17 @@ export async function POST() {
     const settingsCount = await countDocuments('settings')
     if (settingsCount === 0) {
       await createDocument('settings', {
-        siteName: 'HamedProDev',
+        site_name: 'HamedProDev',
         tagline: 'Fullstack & AI/ML Developer',
         description: 'I build modern web applications, mobile apps, and AI-powered solutions. Passionate about creating technology that makes a difference in Africa and beyond.',
-        heroName: 'Hamed Hussein',
-        heroTitle: 'Full Stack Developer & AI Engineer',
-        heroSubtitle: 'Building scalable solutions that make an impact.',
+        hero_name: 'Hamed Hussein',
+        hero_title: 'Full Stack Developer & AI Engineer',
+        hero_subtitle: 'Building scalable solutions that make an impact.',
         location: 'Kigali, Rwanda',
-        contactEmail: 'hamedpro.work@gmail.com',
-        contactPhone: '+250 788 123 456',
+        contact_email: 'hamedpro.work@gmail.com',
+        contact_phone: '+250 788 123 456',
         address: 'Kwanda Facility, Kigali',
-        socialLinks: {
+        social_links: {
           github: 'https://github.com/HamedProDev',
           linkedin: 'https://linkedin.com/in/hamedprodev',
           twitter: 'https://twitter.com/hamedprodev',
@@ -102,7 +108,7 @@ export async function POST() {
           tiktok: '',
         },
         integrations: {
-          whatsappNumber: '+250788123456',
+          whatsapp_number: '+250788123456',
         },
       })
       results.push('Site settings created')
@@ -113,24 +119,24 @@ export async function POST() {
     const skillCount = await countDocuments('skills')
     if (skillCount === 0) {
       const skills = [
-        { name: 'Next.js', category: 'Frontend', proficiency: 95, color: '#ffffff', order: 1, featured: true },
-        { name: 'React', category: 'Frontend', proficiency: 95, color: '#61dafb', order: 2, featured: true },
-        { name: 'TypeScript', category: 'Frontend', proficiency: 90, color: '#3178c6', order: 3, featured: true },
-        { name: 'Tailwind CSS', category: 'Frontend', proficiency: 92, color: '#06b6d4', order: 4, featured: true },
-        { name: 'HTML/CSS', category: 'Frontend', proficiency: 98, color: '#e34f26', order: 5, featured: false },
-        { name: 'Node.js', category: 'Backend', proficiency: 88, color: '#339933', order: 6, featured: true },
-        { name: 'Python', category: 'Backend', proficiency: 85, color: '#3776ab', order: 7, featured: true },
-        { name: 'Express.js', category: 'Backend', proficiency: 87, color: '#ffffff', order: 8, featured: false },
-        { name: 'MongoDB', category: 'Database', proficiency: 85, color: '#47a248', order: 9, featured: true },
-        { name: 'PostgreSQL', category: 'Database', proficiency: 80, color: '#4169e1', order: 10, featured: false },
-        { name: 'Firebase', category: 'Database', proficiency: 78, color: '#ffca28', order: 11, featured: false },
-        { name: 'Docker', category: 'DevOps', proficiency: 82, color: '#2496ed', order: 12, featured: true },
-        { name: 'AWS', category: 'DevOps', proficiency: 75, color: '#ff9900', order: 13, featured: false },
-        { name: 'Git', category: 'Tools', proficiency: 92, color: '#f05032', order: 14, featured: false },
-        { name: 'Figma', category: 'Tools', proficiency: 70, color: '#f24e1e', order: 15, featured: false },
-        { name: 'React Native', category: 'Mobile', proficiency: 80, color: '#61dafb', order: 16, featured: true },
-        { name: 'Flutter', category: 'Mobile', proficiency: 72, color: '#02569b', order: 17, featured: false },
-        { name: 'TensorFlow', category: 'AI/ML', proficiency: 70, color: '#ff6f00', order: 18, featured: false },
+        { name: 'Next.js', category: 'Frontend', proficiency: 95, color: '#ffffff', order_index: 1, featured: true },
+        { name: 'React', category: 'Frontend', proficiency: 95, color: '#61dafb', order_index: 2, featured: true },
+        { name: 'TypeScript', category: 'Frontend', proficiency: 90, color: '#3178c6', order_index: 3, featured: true },
+        { name: 'Tailwind CSS', category: 'Frontend', proficiency: 92, color: '#06b6d4', order_index: 4, featured: true },
+        { name: 'HTML/CSS', category: 'Frontend', proficiency: 98, color: '#e34f26', order_index: 5, featured: false },
+        { name: 'Node.js', category: 'Backend', proficiency: 88, color: '#339933', order_index: 6, featured: true },
+        { name: 'Python', category: 'Backend', proficiency: 85, color: '#3776ab', order_index: 7, featured: true },
+        { name: 'Express.js', category: 'Backend', proficiency: 87, color: '#ffffff', order_index: 8, featured: false },
+        { name: 'MongoDB', category: 'Database', proficiency: 85, color: '#47a248', order_index: 9, featured: true },
+        { name: 'PostgreSQL', category: 'Database', proficiency: 80, color: '#4169e1', order_index: 10, featured: false },
+        { name: 'Firebase', category: 'Database', proficiency: 78, color: '#ffca28', order_index: 11, featured: false },
+        { name: 'Docker', category: 'DevOps', proficiency: 82, color: '#2496ed', order_index: 12, featured: true },
+        { name: 'AWS', category: 'DevOps', proficiency: 75, color: '#ff9900', order_index: 13, featured: false },
+        { name: 'Git', category: 'Tools', proficiency: 92, color: '#f05032', order_index: 14, featured: false },
+        { name: 'Figma', category: 'Tools', proficiency: 70, color: '#f24e1e', order_index: 15, featured: false },
+        { name: 'React Native', category: 'Mobile', proficiency: 80, color: '#61dafb', order_index: 16, featured: true },
+        { name: 'Flutter', category: 'Mobile', proficiency: 72, color: '#02569b', order_index: 17, featured: false },
+        { name: 'TensorFlow', category: 'AI/ML', proficiency: 70, color: '#ff6f00', order_index: 18, featured: false },
       ]
       await Promise.all(skills.map(s => createDocument('skills', s)))
       results.push('18 skills seeded')
@@ -141,14 +147,14 @@ export async function POST() {
     const achievementCount = await countDocuments('achievements')
     if (achievementCount === 0) {
       const achievements = [
-        { title: 'AWS Certified Cloud Practitioner', description: 'Earned AWS Cloud Practitioner certification demonstrating cloud computing knowledge.', year: '2024', type: 'certification', order: 1, featured: true },
-        { title: 'Best Innovation Award — Rwanda Tech Summit', description: 'Won first place for FarmConnect platform at the annual Rwanda Technology Summit.', year: '2024', type: 'award', order: 2, featured: true },
-        { title: '100+ GitHub Stars on OpenDev CLI', description: 'Open-source CLI tool reached 100+ stars on GitHub, used by 500+ developers.', year: '2024', type: 'milestone', order: 3, featured: true },
-        { title: 'FarmConnect — 5000+ Farmers Onboarded', description: 'Digital marketplace platform reached milestone of 5000+ active farmers.', year: '2023', type: 'milestone', order: 4, featured: true },
-        { title: 'Google Developer Student Club Lead', description: 'Led GDSC at university, organizing workshops and hackathons for 200+ students.', year: '2023', type: 'milestone', order: 5, featured: false },
-        { title: 'MongoDB Associate Developer Certification', description: 'Certified MongoDB developer, proficient in database design and aggregation.', year: '2023', type: 'certification', order: 6, featured: false },
-        { title: 'Published Research — AI in Healthcare', description: 'Co-authored paper on ML-based health screening deployed in rural clinics.', year: '2023', type: 'publication', order: 7, featured: false },
-        { title: 'Hackathon Winner — Africa Code Week', description: 'First place at Africa Code Week hackathon for EduConnect platform.', year: '2022', type: 'award', order: 8, featured: false },
+        { title: 'AWS Certified Cloud Practitioner', description: 'Earned AWS Cloud Practitioner certification demonstrating cloud computing knowledge.', year: '2024', type: 'certification', order_index: 1, featured: true },
+        { title: 'Best Innovation Award — Rwanda Tech Summit', description: 'Won first place for FarmConnect platform at the annual Rwanda Technology Summit.', year: '2024', type: 'award', order_index: 2, featured: true },
+        { title: '100+ GitHub Stars on OpenDev CLI', description: 'Open-source CLI tool reached 100+ stars on GitHub, used by 500+ developers.', year: '2024', type: 'milestone', order_index: 3, featured: true },
+        { title: 'FarmConnect — 5000+ Farmers Onboarded', description: 'Digital marketplace platform reached milestone of 5000+ active farmers.', year: '2023', type: 'milestone', order_index: 4, featured: true },
+        { title: 'Google Developer Student Club Lead', description: 'Led GDSC at university, organizing workshops and hackathons for 200+ students.', year: '2023', type: 'milestone', order_index: 5, featured: false },
+        { title: 'MongoDB Associate Developer Certification', description: 'Certified MongoDB developer, proficient in database design and aggregation.', year: '2023', type: 'certification', order_index: 6, featured: false },
+        { title: 'Published Research — AI in Healthcare', description: 'Co-authored paper on ML-based health screening deployed in rural clinics.', year: '2023', type: 'publication', order_index: 7, featured: false },
+        { title: 'Hackathon Winner — Africa Code Week', description: 'First place at Africa Code Week hackathon for EduConnect platform.', year: '2022', type: 'award', order_index: 8, featured: false },
       ]
       await Promise.all(achievements.map(a => createDocument('achievements', a)))
       results.push('8 achievements seeded')
@@ -156,16 +162,16 @@ export async function POST() {
       results.push(`${achievementCount} achievements exist`)
     }
 
-    const siteStatsCount = await countDocuments('siteStats')
+    const siteStatsCount = await countDocuments('site_stats')
     if (siteStatsCount === 0) {
       const stats = [
-        { label: 'Projects Completed', value: 30, suffix: '+', icon: 'FolderOpen', order: 1 },
-        { label: 'GitHub Stars', value: 150, suffix: '+', icon: 'Star', order: 2 },
-        { label: 'Courses Created', value: 10, suffix: '', icon: 'BookOpen', order: 3 },
-        { label: 'Years Experience', value: 5, suffix: '', icon: 'Calendar', order: 4 },
-        { label: 'Client Satisfaction', value: 100, suffix: '%', icon: 'ThumbsUp', order: 5 },
+        { label: 'Projects Completed', value: 30, suffix: '+', icon: 'FolderOpen', order_index: 1 },
+        { label: 'GitHub Stars', value: 150, suffix: '+', icon: 'Star', order_index: 2 },
+        { label: 'Courses Created', value: 10, suffix: '', icon: 'BookOpen', order_index: 3 },
+        { label: 'Years Experience', value: 5, suffix: '', icon: 'Calendar', order_index: 4 },
+        { label: 'Client Satisfaction', value: 100, suffix: '%', icon: 'ThumbsUp', order_index: 5 },
       ]
-      await Promise.all(stats.map(s => createDocument('siteStats', s)))
+      await Promise.all(stats.map(s => createDocument('site_stats', s)))
       results.push('5 site stats seeded')
     } else {
       results.push(`${siteStatsCount} site stats exist`)
@@ -174,9 +180,9 @@ export async function POST() {
     const testimonialCount = await countDocuments('testimonials')
     if (testimonialCount === 0) {
       const testimonials = [
-        { name: 'Jean Claude', role: 'CTO', company: 'AgriTech Rwanda', content: 'Hamed delivered exceptional work on our FarmConnect platform. His fullstack skills and attention to detail are outstanding. Great communication throughout the project.', rating: 5, order: 1, featured: true },
-        { name: 'Sarah Uwase', role: 'CEO', company: 'Kwanda Facility', content: 'Hamed transformed our business operations with the Kwanda EMS system. His ability to understand complex requirements and deliver elegant solutions is remarkable.', rating: 5, order: 2, featured: true },
-        { name: 'David N.', role: 'Founder', company: 'HealthPlus', content: 'Working with Hamed was a pleasure. His technical expertise in AI/ML and fullstack development helped us build a health screening tool that reaches thousands.', rating: 5, order: 3, featured: true },
+        { name: 'Jean Claude', role: 'CTO', company: 'AgriTech Rwanda', content: 'Hamed delivered exceptional work on our FarmConnect platform. His fullstack skills and attention to detail are outstanding. Great communication throughout the project.', rating: 5, order_index: 1, featured: true },
+        { name: 'Sarah Uwase', role: 'CEO', company: 'Kwanda Facility', content: 'Hamed transformed our business operations with the Kwanda EMS system. His ability to understand complex requirements and deliver elegant solutions is remarkable.', rating: 5, order_index: 2, featured: true },
+        { name: 'David N.', role: 'Founder', company: 'HealthPlus', content: 'Working with Hamed was a pleasure. His technical expertise in AI/ML and fullstack development helped us build a health screening tool that reaches thousands.', rating: 5, order_index: 3, featured: true },
       ]
       await Promise.all(testimonials.map(t => createDocument('testimonials', t)))
       results.push('3 testimonials seeded')

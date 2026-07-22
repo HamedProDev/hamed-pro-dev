@@ -1,27 +1,19 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/lib/hooks/useAuth'
+import { useAuth } from '@/components/auth-provider'
 import Link from 'next/link'
-import { Bookmark, Loader2, MapPin, Building2, ExternalLink } from 'lucide-react'
+import { Bookmark, Loader2, MapPin, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
-interface Job {
-  _id: string
-  title: string
-  company: string
-  location: string
-  type: string
-}
-
 export default function SavedJobsPage() {
-  const { user, isLoading } = useAuth()
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [loading, setLoading] = useState(true)
+  const { user, loading } = useAuth()
+  const [jobs, setJobs] = useState<any[]>([])
+  const [fetching, setFetching] = useState(true)
 
   useEffect(() => {
-    if (session?.user) {
+    if (user) {
       fetch('/api/users/me').then(r => r.json()).then(d => {
         if (d.data?.savedJobs?.length) {
           Promise.all(
@@ -30,20 +22,20 @@ export default function SavedJobsPage() {
             )
           ).then(results => {
             setJobs(results.filter(Boolean))
-            setLoading(false)
+            setFetching(false)
           })
         } else {
-          setLoading(false)
+          setFetching(false)
         }
-      }).catch(() => setLoading(false))
+      }).catch(() => setFetching(false))
     } else {
-      setLoading(false)
+      setFetching(false)
     }
-  }, [session])
+  }, [user])
 
-  if (status === 'loading' || loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (loading || fetching) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
 
-  if (!session) {
+  if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <h1 className="text-3xl font-bold mb-4">Saved Jobs</h1>
@@ -65,8 +57,8 @@ export default function SavedJobsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {jobs.map(j => (
-            <Link key={j._id} href={`/jobs/${j._id}`}>
+          {jobs.map((j: any) => (
+            <Link key={j.id} href={`/jobs/${j.id}`}>
               <Card className="card-hover">
                 <CardContent className="p-5 flex items-center justify-between">
                   <div>
@@ -76,7 +68,7 @@ export default function SavedJobsPage() {
                       <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {j.location}</span>
                     </div>
                   </div>
-                  <Badge variant="outline">{j.type}</Badge>
+                  <Badge variant="outline">{j.job_type || j.type}</Badge>
                 </CardContent>
               </Card>
             </Link>

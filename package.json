@@ -8,13 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "seed": "npx tsx scripts/seed.ts",
-    "firebase:deploy": "firebase deploy",
-    "firebase:login": "firebase login"
+    "seed": "echo 'Use the /api/seed endpoint instead'"
   },
   "dependencies": {
-    "firebase": "^11.0.0",
-    "firebase-admin": "^12.0.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
@@ -27,6 +23,8 @@
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.3",
     "@react-email/components": "^0.0.14",
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.8",
     "@tailwindcss/typography": "^0.5.20",
     "@tanstack/react-table": "^8.20.5",
     "class-variance-authority": "^0.7.1",
@@ -35,7 +33,7 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^11.12.0",
     "lucide-react": "^0.460.0",
-    "next": "14.2.18",
+    "next": "^14.2.18",
     "next-themes": "^0.4.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",

@@ -1,22 +1,24 @@
 import { NextRequest } from 'next/server'
-import { createDocument } from '@/lib/firebase/firestore'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
-import { getFirebaseAdmin } from '@/lib/firebase/config'
+import { createServiceClient } from '@/lib/supabase/server'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function GET(req: NextRequest) {
   try {
     await requireAdmin(req)
-    const { auth: adminAuth } = getFirebaseAdmin()
-    const list = await adminAuth.listUsers()
-    const users = list.users.map(u => ({
-      id: u.uid,
-      name: u.displayName,
+    const supabase = createServiceClient()
+    const { data: users } = await supabase.auth.admin.listUsers()
+
+    const profiles = users.users.map(u => ({
+      id: u.id,
+      name: u.user_metadata?.name || '',
       email: u.email,
-      photoURL: u.photoURL,
-      role: u.customClaims?.role || 'visitor',
-      disabled: u.disabled,
+      avatar_url: u.user_metadata?.avatar_url || null,
+      role: u.user_metadata?.role || 'visitor',
+      disabled: u.banned_until ? true : false,
+      created_at: u.created_at,
     }))
-    return apiSuccess(users)
+
+    return apiSuccess(profiles)
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
@@ -25,28 +27,25 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { auth: adminAuth } = getFirebaseAdmin()
+    const supabase = createServiceClient()
 
-    const firebaseUser = await adminAuth.createUser({
+    const { data, error } = await supabase.auth.admin.createUser({
       email: body.email,
       password: body.password,
-      displayName: body.name,
+      email_confirm: true,
+      user_metadata: { name: body.name },
     })
 
-    await adminAuth.setCustomUserClaims(firebaseUser.uid, { role: 'visitor' })
-    await createDocument('users', {
-      id: firebaseUser.uid,
+    if (error) {
+      return apiError(error.message === 'User already registered' ? 'Email already registered' : error.message, 409)
+    }
+
+    return apiSuccess({
+      id: data.user.id,
       name: body.name,
       email: body.email,
-      role: 'visitor',
-      createdAt: new Date(),
-    })
-
-    return apiSuccess({ id: firebaseUser.uid, name: body.name, email: body.email }, 'User created')
+    }, 'User created')
   } catch (error: any) {
-    if (error.code === 'auth/email-already-exists') {
-      return apiError('Email already registered', 409)
-    }
     return apiError(error.message, 500)
   }
 }
