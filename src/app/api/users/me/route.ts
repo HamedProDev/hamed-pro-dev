@@ -1,24 +1,20 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth/auth'
-import { connectDB } from '@/lib/db/connect'
-import { User } from '@/lib/db/models/User'
+import { verifySession } from '@/lib/firebase/auth'
+import { getDocuments, getDocument } from '@/lib/firebase/firestore'
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const decoded = await verifySession()
+    if (!decoded?.uid) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
-    await connectDB()
-    const user = await User.findById(session.user.id)
-      .select('-password')
-      .populate('enrolledCourses.course', 'title slug coverImage')
-      .populate('savedJobs', 'title company location type')
-      .lean()
+    const users = await getDocuments('users', { filters: [{ field: 'email', operator: '==', value: decoded.email || '' }] })
+    const user = users[0] || null
     if (!user) {
       return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 })
     }
-    return NextResponse.json({ success: true, data: user })
+    const { password, ...safeUser } = user
+    return NextResponse.json({ success: true, data: safeUser })
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 })
   }

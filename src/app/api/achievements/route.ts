@@ -1,29 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import Achievement from '@/lib/db/models/Achievement'
-import { auth } from '@/lib/auth/auth'
+import { NextRequest } from 'next/server'
+import { getDocuments, createDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET() {
   try {
-    await connectDB()
-    const achievements = await Achievement.find().sort({ order: 1, createdAt: 1 })
-    return NextResponse.json({ success: true, data: achievements })
+    const achievements = await getDocuments('achievements', { orderBy: { field: 'order', direction: 'asc' } })
+    return apiSuccess(achievements)
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return apiError(error.message, 500)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session || (session.user as any)?.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
-    }
-    await connectDB()
+    await requireAdmin(request)
     const body = await request.json()
-    const achievement = await Achievement.create(body)
-    return NextResponse.json({ success: true, data: achievement }, { status: 201 })
+    const achievement = await createDocument('achievements', body)
+    return apiSuccess(achievement, 'Achievement created')
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
 }

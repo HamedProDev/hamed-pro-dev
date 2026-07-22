@@ -1,14 +1,13 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import { Course } from '@/lib/db/models/Course'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocument, updateDocument, deleteDocument, getDocuments } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await connectDB()
-    const course = await Course.findById(params.id).populate('lessons').lean()
+    const course = await getDocument('courses', params.id)
     if (!course) return apiError('Course not found', 404)
-    return apiSuccess(course)
+    const lessons = await getDocuments('lessons', { filters: [{ field: 'course', operator: '==', value: params.id }], orderBy: { field: 'order', direction: 'asc' } })
+    return apiSuccess({ ...course, lessons })
   } catch (error: any) {
     return apiError(error.message, 500)
   }
@@ -17,9 +16,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    const course = await Course.findByIdAndUpdate(params.id, body, { new: true })
+    const course = await updateDocument('courses', params.id, body)
     if (!course) return apiError('Course not found', 404)
     return apiSuccess(course, 'Course updated')
   } catch (error: any) {
@@ -30,9 +28,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
-    const course = await Course.findByIdAndDelete(params.id)
-    if (!course) return apiError('Course not found', 404)
+    await deleteDocument('courses', params.id)
     return apiSuccess(null, 'Course deleted')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

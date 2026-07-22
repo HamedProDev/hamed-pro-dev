@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Code2, Loader2 } from 'lucide-react'
-import { OAuthButtons } from '../login/oauth-buttons'
 
 export default function RegisterPage() {
   const [error, setError] = useState('')
@@ -58,11 +57,6 @@ export default function RegisterPage() {
         <CardDescription>Join the HamedProDev community</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <OAuthButtons />
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-dark-500" /></div>
-          <div className="relative flex justify-center text-xs"><span className="bg-dark-700 px-2 text-text-muted">or</span></div>
-        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div><Label>Name</Label><Input name="name" required /></div>
           <div><Label>Email</Label><Input type="email" name="email" required /></div>

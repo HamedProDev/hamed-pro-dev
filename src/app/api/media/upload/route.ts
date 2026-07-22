@@ -1,29 +1,31 @@
 import { NextRequest } from 'next/server'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
-import crypto from 'crypto'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function POST(req: NextRequest) {
   try {
     await requireAdmin(req)
-    const body = await req.json()
-    const timestamp = body.timestamp || Math.round(Date.now() / 1000)
-    const folder = body.folder || 'hamedpro'
+    const formData = await req.formData()
+    const file = formData.get('file') as File | null
 
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME
-    const apiKey = process.env.CLOUDINARY_API_KEY
-    const apiSecret = process.env.CLOUDINARY_API_SECRET
-
-    if (!cloudName || !apiKey || !apiSecret) {
-      return apiError('Cloudinary not configured', 500)
+    if (!file) {
+      return apiError('No file provided', 400)
     }
 
-    const paramsToSign = `folder=${folder}&timestamp=${timestamp}`
-    const signature = crypto
-      .createHash('sha1')
-      .update(paramsToSign + apiSecret)
-      .digest('hex')
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const { getFirebaseAdmin } = await import('@/lib/firebase/config')
+    const { storage } = getFirebaseAdmin()
+    const bucket = storage.bucket()
+    const filename = `${Date.now()}-${file.name}`
+    const fileRef = bucket.file(`hamedpro/${filename}`)
 
-    return apiSuccess({ timestamp, signature, api_key: apiKey, cloud_name: cloudName })
+    await fileRef.save(buffer, {
+      metadata: { contentType: file.type },
+    })
+
+    await fileRef.makePublic()
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/hamedpro/${filename}`
+
+    return apiSuccess({ url: publicUrl, filename })
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }

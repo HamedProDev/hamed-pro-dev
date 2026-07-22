@@ -1,5 +1,5 @@
 'use client'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/hooks/useAuth'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -10,11 +10,11 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils/cn'
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession()
+  const { user, isLoading } = useAuth()
   const [stats, setStats] = useState({ courses: 0, jobs: 0, certs: 0 })
 
   useEffect(() => {
-    if (session?.user) {
+    if (user) {
       fetch('/api/users/me').then(r => r.json()).then(d => {
         if (d.data) {
           setStats({
@@ -25,13 +25,13 @@ export default function DashboardPage() {
         }
       }).catch(() => {})
     }
-  }, [session])
+  }, [user])
 
-  if (status === 'loading') {
+  if (isLoading) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-brand-primary" /></div>
   }
 
-  if (!session) {
+  if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
@@ -41,7 +41,7 @@ export default function DashboardPage() {
     )
   }
 
-  const user = session.user
+  const initials = user.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'
   const initials = user.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'
 
   return (

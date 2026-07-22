@@ -1,14 +1,12 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import { Contact } from '@/lib/db/models/Contact'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { createDocument, getDocuments } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function POST(req: NextRequest) {
   try {
-    await connectDB()
     const body = await req.json()
     if (!body.name || !body.email || !body.message) return apiError('Name, email, and message are required')
-    await Contact.create(body)
+    await createDocument('contacts', body)
     return apiSuccess(null, 'Message sent successfully')
   } catch (error: any) {
     return apiError(error.message, 500)
@@ -17,9 +15,8 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await requireAdmin(req)
-    await connectDB()
-    const messages = await Contact.find().sort({ createdAt: -1 }).lean()
+    await requireAdmin(req)
+    const messages = await getDocuments('contacts', { orderBy: { field: 'createdAt', direction: 'desc' } })
     return apiSuccess(messages)
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

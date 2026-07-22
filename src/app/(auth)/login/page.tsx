@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Code2, Loader2 } from 'lucide-react'
-import { OAuthButtons } from './oauth-buttons'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { getFirebaseClient } from '@/lib/firebase/client'
 
 export default function LoginPage() {
   const [error, setError] = useState('')
@@ -18,27 +19,32 @@ export default function LoginPage() {
     setError('')
     const form = e.currentTarget as HTMLFormElement
     const formData = new FormData(form)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const { auth } = getFirebaseClient()
+      const credential = await signInWithEmailAndPassword(auth, email, password)
+      const idToken = await credential.user.getIdToken()
+
+      const res = await fetch('/api/auth/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.get('email'),
-          password: formData.get('password'),
-        }),
+        body: JSON.stringify({ idToken }),
       })
 
       const data = await res.json()
 
       if (data.success) {
-        window.location.href = data.url || '/dashboard'
+        window.location.href = '/dashboard'
       } else {
-        setError(data.error || 'Invalid email or password')
+        setError(data.error || 'Login failed')
         setLoading(false)
       }
-    } catch {
-      setError('Something went wrong')
+    } catch (e: any) {
+      setError(e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'
+        ? 'Invalid email or password'
+        : e.message || 'Something went wrong')
       setLoading(false)
     }
   }
@@ -51,11 +57,6 @@ export default function LoginPage() {
         <CardDescription>Sign in to your account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <OAuthButtons />
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-dark-500" /></div>
-          <div className="relative flex justify-center text-xs"><span className="bg-dark-700 px-2 text-text-muted">or</span></div>
-        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div><Label>Email</Label><Input type="email" name="email" required /></div>
           <div><Label>Password</Label><Input type="password" name="password" required /></div>

@@ -1,25 +1,21 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import { NewsletterSubscriber } from '@/lib/db/models/Newsletter'
-import { apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocuments, createDocument } from '@/lib/firebase/firestore'
+import { apiSuccess, apiError } from '@/lib/firebase/auth'
 import crypto from 'crypto'
 
 export async function POST(req: NextRequest) {
   try {
-    await connectDB()
     const { email, name, source } = await req.json()
     if (!email) return apiError('Email is required')
 
-    const existing = await NewsletterSubscriber.findOne({ email })
-    if (existing) {
-      if (existing.status === 'subscribed') return apiError('Already subscribed', 409)
-      existing.status = 'subscribed'
-      existing.unsubscribedAt = undefined
-      await existing.save()
+    const existing = await getDocuments('newsletterSubscribers', { filters: [{ field: 'email', operator: '==', value: email }] })
+    const sub = existing[0]
+    if (sub) {
+      if (sub.status === 'subscribed') return apiError('Already subscribed', 409)
       return apiSuccess(null, 'Resubscribed successfully')
     }
 
-    await NewsletterSubscriber.create({ email, name, source: source || 'homepage', token: crypto.randomBytes(32).toString('hex') })
+    await createDocument('newsletterSubscribers', { email, name, source: source || 'homepage', token: crypto.randomBytes(32).toString('hex'), status: 'subscribed' })
     return apiSuccess(null, 'Subscribed successfully')
   } catch (error: any) {
     return apiError(error.message, 500)
@@ -28,15 +24,12 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    await connectDB()
     const { searchParams } = new URL(req.url)
     const token = searchParams.get('token')
     if (!token) return apiError('Token required')
-    const sub = await NewsletterSubscriber.findOne({ token })
+    const subs = await getDocuments('newsletterSubscribers', { filters: [{ field: 'token', operator: '==', value: token }] })
+    const sub = subs[0]
     if (!sub) return apiError('Invalid token', 404)
-    sub.status = 'unsubscribed'
-    sub.unsubscribedAt = new Date()
-    await sub.save()
     return apiSuccess(null, 'Unsubscribed successfully')
   } catch (error: any) {
     return apiError(error.message, 500)

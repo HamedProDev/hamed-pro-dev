@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { X, LogIn, UserPlus } from 'lucide-react'
 import { useAuth } from '@/lib/hooks/useAuth'
-import { signOut } from 'next-auth/react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
@@ -66,7 +65,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                   Admin Panel
                 </Link>
               )}
-              <Button variant="ghost" className="w-full justify-start" onClick={() => { signOut({ callbackUrl: '/' }); onClose() }}>
+              <Button variant="ghost" className="w-full justify-start" onClick={() => { signOut(); onClose() }}>
                 Sign Out
               </Button>
             </div>

@@ -1,12 +1,10 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import Organization from '@/lib/db/models/Organization'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocument, updateDocument, deleteDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await connectDB()
-    const org = await Organization.findById(params.id).lean()
+    const org = await getDocument('organizations', params.id)
     if (!org) return apiError('Not found', 404)
     return apiSuccess(org)
   } catch (error: any) {
@@ -17,9 +15,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    const org = await Organization.findByIdAndUpdate(params.id, body, { new: true })
+    const org = await updateDocument('organizations', params.id, body)
     if (!org) return apiError('Not found', 404)
     return apiSuccess(org, 'Organization updated')
   } catch (error: any) {
@@ -30,9 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
-    const org = await Organization.findByIdAndDelete(params.id)
-    if (!org) return apiError('Not found', 404)
+    await deleteDocument('organizations', params.id)
     return apiSuccess(null, 'Organization deleted')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

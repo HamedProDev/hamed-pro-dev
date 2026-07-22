@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -10,17 +10,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Save, Loader2, ArrowLeft } from 'lucide-react'
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', bio: '' })
 
   useEffect(() => {
-    if (session?.user) {
+    if (user) {
       setForm({
-        name: (session.user as any).name || '',
-        email: (session.user as any).email || '',
+        name: user.name || '',
+        email: user.email || '',
         bio: '',
       })
       fetch('/api/users/me').then(r => r.json()).then(d => {
@@ -29,11 +29,11 @@ export default function ProfilePage() {
         }
       }).catch(() => {})
     }
-  }, [session])
+  }, [user])
 
-  if (status === 'loading') return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (isLoading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
 
-  if (!session) {
+  if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <h1 className="text-3xl font-bold mb-4">My Profile</h1>

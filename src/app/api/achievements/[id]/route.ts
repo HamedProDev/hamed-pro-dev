@@ -1,53 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import Achievement from '@/lib/db/models/Achievement'
-import { auth } from '@/lib/auth/auth'
+import { NextRequest } from 'next/server'
+import { getDocument, updateDocument, deleteDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await connectDB()
-    const achievement = await Achievement.findById(params.id)
-    if (!achievement) {
-      return NextResponse.json({ success: false, error: 'Achievement not found' }, { status: 404 })
-    }
-    return NextResponse.json({ success: true, data: achievement })
+    const achievement = await getDocument('achievements', params.id)
+    if (!achievement) return apiError('Achievement not found', 404)
+    return apiSuccess(achievement)
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return apiError(error.message, 500)
   }
 }
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const session = await auth()
-    if (!session || (session.user as any)?.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
-    }
-    await connectDB()
+    await requireAdmin(request)
     const body = await request.json()
-    const achievement = await Achievement.findByIdAndUpdate(params.id, body, { new: true })
-    if (!achievement) {
-      return NextResponse.json({ success: false, error: 'Achievement not found' }, { status: 404 })
-    }
-    return NextResponse.json({ success: true, data: achievement })
+    const achievement = await updateDocument('achievements', params.id, body)
+    if (!achievement) return apiError('Achievement not found', 404)
+    return apiSuccess(achievement, 'Achievement updated')
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const session = await auth()
-    if (!session || (session.user as any)?.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
-    }
-    await connectDB()
-    const achievement = await Achievement.findByIdAndDelete(params.id)
-    if (!achievement) {
-      return NextResponse.json({ success: false, error: 'Achievement not found' }, { status: 404 })
-    }
-    return NextResponse.json({ success: true, data: achievement })
+    await requireAdmin(request)
+    await deleteDocument('achievements', params.id)
+    return apiSuccess(null, 'Achievement deleted')
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
 }
 

@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
-import { Upload, X, Image as ImageIcon, Loader2, Link as LinkIcon } from 'lucide-react'
+import { Upload, X, Loader2, Link as LinkIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils/cn'
@@ -8,57 +8,36 @@ import { cn } from '@/lib/utils/cn'
 interface ImageUploadProps {
   value: string
   onChange: (url: string) => void
-  folder?: string
   className?: string
 }
 
-export function ImageUpload({ value, onChange, folder = 'hamedpro', className }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState('')
   const [urlInput, setUrlInput] = useState('')
-  const [mode, setMode] = useState<'upload' | 'url'>(value?.startsWith('http') ? 'upload' : 'upload')
+  const [mode, setMode] = useState<'upload' | 'url'>('upload')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const upload = async (file: File) => {
     setUploading(true)
     setError('')
     try {
-      const timestamp = Math.round(Date.now() / 1000)
-      const sigRes = await fetch('/api/media/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ folder, timestamp }),
-      })
-      const sigData = await sigRes.json()
-      if (!sigData.success) {
-        setError('Upload config error: ' + (sigData.error || 'unknown'))
-        setUploading(false)
-        return
-      }
-      const { signature, api_key, cloud_name } = sigData.data
-
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('folder', folder)
-      formData.append('timestamp', String(timestamp))
-      formData.append('api_key', api_key)
-      formData.append('signature', signature)
-      formData.append('cloud_name', cloud_name)
 
-      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+      const res = await fetch('/api/media/upload', {
         method: 'POST',
         body: formData,
       })
-      const uploaded = await uploadRes.json()
-      if (uploaded.secure_url) {
-        onChange(uploaded.secure_url)
+      const data = await res.json()
+      if (data.success && data.data?.url) {
+        onChange(data.data.url)
       } else {
-        setError(uploaded.error?.message || 'Upload failed. Try URL mode instead.')
+        setError(data.error || 'Upload failed.')
       }
-    } catch (err) {
+    } catch {
       setError('Upload failed. Try URL mode instead.')
-      console.error('Upload failed:', err)
     }
     setUploading(false)
   }
@@ -86,7 +65,6 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
 
   return (
     <div className={cn('space-y-2', className)}>
-      {/* Mode toggle */}
       <div className="flex gap-2">
         <button type="button" onClick={() => setMode('upload')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'upload' ? 'bg-blue-500/10 text-blue-500' : 'text-text-muted hover:text-text-primary'}`}>
           <Upload className="h-3 w-3 inline mr-1" /> Upload
@@ -96,7 +74,6 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
         </button>
       </div>
 
-      {/* Current image preview */}
       {value && (
         <div className="relative group rounded-xl overflow-hidden border border-border-primary">
           <img src={value} alt="Uploaded" className="w-full h-48 object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
@@ -109,7 +86,6 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
         </div>
       )}
 
-      {/* Upload mode */}
       {!value && mode === 'upload' && (
         <div
           className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-blue-500 bg-blue-500/5' : 'border-border-primary hover:border-blue-500/30')}
@@ -132,7 +108,6 @@ export function ImageUpload({ value, onChange, folder = 'hamedpro', className }:
         </div>
       )}
 
-      {/* URL mode */}
       {!value && mode === 'url' && (
         <div className="flex gap-2">
           <Input

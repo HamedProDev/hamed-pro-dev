@@ -1,12 +1,10 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import { Project } from '@/lib/db/models/Project'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocument, updateDocument, deleteDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await connectDB()
-    const project = await Project.findById(params.id).lean()
+    const project = await getDocument('projects', params.id)
     if (!project) return apiError('Project not found', 404)
     return apiSuccess(project)
   } catch (error: any) {
@@ -17,9 +15,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    const project = await Project.findByIdAndUpdate(params.id, body, { new: true })
+    const project = await updateDocument('projects', params.id, body)
     if (!project) return apiError('Project not found', 404)
     return apiSuccess(project, 'Project updated')
   } catch (error: any) {
@@ -30,9 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
-    const project = await Project.findByIdAndDelete(params.id)
-    if (!project) return apiError('Project not found', 404)
+    await deleteDocument('projects', params.id)
     return apiSuccess(null, 'Project deleted')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

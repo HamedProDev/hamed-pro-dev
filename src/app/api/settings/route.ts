@@ -1,16 +1,13 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import { SiteSettings } from '@/lib/db/models/SiteSettings'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocuments, createDocument, updateDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 async function getSettings() {
-  await connectDB()
-  let settings = await SiteSettings.findOne().lean()
-  if (!settings) {
-    const created = await SiteSettings.create({})
-    settings = created.toObject()
+  const docs = await getDocuments('settings')
+  if (docs.length === 0) {
+    return await createDocument('settings', {})
   }
-  return settings
+  return docs[0]
 }
 
 async function handleGet() {
@@ -25,39 +22,38 @@ async function handleGet() {
 async function handleSave(req: NextRequest) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    let settings = await SiteSettings.findOne()
-    if (!settings) {
-      settings = await SiteSettings.create(body)
-    } else {
-      const allowedFields = [
-        'siteName', 'tagline', 'description', 'keywords', 'logo', 'favicon', 'ogImage',
-        'profilePhoto', 'heroName', 'heroTitle', 'heroSubtitle',
-        'contactEmail', 'contactPhone', 'address', 'location',
-        'maintenanceMode', 'allowRegistration',
-      ]
-      for (const field of allowedFields) {
-        if (body[field] !== undefined) {
-          settings.set(field, body[field])
-        }
-      }
-      if (body.socialLinks && typeof body.socialLinks === 'object') {
-        settings.set('socialLinks', body.socialLinks)
-      }
-      if (body.emailNotifications && typeof body.emailNotifications === 'object') {
-        settings.set('emailNotifications', body.emailNotifications)
-      }
-      if (body.seoDefaults && typeof body.seoDefaults === 'object') {
-        settings.set('seoDefaults', body.seoDefaults)
-      }
-      if (body.integrations && typeof body.integrations === 'object') {
-        settings.set('integrations', body.integrations)
-      }
-      await settings.save()
+    const existing = await getDocuments('settings')
+    if (existing.length === 0) {
+      const settings = await createDocument('settings', body)
+      return apiSuccess(settings, 'Settings updated')
     }
-    const plain = settings.toObject()
-    return apiSuccess(plain, 'Settings updated')
+    const allowedFields = [
+      'siteName', 'tagline', 'description', 'keywords', 'logo', 'favicon', 'ogImage',
+      'profilePhoto', 'heroName', 'heroTitle', 'heroSubtitle',
+      'contactEmail', 'contactPhone', 'address', 'location',
+      'maintenanceMode', 'allowRegistration',
+    ]
+    const updateData: any = {}
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        updateData[field] = body[field]
+      }
+    }
+    if (body.socialLinks && typeof body.socialLinks === 'object') {
+      updateData.socialLinks = body.socialLinks
+    }
+    if (body.emailNotifications && typeof body.emailNotifications === 'object') {
+      updateData.emailNotifications = body.emailNotifications
+    }
+    if (body.seoDefaults && typeof body.seoDefaults === 'object') {
+      updateData.seoDefaults = body.seoDefaults
+    }
+    if (body.integrations && typeof body.integrations === 'object') {
+      updateData.integrations = body.integrations
+    }
+    const settings = await updateDocument('settings', existing[0].id, updateData)
+    return apiSuccess(settings, 'Settings updated')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }

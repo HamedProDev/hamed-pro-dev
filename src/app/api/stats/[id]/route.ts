@@ -1,12 +1,10 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import SiteStats from '@/lib/db/models/SiteStats'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocument, updateDocument, deleteDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await connectDB()
-    const stat = await SiteStats.findById(params.id).lean()
+    const stat = await getDocument('siteStats', params.id)
     if (!stat) return apiError('Not found', 404)
     return apiSuccess(stat)
   } catch (error: any) {
@@ -17,9 +15,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    const stat = await SiteStats.findByIdAndUpdate(params.id, body, { new: true })
+    const stat = await updateDocument('siteStats', params.id, body)
     if (!stat) return apiError('Not found', 404)
     return apiSuccess(stat, 'Stat updated')
   } catch (error: any) {
@@ -30,9 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
-    const stat = await SiteStats.findByIdAndDelete(params.id)
-    if (!stat) return apiError('Not found', 404)
+    await deleteDocument('siteStats', params.id)
     return apiSuccess(null, 'Stat deleted')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

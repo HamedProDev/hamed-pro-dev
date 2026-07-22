@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/hooks/useAuth'
 import Link from 'next/link'
 import { BookOpen, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -16,7 +16,7 @@ interface Course {
 }
 
 export default function MyCoursesPage() {
-  const { data: session, status } = useSession()
+  const { user, isLoading } = useAuth()
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
 

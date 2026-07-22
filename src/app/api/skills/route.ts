@@ -1,29 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import Skill from '@/lib/db/models/Skill'
-import { auth } from '@/lib/auth/auth'
+import { NextRequest } from 'next/server'
+import { getDocuments, createDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET() {
   try {
-    await connectDB()
-    const skills = await Skill.find().sort({ order: 1, createdAt: 1 })
-    return NextResponse.json({ success: true, data: skills })
+    const skills = await getDocuments('skills', { orderBy: { field: 'order', direction: 'asc' } })
+    return apiSuccess(skills)
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return apiError(error.message, 500)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session || (session.user as any)?.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
-    }
-    await connectDB()
+    await requireAdmin(request)
     const body = await request.json()
-    const skill = await Skill.create(body)
-    return NextResponse.json({ success: true, data: skill }, { status: 201 })
+    const skill = await createDocument('skills', body)
+    return apiSuccess(skill, 'Skill created')
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
 }

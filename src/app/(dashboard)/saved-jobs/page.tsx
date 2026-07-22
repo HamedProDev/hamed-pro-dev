@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/hooks/useAuth'
 import Link from 'next/link'
 import { Bookmark, Loader2, MapPin, Building2, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -16,7 +16,7 @@ interface Job {
 }
 
 export default function SavedJobsPage() {
-  const { data: session, status } = useSession()
+  const { user, isLoading } = useAuth()
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
 

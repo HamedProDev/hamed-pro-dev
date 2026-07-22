@@ -1,12 +1,10 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import { Job } from '@/lib/db/models/Job'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocument, updateDocument, deleteDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await connectDB()
-    const job = await Job.findById(params.id).lean()
+    const job = await getDocument('jobs', params.id)
     if (!job) return apiError('Job not found', 404)
     return apiSuccess(job)
   } catch (error: any) {
@@ -17,9 +15,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    const job = await Job.findByIdAndUpdate(params.id, body, { new: true })
+    const job = await updateDocument('jobs', params.id, body)
     if (!job) return apiError('Job not found', 404)
     return apiSuccess(job, 'Job updated')
   } catch (error: any) {
@@ -30,9 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
-    const job = await Job.findByIdAndDelete(params.id)
-    if (!job) return apiError('Job not found', 404)
+    await deleteDocument('jobs', params.id)
     return apiSuccess(null, 'Job deleted')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

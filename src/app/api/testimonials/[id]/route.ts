@@ -1,12 +1,10 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import Testimonial from '@/lib/db/models/Testimonial'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocument, updateDocument, deleteDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await connectDB()
-    const testimonial = await Testimonial.findById(params.id).lean()
+    const testimonial = await getDocument('testimonials', params.id)
     if (!testimonial) return apiError('Not found', 404)
     return apiSuccess(testimonial)
   } catch (error: any) {
@@ -17,9 +15,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    const testimonial = await Testimonial.findByIdAndUpdate(params.id, body, { new: true })
+    const testimonial = await updateDocument('testimonials', params.id, body)
     if (!testimonial) return apiError('Not found', 404)
     return apiSuccess(testimonial, 'Testimonial updated')
   } catch (error: any) {
@@ -30,9 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
-    const testimonial = await Testimonial.findByIdAndDelete(params.id)
-    if (!testimonial) return apiError('Not found', 404)
+    await deleteDocument('testimonials', params.id)
     return apiSuccess(null, 'Testimonial deleted')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

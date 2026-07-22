@@ -1,13 +1,11 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import { User } from '@/lib/db/models/User'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocument, updateDocument, deleteDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
-    const user = await User.findById(params.id).lean()
+    const user = await getDocument('users', params.id)
     if (!user) return apiError('User not found', 404)
     return apiSuccess(user)
   } catch (error: any) {
@@ -18,9 +16,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    const user = await User.findByIdAndUpdate(params.id, body, { new: true })
+    const user = await updateDocument('users', params.id, body)
     if (!user) return apiError('User not found', 404)
     return apiSuccess(user, 'User updated')
   } catch (error: any) {
@@ -31,8 +28,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    await connectDB()
-    await User.findByIdAndDelete(params.id)
+    await deleteDocument('users', params.id)
     return apiSuccess(null, 'User deleted')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

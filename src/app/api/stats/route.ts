@@ -1,12 +1,10 @@
 import { NextRequest } from 'next/server'
-import { connectDB } from '@/lib/db/connect'
-import SiteStats from '@/lib/db/models/SiteStats'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/auth/middleware'
+import { getDocuments, createDocument } from '@/lib/firebase/firestore'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/firebase/auth'
 
 export async function GET() {
   try {
-    await connectDB()
-    const stats = await SiteStats.find().sort({ order: 1 }).lean()
+    const stats = await getDocuments('siteStats', { orderBy: { field: 'order', direction: 'asc' } })
     return apiSuccess(stats)
   } catch (error: any) {
     return apiError(error.message, 500)
@@ -16,9 +14,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     await requireAdmin(req)
-    await connectDB()
     const body = await req.json()
-    const stat = await SiteStats.create(body)
+    const stat = await createDocument('siteStats', body)
     return apiSuccess(stat, 'Stat created')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
