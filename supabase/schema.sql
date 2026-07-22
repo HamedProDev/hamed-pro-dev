@@ -191,11 +191,30 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Settings (key-value store)
+-- Settings
 CREATE TABLE IF NOT EXISTS settings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  key TEXT UNIQUE NOT NULL,
-  value JSONB NOT NULL DEFAULT '{}',
+  site_name TEXT,
+  tagline TEXT,
+  description TEXT,
+  keywords TEXT,
+  logo TEXT,
+  favicon TEXT,
+  og_image TEXT,
+  profile_photo TEXT,
+  hero_name TEXT,
+  hero_title TEXT,
+  hero_subtitle TEXT,
+  contact_email TEXT,
+  contact_phone TEXT,
+  address TEXT,
+  location TEXT,
+  maintenance_mode BOOLEAN DEFAULT false,
+  allow_registration BOOLEAN DEFAULT true,
+  social_links JSONB DEFAULT '{}',
+  email_notifications JSONB DEFAULT '{}',
+  seo_defaults JSONB DEFAULT '{}',
+  integrations JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

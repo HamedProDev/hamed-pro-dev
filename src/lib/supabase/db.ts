@@ -51,8 +51,8 @@ export async function getDocuments(table: string, options: QueryOptions = {}): P
   return (data || []) as any[]
 }
 
-export async function createDocument(table: string, data: Record<string, any>): Promise<any> {
-  const supabase = createClient()
+export async function createDocument(table: string, data: Record<string, any>, useServiceRole?: boolean): Promise<any> {
+  const supabase = useServiceRole ? createServiceClient() : createClient()
   const { data: result, error } = await supabase.from(table).insert(data).select().single()
   if (error) throw error
   return result as any
