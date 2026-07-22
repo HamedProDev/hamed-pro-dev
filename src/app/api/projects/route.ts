@@ -39,7 +39,21 @@ export async function POST(req: NextRequest) {
     await requireAdmin(req)
     const body = await req.json()
     const slug = body.slug || generateSlug(body.title)
-    const project = await createDocument('projects', { ...body, slug })
+    const project = await createDocument('projects', {
+      title: body.title,
+      slug,
+      description: body.description,
+      content: body.longDescription || body.content,
+      image_url: body.coverImage || body.image_url,
+      category: body.subCategory || body.category,
+      tags: body.tags || [],
+      tech_stack: Array.isArray(body.techStack) ? body.techStack : (typeof body.techStack === 'string' ? body.techStack.split(',').map((t: string) => t.trim()).filter(Boolean) : []),
+      demo_url: body.demoUrl || body.demo_url,
+      github_url: body.sourceUrl || body.github_url,
+      featured: body.featured ?? false,
+      is_published: body.isPublished ?? body.is_published ?? true,
+      order_index: body.order_index ?? 0,
+    }, true)
     return apiSuccess(project, 'Project created')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
