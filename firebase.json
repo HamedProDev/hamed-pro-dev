@@ -6,38 +6,15 @@
   "storage": {
     "rules": "storage.rules"
   },
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs20"
-  },
   "hosting": {
     "site": "hamedprodev",
-    "public": ".next",
+    "public": "public",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrites": [
+    "redirects": [
       {
-        "source": "/_next/static/{file}",
-        "destination": "/_next/static/{file}"
-      },
-      {
-        "source": "/static/{file}",
-        "destination": "/static/{file}"
-      },
-      {
-        "source": "/favicon.ico",
-        "destination": "/favicon.ico"
-      },
-      {
-        "source": "/robots.txt",
-        "destination": "/robots.txt"
-      },
-      {
-        "source": "/sitemap.xml",
-        "destination": "/sitemap.xml"
-      },
-      {
-        "source": "/**",
-        "function": "nextjs"
+        "source": "**",
+        "destination": "https://YOUR_VERCEL_DOMAIN.vercel.app",
+        "type": 302
       }
     ]
   }
