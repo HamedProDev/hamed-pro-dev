@@ -13,7 +13,7 @@
     "redirects": [
       {
         "source": "**",
-        "destination": "https://YOUR_VERCEL_DOMAIN.vercel.app",
+        "destination": "https://hamedprodev.vercel.app",
         "type": 302
       }
     ]
