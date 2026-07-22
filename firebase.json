@@ -5,5 +5,40 @@
   },
   "storage": {
     "rules": "storage.rules"
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20"
+  },
+  "hosting": {
+    "site": "hamedprodev",
+    "public": ".next",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "/_next/static/{file}",
+        "destination": "/_next/static/{file}"
+      },
+      {
+        "source": "/static/{file}",
+        "destination": "/static/{file}"
+      },
+      {
+        "source": "/favicon.ico",
+        "destination": "/favicon.ico"
+      },
+      {
+        "source": "/robots.txt",
+        "destination": "/robots.txt"
+      },
+      {
+        "source": "/sitemap.xml",
+        "destination": "/sitemap.xml"
+      },
+      {
+        "source": "/**",
+        "function": "nextjs"
+      }
+    ]
   }
 }

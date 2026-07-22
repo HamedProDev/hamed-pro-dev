@@ -1,0 +1,19 @@
+{
+  "name": "hamedpro-functions",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "build": "cd .. && npm run build",
+    "deploy": "cd .. && npm run build && firebase deploy --only functions,hosting"
+  },
+  "dependencies": {
+    "firebase-functions": "^6.0.0",
+    "next": "14.2.18",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
+}
