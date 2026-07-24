@@ -29,6 +29,7 @@ CREATE TABLE settings (
 );
 
 ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Admins can do everything on settings" ON settings FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on settings" ON settings;
+CREATE POLICY "Admins can do everything on settings" ON settings FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updated_at();
