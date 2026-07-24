@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, createContext, useContext, ReactNode, useMemo } from 'react'
+import { useState, useEffect, createContext, useContext, ReactNode, useRef } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 
 const AdminAuthContext = createContext<{
@@ -15,15 +15,9 @@ export function useAdminAuth() {
 }
 
 const ADMIN_PASSWORD = '@He00Ri#Ga4Da'
+const ADMIN_PIN = '19890'
 const ADMIN_COOKIE = 'admin-auth-gate'
 const ADMIN_COOKIE_VALUE = 'hamedpro-admin-verified'
-
-function generatePuzzle() {
-  const count = 5
-  const numbers = Array.from({ length: count }, (_, i) => i + 1)
-  const shuffled = [...numbers].sort(() => Math.random() - 0.5)
-  return { numbers, shuffled, target: numbers }
-}
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false)
@@ -60,38 +54,69 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
 export function AdminGate({ children }: { children: ReactNode }) {
   const { isAdmin, loading, unlock } = useAdminAuth()
-  const [phase, setPhase] = useState<'puzzle' | 'password'>('puzzle')
+  const [phase, setPhase] = useState<'pin' | 'password'>('pin')
+  const [pin, setPin] = useState(['', '', '', '', ''])
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
   const [checking, setChecking] = useState(false)
-  const [puzzle, setPuzzle] = useState(generatePuzzle)
-  const [selected, setSelected] = useState<number[]>([])
-  const [puzzleError, setPuzzleError] = useState(false)
+  const [shake, setShake] = useState(false)
+  const pinRefs = useRef<(HTMLInputElement | null)[]>([])
 
-  const handleNumberClick = (num: number) => {
-    if (selected.includes(num)) return
-    const nextIndex = selected.length
-    if (puzzle.target[nextIndex] !== num) {
-      setPuzzleError(true)
-      setSelected([])
-      setTimeout(() => {
-        setPuzzleError(false)
-        setPuzzle(generatePuzzle())
-      }, 800)
-      return
+  const handlePinChange = (index: number, value: string) => {
+    if (value.length > 1) value = value.slice(-1)
+    if (value && !/^\d$/.test(value)) return
+
+    const newPin = [...pin]
+    newPin[index] = value
+    setPin(newPin)
+    setError(false)
+
+    if (value && index < 4) {
+      pinRefs.current[index + 1]?.focus()
     }
-    const next = [...selected, num]
-    setSelected(next)
-    if (next.length === puzzle.target.length) {
-      setTimeout(() => setPhase('password'), 400)
+
+    if (newPin.every(d => d !== '')) {
+      const entered = newPin.join('')
+      if (entered === ADMIN_PIN) {
+        setTimeout(() => setPhase('password'), 300)
+      } else {
+        setShake(true)
+        setError(true)
+        setTimeout(() => {
+          setShake(false)
+          setPin(['', '', '', '', ''])
+          pinRefs.current[0]?.focus()
+        }, 600)
+      }
     }
   }
 
-  const isNumberSelected = (num: number) => selected.includes(num)
-  const isNumberCorrect = (num: number) => {
-    const idx = selected.indexOf(num)
-    return idx !== -1 && puzzle.target[idx] === num
+  const handlePinKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !pin[index] && index > 0) {
+      pinRefs.current[index - 1]?.focus()
+    }
+  }
+
+  const handlePinPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault()
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 5)
+    if (pasted.length === 5) {
+      const newPin = pasted.split('')
+      setPin(newPin)
+      pinRefs.current[4]?.focus()
+      if (pasted === ADMIN_PIN) {
+        setTimeout(() => setPhase('password'), 300)
+      } else {
+        setShake(true)
+        setError(true)
+        setTimeout(() => {
+          setShake(false)
+          setPin(['', '', '', '', ''])
+          pinRefs.current[0]?.focus()
+        }, 600)
+      }
+    }
   }
 
   if (loading) {
@@ -114,44 +139,40 @@ export function AdminGate({ children }: { children: ReactNode }) {
             </div>
             <h1 className="text-2xl font-bold text-text-primary mb-2">Admin Access</h1>
 
-            {phase === 'puzzle' ? (
+            {phase === 'pin' ? (
               <>
-                <p className="text-text-muted text-sm mb-6">Click the numbers in order (1 → 5) to proceed</p>
-                <div className={`grid grid-cols-5 gap-3 mb-6 transition-all ${puzzleError ? 'animate-shake' : ''}`}>
-                  {puzzle.shuffled.map((num) => {
-                    const selected = isNumberSelected(num)
-                    const correct = isNumberCorrect(num)
-                    return (
-                      <button
-                        key={num}
-                        type="button"
-                        onClick={() => handleNumberClick(num)}
-                        disabled={selected}
-                        id={`puzzle-num-${num}`}
-                        aria-label={`Number ${num}`}
-                        className={`aspect-square rounded-xl text-lg font-bold transition-all duration-200 border-2 ${
-                          selected
-                            ? correct
-                              ? 'bg-green-500 text-white border-green-500 scale-95'
-                              : 'bg-red-500 text-white border-red-500'
-                            : 'bg-surface-secondary border-border-primary text-text-primary hover:border-blue-500 hover:scale-105 cursor-pointer'
-                        }`}
-                      >
-                        {num}
-                      </button>
-                    )
-                  })}
+                <p className="text-text-muted text-sm mb-6">Enter your PIN to continue</p>
+                <div className={`flex justify-center gap-3 mb-4 ${shake ? 'animate-shake' : ''}`}>
+                  {pin.map((digit, i) => (
+                    <input
+                      key={i}
+                      ref={el => { pinRefs.current[i] = el }}
+                      id={`pin-${i}`}
+                      name={`pin-${i}`}
+                      type="password"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={e => handlePinChange(i, e.target.value)}
+                      onKeyDown={e => handlePinKeyDown(i, e)}
+                      onPaste={handlePinPaste}
+                      autoFocus={i === 0}
+                      className={`w-12 h-14 text-center text-xl font-bold rounded-lg bg-surface-secondary border-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 ${
+                        error
+                          ? 'border-red-500 focus:border-red-500'
+                          : digit
+                            ? 'border-blue-500 focus:border-blue-500'
+                            : 'border-border-primary focus:border-blue-500'
+                      }`}
+                    />
+                  ))}
                 </div>
-                {puzzleError && <p className="text-red-400 text-sm mb-4">Wrong order! Try again.</p>}
-                <p className="text-text-muted text-xs">
-                  {selected.length > 0
-                    ? `Selected ${selected.length} of ${puzzle.target.length}`
-                    : 'Select numbers from left to right'}
-                </p>
+                {error && <p className="text-red-400 text-sm mb-4">Incorrect PIN. Try again.</p>}
+                <p className="text-text-muted text-xs">5-digit PIN required</p>
               </>
             ) : (
               <>
-                <p className="text-text-muted text-sm mb-6">Puzzle solved! Enter the admin password.</p>
+                <p className="text-text-muted text-sm mb-6">PIN verified. Enter admin password.</p>
                 <form onSubmit={async (e) => {
                   e.preventDefault()
                   setChecking(true)
@@ -191,10 +212,10 @@ export function AdminGate({ children }: { children: ReactNode }) {
                 </form>
                 <button
                   type="button"
-                  onClick={() => { setPhase('puzzle'); setSelected([]); setPuzzle(generatePuzzle()); setPassword(''); setError(false) }}
+                  onClick={() => { setPhase('pin'); setPin(['', '', '', '', '']); setPassword(''); setError(false); setTimeout(() => pinRefs.current[0]?.focus(), 50) }}
                   className="mt-3 text-xs text-text-muted hover:text-text-primary transition-colors"
                 >
-                  ← Back to puzzle
+                  ← Back to PIN
                 </button>
               </>
             )}
