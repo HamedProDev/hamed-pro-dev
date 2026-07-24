@@ -60,7 +60,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 My Courses
               </Link>
               {user?.role === 'admin' && (
-                <Link href="/admin" onClick={onClose} className="block px-4 py-3 rounded-lg text-sm font-medium text-blue-500 hover:bg-blue-500/10">
+                <Link href="/admin-control" onClick={onClose} className="block px-4 py-3 rounded-lg text-sm font-medium text-blue-500 hover:bg-blue-500/10">
                   Admin Panel
                 </Link>
               )}

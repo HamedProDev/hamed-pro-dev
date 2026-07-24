@@ -12,19 +12,19 @@ import { useState } from 'react'
 import { useAdminAuth } from '@/components/admin/AdminGate'
 
 const links = [
-  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/projects', label: 'Projects', icon: Building2 },
-  { href: '/admin/courses', label: 'Courses', icon: GraduationCap },
-  { href: '/admin/skills', label: 'Skills', icon: Zap },
-  { href: '/admin/achievements', label: 'Achievements', icon: Trophy },
-  { href: '/admin/organizations', label: 'Organizations', icon: Building2 },
-  { href: '/admin/stats', label: 'Stats', icon: BarChart3 },
-  { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquare },
-  { href: '/admin/users', label: 'Users', icon: Users },
-  { href: '/admin/seo', label: 'SEO', icon: Search },
-  { href: '/admin/about', label: 'About Page', icon: UserCircle },
-  { href: '/admin/email', label: 'Email', icon: Mail },
-  { href: '/admin/settings', label: 'Settings', icon: Settings },
+  { href: '/admin-control', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin-control/projects', label: 'Projects', icon: Building2 },
+  { href: '/admin-control/courses', label: 'Courses', icon: GraduationCap },
+  { href: '/admin-control/skills', label: 'Skills', icon: Zap },
+  { href: '/admin-control/achievements', label: 'Achievements', icon: Trophy },
+  { href: '/admin-control/organizations', label: 'Organizations', icon: Building2 },
+  { href: '/admin-control/stats', label: 'Stats', icon: BarChart3 },
+  { href: '/admin-control/testimonials', label: 'Testimonials', icon: MessageSquare },
+  { href: '/admin-control/users', label: 'Users', icon: Users },
+  { href: '/admin-control/seo', label: 'SEO', icon: Search },
+  { href: '/admin-control/about', label: 'About Page', icon: UserCircle },
+  { href: '/admin-control/email', label: 'Email', icon: Mail },
+  { href: '/admin-control/settings', label: 'Settings', icon: Settings },
 ]
 
 export function AdminSidebar() {
@@ -36,7 +36,7 @@ export function AdminSidebar() {
     <aside className={cn('sticky top-16 h-[calc(100vh-4rem)] border-r border-border-primary bg-surface-secondary transition-all flex flex-col', collapsed ? 'w-16' : 'w-60')}>
       <nav className="flex flex-col p-2 gap-1 flex-1 overflow-y-auto">
         {links.map(link => {
-          const active = pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href))
+          const active = pathname === link.href || (link.href !== '/admin-control' && pathname.startsWith(link.href))
           return (
             <Link
               key={link.href}

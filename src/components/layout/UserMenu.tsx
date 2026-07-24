@@ -52,7 +52,7 @@ export function UserMenu() {
         </DropdownMenuItem>
         {isAdmin && (
           <DropdownMenuItem asChild>
-            <Link href="/admin"><LayoutDashboard className="mr-2 h-4 w-4" /> Admin Panel</Link>
+            <Link href="/admin-control"><LayoutDashboard className="mr-2 h-4 w-4" /> Admin Panel</Link>
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />

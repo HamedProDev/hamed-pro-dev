@@ -31,7 +31,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   const unlock = async (password: string): Promise<boolean> => {
     if (password === ADMIN_PASSWORD) {
-      document.cookie = `${ADMIN_COOKIE}=${ADMIN_COOKIE_VALUE}; path=/admin; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`
+      document.cookie = `${ADMIN_COOKIE}=${ADMIN_COOKIE_VALUE}; path=/admin-control; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`
       setIsAdmin(true)
       return true
     }
@@ -39,7 +39,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   }
 
   const lock = () => {
-    document.cookie = `${ADMIN_COOKIE}=; path=/admin; max-age=0`
+    document.cookie = `${ADMIN_COOKIE}=; path=/admin-control; max-age=0`
     setIsAdmin(false)
   }
 
