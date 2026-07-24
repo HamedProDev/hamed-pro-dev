@@ -59,7 +59,7 @@ export async function POST() {
         { title: 'PaySmart Mobile', slug: 'paysmart-mobile', description: 'Mobile payment solution for small businesses in East Africa.', content: 'Digital payments for SMEs.', category: 'finance', tech_stack: ['React Native', 'Firebase'], image_url: '', featured: false, is_published: true, order_index: 5 },
         { title: 'OpenDev CLI', slug: 'opendev-cli', description: 'Command-line tool for scaffolding fullstack projects.', content: 'CLI for project scaffolding.', category: 'tools', tags: ['cli', 'developer-tools'], tech_stack: ['Go', 'TypeScript', 'Docker'], image_url: '', featured: false, is_published: true, order_index: 6 },
       ]
-      await Promise.all(projects.map(p => createDocument('projects', p, true)))
+      await Promise.all(projects.map(p => createDocument('projects', p)))
       results.push('6 projects seeded')
     } else {
       results.push(`${projectCount} projects exist`)
@@ -78,7 +78,7 @@ export async function POST() {
         { title: 'Docker & Kubernetes — Practical Guide', slug: 'docker-kubernetes-practical-guide', description: 'Containerization and orchestration for developers.', content: 'Docker and K8s course.', category: 'DevOps', level: 'intermediate', price: '$59', duration: '6 weeks', featured: false, is_published: true, order_index: 8 },
         { title: 'Fullstack Project Bootcamp', slug: 'fullstack-project-bootcamp', description: 'Build a complete SaaS application from scratch.', content: 'Hands-on SaaS bootcamp.', category: 'Frontend', level: 'advanced', price: '$99', duration: '15 weeks', featured: true, is_published: true, order_index: 9 },
       ]
-      await Promise.all(courses.map(c => createDocument('courses', c, true)))
+      await Promise.all(courses.map(c => createDocument('courses', c)))
       results.push('9 courses seeded')
     } else {
       results.push(`${courseCount} courses exist`)
@@ -112,7 +112,7 @@ export async function POST() {
         integrations: {
           whatsapp_number: '+250788123456',
         },
-      }, true)
+      })
       results.push('Site settings created')
     } else {
       results.push('Site settings exist')
@@ -140,7 +140,7 @@ export async function POST() {
         { name: 'Flutter', category: 'Mobile', proficiency: 72, order_index: 17, is_published: true },
         { name: 'TensorFlow', category: 'AI/ML', proficiency: 70, order_index: 18, is_published: true },
       ]
-      await Promise.all(skills.map(s => createDocument('skills', s, true)))
+      await Promise.all(skills.map(s => createDocument('skills', s)))
       results.push('18 skills seeded')
     } else {
       results.push(`${skillCount} skills exist`)
@@ -158,7 +158,7 @@ export async function POST() {
         { title: 'Published Research — AI in Healthcare', description: 'Co-authored paper on ML-based health screening deployed in rural clinics.', date: '2023-03-01', category: 'publication', order_index: 7, is_published: true },
         { title: 'Hackathon Winner — Africa Code Week', description: 'First place at Africa Code Week hackathon for EduConnect platform.', date: '2022-12-01', category: 'award', order_index: 8, is_published: true },
       ]
-      await Promise.all(achievements.map(a => createDocument('achievements', a, true)))
+      await Promise.all(achievements.map(a => createDocument('achievements', a)))
       results.push('8 achievements seeded')
     } else {
       results.push(`${achievementCount} achievements exist`)
@@ -173,7 +173,7 @@ export async function POST() {
         { label: 'Years Experience', value: '5', icon: 'Calendar', order_index: 4, is_published: true },
         { label: 'Client Satisfaction', value: '100%', icon: 'ThumbsUp', order_index: 5, is_published: true },
       ]
-      await Promise.all(stats.map(s => createDocument('site_stats', s, true)))
+      await Promise.all(stats.map(s => createDocument('site_stats', s)))
       results.push('5 site stats seeded')
     } else {
       results.push(`${siteStatsCount} site stats exist`)
@@ -186,7 +186,7 @@ export async function POST() {
         { name: 'Sarah Uwase', role: 'CEO', company: 'Kwanda Facility', content: 'Hamed transformed our business operations with the Kwanda EMS system. His ability to understand complex requirements and deliver elegant solutions is remarkable.', rating: 5, order_index: 2, is_published: true },
         { name: 'David N.', role: 'Founder', company: 'HealthPlus', content: 'Working with Hamed was a pleasure. His technical expertise in AI/ML and fullstack development helped us build a health screening tool that reaches thousands.', rating: 5, order_index: 3, is_published: true },
       ]
-      await Promise.all(testimonials.map(t => createDocument('testimonials', t, true)))
+      await Promise.all(testimonials.map(t => createDocument('testimonials', t)))
       results.push('3 testimonials seeded')
     } else {
       results.push(`${testimonialCount} testimonials exist`)

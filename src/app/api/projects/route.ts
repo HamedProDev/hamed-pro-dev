@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       featured: body.featured ?? false,
       is_published: body.isPublished ?? body.is_published ?? true,
       order_index: body.order_index ?? 0,
-    }, true)
+    })
     return apiSuccess(project, 'Project created')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
