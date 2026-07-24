@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument } from '@/lib/supabase/db'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
 
 export async function GET() {
   try {
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   try {
     await requireAdmin(req)
     const body = await req.json()
-    const stat = await createDocument('site_stats', body)
+    const stat = await createDocument('site_stats', mapFormToDb('site_stats', body))
     return apiSuccess(stat, 'Stat created')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

@@ -1,12 +1,12 @@
 import { NextRequest } from 'next/server'
 import { getDocument, updateDocument, deleteDocument, getDocuments } from '@/lib/supabase/db'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const course = await getDocument('courses', params.id)
     if (!course) return apiError('Course not found', 404)
-    const lessons = await getDocuments('lessons', { filters: [{ field: 'course', operator: 'eq', value: params.id }], orderBy: { field: 'order', direction: 'asc' } })
+    const lessons = await getDocuments('lessons', { filters: [{ field: 'course_id', operator: 'eq', value: params.id }], orderBy: { field: 'order_index', direction: 'asc' } })
     return apiSuccess({ ...course, lessons })
   } catch (error: any) {
     return apiError(error.message, 500)
@@ -17,7 +17,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   try {
     await requireAdmin(req)
     const body = await req.json()
-    const course = await updateDocument('courses', params.id, body)
+    const course = await updateDocument('courses', params.id, mapFormToDb('courses', body))
     if (!course) return apiError('Course not found', 404)
     return apiSuccess(course, 'Course updated')
   } catch (error: any) {

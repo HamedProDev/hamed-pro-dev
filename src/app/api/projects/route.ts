@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
-import { requireAdmin, apiSuccess, apiError, apiPaginated } from '@/lib/supabase/helpers'
+import { requireAdmin, apiSuccess, apiError, apiPaginated, mapFormToDb } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
 
 export async function GET(req: NextRequest) {
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
     const filters: { field: string; operator: any; value: any }[] = [{ field: 'is_published', operator: 'eq', value: true }]
     if (category) filters.push({ field: 'category', operator: 'eq', value: category })
-    if (status) filters.push({ field: 'status', operator: 'eq', value: status })
+    if (status === 'featured') filters.push({ field: 'featured', operator: 'eq', value: true })
     if (featured === 'true') filters.push({ field: 'featured', operator: 'eq', value: true })
 
     const [projects, total] = await Promise.all([

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function POST(req: NextRequest) {
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     const fileName = `${crypto.randomUUID()}.${ext}`
     const buffer = Buffer.from(await file.arrayBuffer())
 
-    const supabase = createClient()
+    const supabase = createServiceClient()
     const { data, error } = await supabase.storage
       .from('uploads')
       .upload(`images/${fileName}`, buffer, {

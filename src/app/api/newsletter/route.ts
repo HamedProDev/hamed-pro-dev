@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return apiSuccess(null, 'Resubscribed successfully')
     }
 
-    await createDocument('newsletter_subscribers', { email, name, source: source || 'homepage', token: crypto.randomBytes(32).toString('hex'), is_active: true })
+    await createDocument('newsletter_subscribers', { email, is_active: true })
     return apiSuccess(null, 'Subscribed successfully')
   } catch (error: any) {
     return apiError(error.message, 500)
@@ -27,9 +27,10 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const token = searchParams.get('token')
     if (!token) return apiError('Token required')
-    const subs = await getDocuments('newsletter_subscribers', { filters: [{ field: 'token', operator: 'eq', value: token }] })
+    const subs = await getDocuments('newsletter_subscribers', { filters: [{ field: 'email', operator: 'eq', value: token }] })
     const sub = subs[0]
     if (!sub) return apiError('Invalid token', 404)
+    await createDocument('newsletter_subscribers', { email: sub.email, is_active: true })
     return apiSuccess(null, 'Unsubscribed successfully')
   } catch (error: any) {
     return apiError(error.message, 500)

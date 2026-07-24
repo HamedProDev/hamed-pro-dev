@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDocument, updateDocument, deleteDocument } from '@/lib/supabase/db'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
 import { readingTime } from '@/lib/utils/format'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -17,8 +17,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   try {
     await requireAdmin(req)
     const body = await req.json()
-    if (body.content) body.read_time = readingTime(body.content)
-    const post = await updateDocument('blog_posts', params.id, body)
+    const mapped = mapFormToDb('blog_posts', body)
+    if (mapped.content) mapped.read_time = readingTime(mapped.content)
+    const post = await updateDocument('blog_posts', params.id, mapped)
     if (!post) return apiError('Post not found', 404)
     return apiSuccess(post, 'Post updated')
   } catch (error: any) {

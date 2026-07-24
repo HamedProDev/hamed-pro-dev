@@ -1,23 +1,23 @@
--- Allow authenticated users to upload files
-CREATE POLICY "Authenticated users can upload images"
-ON storage.objects FOR INSERT
-TO authenticated
-WITH CHECK (bucket_id = 'uploads');
+-- Allow service role to upload to uploads bucket
+INSERT INTO storage.buckets (id, name, public) VALUES ('uploads', 'uploads', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
 
--- Allow public access to view files
-CREATE POLICY "Anyone can view images"
+-- Allow public read access
+CREATE POLICY "Public read access"
 ON storage.objects FOR SELECT
-TO public
 USING (bucket_id = 'uploads');
 
--- Allow users to update their own files
-CREATE POLICY "Authenticated users can update their images"
-ON storage.objects FOR UPDATE
-TO authenticated
-USING (bucket_id = 'uploads' AND auth.role() = 'authenticated');
+-- Allow authenticated uploads via service role
+CREATE POLICY "Authenticated insert access"
+ON storage.objects FOR INSERT
+WITH CHECK (bucket_id = 'uploads');
 
--- Allow users to delete their own files
-CREATE POLICY "Authenticated users can delete their images"
+-- Allow authenticated updates
+CREATE POLICY "Authenticated update access"
+ON storage.objects FOR UPDATE
+USING (bucket_id = 'uploads');
+
+-- Allow authenticated deletes
+CREATE POLICY "Authenticated delete access"
 ON storage.objects FOR DELETE
-TO authenticated
-USING (bucket_id = 'uploads' AND auth.role() = 'authenticated');
+USING (bucket_id = 'uploads');

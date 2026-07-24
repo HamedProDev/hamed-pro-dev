@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDocument, updateDocument, deleteDocument } from '@/lib/supabase/db'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   try {
     await requireAdmin(req)
     const body = await req.json()
-    const testimonial = await updateDocument('testimonials', params.id, body)
+    const testimonial = await updateDocument('testimonials', params.id, mapFormToDb('testimonials', body))
     if (!testimonial) return apiError('Not found', 404)
     return apiSuccess(testimonial, 'Testimonial updated')
   } catch (error: any) {

@@ -1,6 +1,86 @@
 import { NextResponse } from 'next/server'
 import { createClient, createServiceClient } from './server'
 
+const FIELD_MAP: Record<string, Record<string, string>> = {
+  projects: {
+    longDescription: 'content',
+    coverImage: 'image_url',
+    techStack: 'tech_stack',
+    demoUrl: 'demo_url',
+    sourceUrl: 'github_url',
+    subCategory: 'category',
+    isPublished: 'is_published',
+    order: 'order_index',
+  },
+  courses: {
+    longDescription: 'content',
+    coverImage: 'image_url',
+    youtubePlaylistUrl: 'youtube_url',
+    isPublished: 'is_published',
+    prerequisites: 'prerequisites',
+    outcomes: 'outcomes',
+    order: 'order_index',
+  },
+  lessons: {
+    youtubeUrl: 'video_url',
+    videoDuration: 'duration',
+    isFree: 'is_free',
+    isPublished: 'is_published',
+    order: 'order_index',
+  },
+  blog_posts: {
+    coverImage: 'image_url',
+    published: 'is_published',
+    order: 'order_index',
+  },
+  skills: {
+    order: 'order_index',
+    featured: 'is_published',
+  },
+  achievements: {
+    year: 'date',
+    type: 'category',
+    link: 'certificate_url',
+    order: 'order_index',
+    featured: 'is_published',
+  },
+  testimonials: {
+    order: 'order_index',
+    featured: 'is_published',
+  },
+  site_stats: {
+    order: 'order_index',
+  },
+  organizations: {
+    type: 'category',
+    team: 'team_size',
+    roles: 'team_roles',
+    tech: 'tech_stack',
+    hiring: 'is_hiring',
+    website: 'website_url',
+    logo: 'logo_url',
+    order: 'order_index',
+  },
+  profiles: {
+    avatarUrl: 'avatar_url',
+    githubUrl: 'github_url',
+    linkedinUrl: 'linkedin_url',
+    twitterUrl: 'twitter_url',
+    isPublished: 'is_published',
+  },
+}
+
+export function mapFormToDb(table: string, data: Record<string, any>): Record<string, any> {
+  const tableMap = FIELD_MAP[table] || {}
+  const result: Record<string, any> = {}
+  for (const [key, value] of Object.entries(data)) {
+    if (key === '_method') continue
+    const dbKey = tableMap[key] || key
+    result[dbKey] = value
+  }
+  return result
+}
+
 export async function requireAdmin(req: Request) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()

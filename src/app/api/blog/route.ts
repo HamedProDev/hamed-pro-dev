@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
-import { requireAdmin, apiSuccess, apiError, apiPaginated } from '@/lib/supabase/helpers'
+import { requireAdmin, apiSuccess, apiError, apiPaginated, mapFormToDb } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
 import { readingTime } from '@/lib/utils/format'
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const slug = body.slug || generateSlug(body.title)
     const rt = readingTime(body.content)
-    const post = await createDocument('blog_posts', { ...body, slug, read_time: rt })
+    const post = await createDocument('blog_posts', { ...mapFormToDb('blog_posts', body), slug, read_time: rt })
     return apiSuccess(post, 'Post created')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
