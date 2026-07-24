@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/supabase/helpers'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const user = await getCurrentUser(new Request('http://localhost'))
+    const user = await getCurrentUser(req)
     if (!user) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }

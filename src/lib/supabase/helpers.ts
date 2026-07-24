@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server'
-import { createClient, createServiceClient } from './server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { createServiceClient } from './server'
 
 const FIELD_MAP: Record<string, Record<string, string>> = {
   projects: {
@@ -81,15 +82,28 @@ export function mapFormToDb(table: string, data: Record<string, any>): Record<st
   return result
 }
 
-export async function requireAdmin(req: Request) {
-  const supabase = createClient()
+export async function requireAdmin(req: NextRequest) {
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll()
+        },
+        setAll() {},
+      },
+    }
+  )
+
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
     throw new Error('Unauthorized')
   }
 
-  const { data: profile } = await supabase
+  const svc = createServiceClient()
+  const { data: profile } = await svc
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -102,12 +116,22 @@ export async function requireAdmin(req: Request) {
   return { user, profile }
 }
 
-export async function getCurrentUser(req: Request) {
-  const supabase = createClient()
+export async function getCurrentUser(req: NextRequest) {
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return req.cookies.getAll() },
+        setAll() {},
+      },
+    }
+  )
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data: profile } = await supabase
+  const svc = createServiceClient()
+  const { data: profile } = await svc
     .from('profiles')
     .select('*')
     .eq('id', user.id)
