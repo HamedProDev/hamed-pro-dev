@@ -85,7 +85,7 @@ export default function AdminLessonsPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Link href={`/admin-control/courses/${courseId}/lessons/${l.id}/edit`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
-                        <button onClick={() => handleDelete(l.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                        <button onClick={() => handleDelete(l.id)} aria-label="Delete" className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
                       </div>
                     </td>
                   </tr>

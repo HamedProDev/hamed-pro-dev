@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin-control/
+Disallow: /api/
+
+Sitemap: https://hamedprodev.onrender.com/sitemap.xml

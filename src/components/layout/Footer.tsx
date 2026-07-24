@@ -40,7 +40,7 @@ const svgIcons: Record<string, string> = {
 interface Settings {
   siteName?: string
   location?: string
-  socialLinks?: Record<string, string>
+  social_links?: Record<string, string>
 }
 
 export function Footer() {
@@ -55,7 +55,7 @@ export function Footer() {
       .catch(() => {})
   }, [])
 
-  const socialLinks: Record<string, string> = settings.socialLinks || {}
+  const socialLinks: Record<string, string> = settings.social_links || {}
   const activeSocials = Object.entries(socialLinks).filter(
     ([, url]) => url && typeof url === 'string' && url.trim()
   )
@@ -119,6 +119,7 @@ export function Footer() {
                       href={url as string}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={config.label}
                       title={config.label}
                       whileHover={{ scale: 1.2, y: -3 }}
                       whileTap={{ scale: 0.9 }}

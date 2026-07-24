@@ -41,7 +41,7 @@ export function SearchBar({ placeholder = 'Search...', onSearch, className, debo
         className="flex h-10 w-full rounded-lg border border-dark-500 bg-dark-700 pl-10 pr-10 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
       />
       {value && (
-        <button onClick={clear} className="absolute right-3 text-text-muted hover:text-text-primary">
+        <button onClick={clear} aria-label="Clear search" className="absolute right-3 text-text-muted hover:text-text-primary">
           <X className="h-4 w-4" />
         </button>
       )}

@@ -99,6 +99,7 @@ export function HeroSection() {
                     href={url as string}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={key.charAt(0).toUpperCase() + key.slice(1)}
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 + i * 0.08, type: 'spring', stiffness: 300, damping: 15 }}

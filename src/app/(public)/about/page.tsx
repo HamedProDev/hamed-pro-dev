@@ -86,7 +86,7 @@ export default function AboutPage() {
               {activeSocials.map(([key, url]) => {
                 const Icon = iconMap[key] || Send
                 return (
-                  <a key={key} href={url as string} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-tertiary/50 text-text-secondary hover:bg-brand-primary/20 hover:text-brand-primary transition-all text-sm capitalize">
+                  <a key={key} href={url as string} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${key}`} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-tertiary/50 text-text-secondary hover:bg-brand-primary/20 hover:text-brand-primary transition-all text-sm capitalize">
                     <Icon className="h-4 w-4" /> {key}
                   </a>
                 )
