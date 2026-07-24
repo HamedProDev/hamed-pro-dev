@@ -33,7 +33,13 @@ export async function POST() {
     const found = usersData?.users?.find((u: any) => u.email === adminEmail)
     if (found) {
       adminUser = found
-      results.push('Admin user exists')
+      // Ensure profile exists for existing user
+      try {
+        await createDocument('profiles', { id: found.id, email: adminEmail, name: 'Hamed Hussein', role: 'admin', avatar_url: '' })
+        results.push('Admin user exists, profile created')
+      } catch {
+        results.push('Admin user exists, profile already exists')
+      }
     } else {
       adminUser = await authFetch('/admin/users', {
         method: 'POST',
@@ -46,6 +52,8 @@ export async function POST() {
         }),
       })
       adminUser = adminUser.user ?? adminUser
+      // Create profile for the new user
+      await createDocument('profiles', { id: adminUser.id, email: adminEmail, name: 'Hamed Hussein', role: 'admin', avatar_url: '' }).catch(() => {})
       results.push('Admin user created')
     }
 
