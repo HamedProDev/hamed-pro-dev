@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
 import {
   LayoutDashboard, GraduationCap,
-  Users, Search, UserCircle, Mail, Settings, ChevronLeft, ChevronRight,
+  Users, Search, UserCircle, Settings, ChevronLeft, ChevronRight,
   Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare
 } from 'lucide-react'
 import { useState } from 'react'
@@ -23,7 +23,6 @@ const links = [
   { href: '/admin-control/users', label: 'Users', icon: Users },
   { href: '/admin-control/seo', label: 'SEO', icon: Search },
   { href: '/admin-control/about', label: 'About Page', icon: UserCircle },
-  { href: '/admin-control/email', label: 'Email', icon: Mail },
   { href: '/admin-control/settings', label: 'Settings', icon: Settings },
 ]
 
