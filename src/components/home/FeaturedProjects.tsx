@@ -58,7 +58,7 @@ export function FeaturedProjects() {
         <div className="grid md:grid-cols-3 gap-6">
           {projects.map((p, i) => (
             <motion.div
-              key={p._id}
+              key={p.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -67,8 +67,8 @@ export function FeaturedProjects() {
             >
                 <Card className="h-full group overflow-hidden border-border-primary hover:border-blue-500/30 transition-all duration-300">
                 <div className={cn('h-52 rounded-t-xl bg-gradient-to-br relative overflow-hidden', gradients[i % gradients.length])}>
-                  {p.coverImage ? (
-                    <img src={p.coverImage} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                  {p.image_url ? (
+                    <img src={p.image_url} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                   ) : (
                     <>
                       <motion.div
@@ -94,13 +94,13 @@ export function FeaturedProjects() {
                   <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-400 transition-colors duration-300">{p.title}</h3>
                   <p className="text-sm text-text-secondary mb-4">{p.description}</p>
                   <div className="flex flex-wrap gap-1.5 mb-5">
-                    {(p.techStack || []).map((t: string) => (
+                    {(p.tech_stack || []).map((t: string) => (
                       <Badge key={t} className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/20 font-medium">{t}</Badge>
                     ))}
                   </div>
                   <div className="flex items-center gap-4 pt-4 border-t border-border-primary">
-                    {p.demoUrl && <a href={p.demoUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-blue-400 transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
-                    {p.sourceUrl && <a href={p.sourceUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-blue-400 transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
+                    {p.demo_url && <a href={p.demo_url} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-blue-400 transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
+                    {p.github_url && <a href={p.github_url} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-blue-400 transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
                     <motion.div className="ml-auto">
                       <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-300" />
                     </motion.div>

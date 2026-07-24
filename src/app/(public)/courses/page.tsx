@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Search, Star, Clock, Users, BookOpen, Loader2 } from 'lucide-react'
+import { Search, Star, Clock, BookOpen, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -21,19 +21,16 @@ const levelLabels: Record<string, string> = {
 }
 
 interface Course {
-  _id: string
+  id: string
   title: string
   slug: string
   description: string
   category: string
   level: string
-  type: string
-  price: number
-  duration: number
-  enrolled: number
-  rating: number
+  price: string
+  duration: string
   featured: boolean
-  coverImage?: string
+  image_url?: string
 }
 
 export default function CoursesPage() {
@@ -150,34 +147,33 @@ export default function CoursesPage() {
             ) : (
               <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filtered.map((c, i) => (
-                  <motion.div key={c._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                  <motion.div key={c.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                     <Link href={`/courses/${c.slug}`} className="block h-full">
                     <Card className="h-full card-hover group overflow-hidden">
                       <div className="h-40 rounded-t-xl bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-surface-secondary relative flex items-center justify-center overflow-hidden">
-                        {c.coverImage ? (
-                          <img src={c.coverImage} alt={`${c.title} course cover`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                        {c.image_url ? (
+                          <img src={c.image_url} alt={`${c.title} course cover`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                         ) : (
                           <span className="text-5xl opacity-60">📚</span>
                         )}
                         <Badge className="absolute top-3 left-3 bg-brand-primary/90 text-white border-0 text-xs z-10">{c.category}</Badge>
-                        {c.type === 'premium' && <Badge className="absolute top-3 right-3 bg-amber-500/90 text-white border-0 text-xs z-10">⭐ Premium</Badge>}
+                        {c.price && c.price !== 'Free' && <Badge className="absolute top-3 right-3 bg-amber-500/90 text-white border-0 text-xs z-10">⭐ Premium</Badge>}
                       </div>
                       <CardContent className="p-5">
                         <h3 className="font-semibold mb-1 group-hover:text-brand-primary transition-colors">{c.title}</h3>
                         <p className="text-xs text-text-secondary mb-3 line-clamp-2">{c.description}</p>
                         <div className="flex items-center gap-3 text-xs text-text-muted mb-3">
-                          <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {c.duration || 0}h</span>
-                          <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {c.enrolled || 0}</span>
-                          <span className="flex items-center gap-1 capitalize">{levelLabels[c.level] || c.level}</span>
+                          {c.duration && <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {c.duration}</span>}
+                          <span className="flex items-center capitalize">{levelLabels[c.level] || c.level}</span>
                         </div>
                         <div className="flex items-center justify-between pt-3 border-t border-border-primary">
                           <div className="flex items-center gap-1">
                             <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                            <span className="text-sm font-medium">{c.rating || '4.9'}</span>
+                            <span className="text-sm font-medium">4.9</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            {c.type === 'premium' ? (
-                              <span className="text-lg font-bold text-brand-primary">${c.price}</span>
+                            {c.price && c.price !== 'Free' ? (
+                              <span className="text-lg font-bold text-brand-primary">{c.price}</span>
                             ) : (
                               <span className="text-lg font-bold text-green-500">Free</span>
                             )}

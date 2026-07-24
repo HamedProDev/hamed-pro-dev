@@ -81,7 +81,7 @@ export function StatsBar() {
                 >
                   <IconComp className="h-5 w-5" />
                 </motion.div>
-                <div className="text-2xl md:text-3xl font-bold text-text-primary"><AnimatedNumber value={stat.value} suffix={stat.suffix} /></div>
+                <div className="text-2xl md:text-3xl font-bold text-text-primary"><AnimatedNumber value={Number(stat.value) || 0} /></div>
                 <div className="text-xs text-text-secondary mt-1">{stat.label}</div>
               </motion.div>
             )

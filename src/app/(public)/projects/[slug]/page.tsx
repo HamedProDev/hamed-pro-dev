@@ -20,7 +20,7 @@ export default function ProjectDetailPage() {
       else {
         fetch('/api/projects').then(r => r.json()).then(d => {
           if (d.success) {
-            const found = d.data.find((p: any) => p.slug === slug || p._id === slug)
+            const found = d.data.find((p: any) => p.slug === slug)
             if (found) setProject(found)
           }
           setLoading(false)
@@ -40,16 +40,16 @@ export default function ProjectDetailPage() {
     </div>
   )
 
-  const techStack = project.techStack || project.tags || []
-  const demoUrl = project.demoUrl || project.liveUrl || ''
-  const sourceUrl = project.sourceUrl || project.githubUrl || ''
+  const techStack = project.tech_stack || project.tags || []
+  const demoUrl = project.demo_url || ''
+  const sourceUrl = project.github_url || ''
 
   return (
     <main id="main-content" className="section-padding pt-24">
       <div className="container-wide max-w-4xl">
         <MetadataInjector title={project.title} description={project.description} url={`/projects/${slug}`} />
         <Breadcrumbs items={[{ label: 'Projects', href: '/projects' }, { label: project.title }]} />
-        {project.coverImage && <img src={project.coverImage} alt={`${project.title} project screenshot`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        {project.image_url && <img src={project.image_url} alt={`${project.title} project screenshot`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{project.category}</Badge>
           {project.featured && <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Featured</Badge>}
@@ -57,7 +57,7 @@ export default function ProjectDetailPage() {
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4">{project.title}</h1>
         <p className="text-lg text-text-secondary mb-8">{project.description}</p>
-        {project.longDescription && <div className="prose prose-invert max-w-none mb-8"><p className="text-text-secondary leading-relaxed whitespace-pre-wrap">{project.longDescription}</p></div>}
+        {project.content && <div className="prose prose-invert max-w-none mb-8"><p className="text-text-secondary leading-relaxed whitespace-pre-wrap">{project.content}</p></div>}
         {techStack.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-8">
             {techStack.map((t: string) => <Badge key={t} variant="outline" className="text-xs"><Tag className="h-3 w-3 mr-1" />{t}</Badge>)}

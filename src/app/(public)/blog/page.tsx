@@ -1,21 +1,20 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Eye, Loader2, Calendar } from 'lucide-react'
+import { Loader2, Calendar } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 interface Post {
-  _id: string
+  id: string
   title: string
   slug: string
   excerpt: string
   category: string
-  coverImage?: string
-  views: number
-  createdAt: string
+  image_url?: string
+  created_at: string
 }
 
 export default function BlogPage() {
@@ -45,16 +44,15 @@ export default function BlogPage() {
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
             {posts.map(p => (
-              <Link key={p._id} href={`/blog/${p.slug || p._id}`}>
+              <Link key={p.id} href={`/blog/${p.slug || p.id}`}>
                 <Card className="card-hover h-full overflow-hidden">
-                  {p.coverImage && <img src={p.coverImage} alt={`${p.title} blog cover`} loading="lazy" className="w-full h-48 object-cover" />}
+                  {p.image_url && <img src={p.image_url} alt={`${p.title} blog cover`} loading="lazy" className="w-full h-48 object-cover" />}
                   <CardContent className="p-5">
                     <Badge className="mb-2 text-xs">{p.category}</Badge>
                     <h3 className="text-lg font-semibold mb-2 line-clamp-2">{p.title}</h3>
                     <p className="text-sm text-text-secondary mb-3 line-clamp-2">{p.excerpt}</p>
                     <div className="flex items-center gap-3 text-xs text-text-muted">
-                      <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {p.views || 0}</span>
-                      <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {new Date(p.createdAt).toLocaleDateString()}</span>
+                      <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {new Date(p.created_at).toLocaleDateString()}</span>
                     </div>
                   </CardContent>
                 </Card>

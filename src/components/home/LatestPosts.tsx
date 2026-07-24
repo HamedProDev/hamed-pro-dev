@@ -22,15 +22,15 @@ interface Post {
   slug: string
   excerpt: string
   category: string
-  readingTime: number
-  coverImage: string
-  publishedAt: string
+  read_time: number
+  image_url: string
+  created_at: string
 }
 
 const fallbackPosts = [
-  { title: 'Building Scalable APIs with Next.js', category: 'Backend', excerpt: 'A deep dive into production-ready API architecture.', readingTime: 8, slug: 'scalable-apis-nextjs', coverImage: '', publishedAt: '2024-05-30' },
-  { title: 'AI in Agriculture in Rwanda', category: 'AI/ML', excerpt: 'Exploring real-world ML applications in agriculture.', readingTime: 6, slug: 'ai-agriculture-rwanda', coverImage: '', publishedAt: '2024-05-15' },
-  { title: 'Complete Guide to Fullstack Dev', category: 'Career', excerpt: 'Everything to become a fullstack developer in 2024.', readingTime: 12, slug: 'complete-guide-fullstack', coverImage: '', publishedAt: '2024-05-10' },
+  { title: 'Building Scalable APIs with Next.js', category: 'Backend', excerpt: 'A deep dive into production-ready API architecture.', read_time: 8, slug: 'scalable-apis-nextjs', image_url: '', created_at: '2024-05-30' },
+  { title: 'AI in Agriculture in Rwanda', category: 'AI/ML', excerpt: 'Exploring real-world ML applications in agriculture.', read_time: 6, slug: 'ai-agriculture-rwanda', image_url: '', created_at: '2024-05-15' },
+  { title: 'Complete Guide to Fullstack Dev', category: 'Career', excerpt: 'Everything to become a fullstack developer in 2024.', read_time: 12, slug: 'complete-guide-fullstack', image_url: '', created_at: '2024-05-10' },
 ]
 
 function formatDate(d: string) {
@@ -43,7 +43,7 @@ export function LatestPosts() {
   useEffect(() => {
     fetch('/api/blog?limit=3')
       .then(r => r.json())
-      .then(d => { if (d.success && d.data.length > 0) setPosts(d.data.map((p: any) => ({ ...p, publishedAt: p.publishedAt || p.createdAt }))) })
+      .then(d => { if (d.success && d.data.length > 0) setPosts(d.data) })
       .catch(() => {})
   }, [])
 
@@ -89,8 +89,8 @@ export function LatestPosts() {
                     <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-400 transition-colors duration-300 line-clamp-2">{post.title}</h3>
                     <p className="text-sm text-text-secondary mb-4 line-clamp-2">{post.excerpt}</p>
                     <div className="flex items-center gap-4 text-xs text-text-muted pt-4 border-t border-border-primary">
-                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {post.readingTime} min read</span>
-                      {post.publishedAt && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {formatDate(post.publishedAt)}</span>}
+                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {post.read_time} min read</span>
+                      {post.created_at && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {formatDate(post.created_at)}</span>}
                     </div>
                   </CardContent>
                 </Card>

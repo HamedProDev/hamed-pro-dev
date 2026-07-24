@@ -52,7 +52,7 @@ export default function AboutPage() {
     }).catch(() => setLoading(false))
   }, [])
 
-  const socialLinks: Record<string, string> = settings.socialLinks || {}
+  const socialLinks: Record<string, string> = settings.social_links || {}
   const activeSocials = Object.entries(socialLinks).filter(([, url]) => url && typeof url === 'string' && url.trim())
 
   const skills = settings.skills || defaultSkills
@@ -68,14 +68,14 @@ export default function AboutPage() {
   return (
     <main id="main-content" className="section-padding pt-24">
       <div className="container-wide">
-        <MetadataInjector title="About Me" description={`About ${settings.heroName || 'Hamed Hussein'} — ${settings.heroTitle || 'Fullstack & AI/ML Engineer based in Kigali, Rwanda'}`} url="/about" />
+        <MetadataInjector title="About Me" description={`About ${settings.hero_name || 'Hamed Hussein'} — ${settings.hero_title || 'Fullstack & AI/ML Engineer based in Kigali, Rwanda'}`} url="/about" />
         <Breadcrumbs items={[{ label: 'About' }]} />
-        <PersonJsonLd name={settings.heroName || 'Hamed Hussein'} jobTitle={settings.heroTitle || 'Fullstack & AI/ML Engineer'} url={typeof window !== 'undefined' ? window.location.href : '/about'} image={settings.profilePhoto} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
+        <PersonJsonLd name={settings.hero_name || 'Hamed Hussein'} jobTitle={settings.hero_title || 'Fullstack & AI/ML Engineer'} url={typeof window !== 'undefined' ? window.location.href : '/about'} image={settings.profile_photo} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
         <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
           <div>
             <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">👋 About Me</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Hi, I&apos;m <span className="gradient-text">{settings.heroName || 'Hamed Hussein'}</span></h1>
-            <p className="text-lg text-text-secondary mb-4">{settings.heroTitle || 'Senior Fullstack Developer from Kigali, Rwanda'}</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Hi, I&apos;m <span className="gradient-text">{settings.hero_name || 'Hamed Hussein'}</span></h1>
+            <p className="text-lg text-text-secondary mb-4">{settings.hero_title || 'Senior Fullstack Developer from Kigali, Rwanda'}</p>
             <p className="text-text-secondary mb-6">{settings.description || 'I build modern web applications, mobile apps, and AI-powered solutions. Passionate about creating technology that makes a difference in Africa and beyond.'}</p>
             <div className="flex flex-wrap items-center gap-4 text-sm text-text-muted mb-6">
               <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {settings.location || 'Kigali, Rwanda'}</span>
@@ -100,8 +100,8 @@ export default function AboutPage() {
           <div className="relative flex justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-secondary/10 to-transparent rounded-3xl blur-3xl" />
             <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-surface-card to-surface-secondary border border-border-primary flex items-center justify-center overflow-hidden">
-              {settings.profilePhoto ? (
-                  <img src={settings.profilePhoto} alt="Profile photo of Hamed Hussein" loading="lazy" className="w-full h-full object-cover" />
+              {settings.profile_photo ? (
+                  <img src={settings.profile_photo} alt="Profile photo of Hamed Hussein" loading="lazy" className="w-full h-full object-cover" />
               ) : (
                 <div className="text-center">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">HH</div>

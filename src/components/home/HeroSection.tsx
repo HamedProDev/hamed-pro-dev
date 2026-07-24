@@ -18,11 +18,11 @@ const techBadges = [
 ]
 
 interface Settings {
-  heroName?: string
-  heroTitle?: string
-  heroSubtitle?: string
-  profilePhoto?: string
-  socialLinks?: Record<string, string>
+  hero_name?: string
+  hero_title?: string
+  hero_subtitle?: string
+  profile_photo?: string
+  social_links?: Record<string, string>
 }
 
 export function HeroSection() {
@@ -36,7 +36,7 @@ export function HeroSection() {
     }).catch(() => {})
   }, [])
 
-  const socialLinks: Record<string, string> = settings.socialLinks || {}
+  const socialLinks: Record<string, string> = settings.social_links || {}
   const socialEntries = Object.entries(socialLinks).filter(([, url]) => url && typeof url === 'string' && url.trim()).slice(0, 5)
 
   return (
@@ -65,14 +65,14 @@ export function HeroSection() {
             Hi, I&apos;m
           </motion.h1>
           <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }} className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4 leading-tight gradient-text">
-            {settings.heroName || 'Hamed Hussein'}
+            {settings.hero_name || 'Hamed Hussein'}
           </motion.h1>
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="text-lg text-text-secondary mb-1">
-            {settings.heroTitle || 'Full Stack Developer & AI Engineer'}
+            {settings.hero_title || 'Full Stack Developer & AI Engineer'}
           </motion.p>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} className="text-lg text-text-secondary mb-8">
-            {settings.heroSubtitle || 'Building scalable solutions that make an impact.'}
+            {settings.hero_subtitle || 'Building scalable solutions that make an impact.'}
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="flex flex-wrap items-center gap-4 mb-8">
@@ -126,8 +126,8 @@ export function HeroSection() {
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-surface-card via-surface-tertiary to-surface-secondary border-2 border-blue-500/20 overflow-hidden flex items-center justify-center shadow-2xl shadow-blue-500/10"
             >
-              {settings.profilePhoto ? (
-                <img src={settings.profilePhoto} alt={settings.heroName || 'Profile'} className="w-full h-full object-cover" />
+              {settings.profile_photo ? (
+                <img src={settings.profile_photo} alt={settings.hero_name || 'Profile'} className="w-full h-full object-cover" />
               ) : (
                 <div className="text-6xl font-bold text-blue-500/30">HP</div>
               )}

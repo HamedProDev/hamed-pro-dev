@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Loader2, Eye, Calendar } from 'lucide-react'
+import { Loader2, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
@@ -18,7 +18,7 @@ export default function BlogPostPage() {
   useEffect(() => {
     fetch('/api/blog').then(r => r.json()).then(d => {
       if (d.success) {
-        const found = d.data.find((p: any) => p.slug === slug || p._id === slug)
+        const found = d.data.find((p: any) => p.slug === slug)
         if (found) setPost(found)
       }
       setLoading(false)
@@ -37,14 +37,13 @@ export default function BlogPostPage() {
   return (
     <main id="main-content" className="section-padding pt-24">
       <div className="container-wide max-w-3xl">
-        <MetadataInjector title={post.title} description={post.excerpt || post.description} image={post.coverImage} url={`/blog/${slug}`} />
+        <MetadataInjector title={post.title} description={post.excerpt || post.description} image={post.image_url} url={`/blog/${slug}`} />
         <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
-        <BlogPostingJsonLd headline={post.title} description={post.excerpt || post.description} author="Hamed Hussein" datePublished={post.createdAt} image={post.coverImage} url={typeof window !== 'undefined' ? window.location.href : `/blog/${slug}`} />
-        {post.coverImage && <img src={post.coverImage} alt={`${post.title} blog cover`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        <BlogPostingJsonLd headline={post.title} description={post.excerpt || post.description} author="Hamed Hussein" datePublished={post.created_at} image={post.image_url} url={typeof window !== 'undefined' ? window.location.href : `/blog/${slug}`} />
+        {post.image_url && <img src={post.image_url} alt={`${post.title} blog cover`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
         <div className="flex items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{post.category}</Badge>
-          <span className="flex items-center gap-1 text-xs text-text-muted"><Eye className="h-3 w-3" /> {post.views || 0}</span>
-          <span className="flex items-center gap-1 text-xs text-text-muted"><Calendar className="h-3 w-3" /> {new Date(post.createdAt).toLocaleDateString()}</span>
+          <span className="flex items-center gap-1 text-xs text-text-muted"><Calendar className="h-3 w-3" /> {new Date(post.created_at).toLocaleDateString()}</span>
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
         {post.excerpt && <p className="text-lg text-text-secondary mb-8">{post.excerpt}</p>}

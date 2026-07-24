@@ -29,17 +29,16 @@ const gradients = [
 ]
 
 interface Project {
-  _id: string
+  id: string
   title: string
   slug: string
   description: string
   category: string
-  techStack: string[]
+  tech_stack: string[]
   featured: boolean
-  status: string
-  demoUrl?: string
-  sourceUrl?: string
-  coverImage?: string
+  demo_url?: string
+  github_url?: string
+  image_url?: string
 }
 
 export default function ProjectsPage() {
@@ -95,12 +94,12 @@ export default function ProjectsPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((p, i) => (
-                  <motion.div key={p._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                  <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                     <Link href={`/projects/${p.slug}`} className="block h-full">
                 <Card className="h-full card-hover group overflow-hidden">
                   <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', gradients[i % gradients.length])}>
-                    {p.coverImage ? (
-                      <img src={p.coverImage} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                    {p.image_url ? (
+                      <img src={p.image_url} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
                       <div className="absolute inset-4 rounded-lg bg-dark-900/20 border border-border-primary p-3">
                         <div className="h-2 w-16 bg-surface-tertiary/60 rounded mb-2" />
@@ -114,11 +113,11 @@ export default function ProjectsPage() {
                     <h3 className="text-lg font-semibold mb-2 group-hover:text-brand-primary transition-colors">{p.title}</h3>
                     <p className="text-sm text-text-secondary mb-4 line-clamp-2">{p.description}</p>
                     <div className="flex flex-wrap gap-1.5 mb-5">
-                      {(p.techStack || []).slice(0, 4).map((t: string) => <Badge key={t} className="text-xs bg-brand-primary/10 text-brand-primary border-brand-primary/20">{t}</Badge>)}
+                      {(p.tech_stack || []).slice(0, 4).map((t: string) => <Badge key={t} className="text-xs bg-brand-primary/10 text-brand-primary border-brand-primary/20">{t}</Badge>)}
                     </div>
                     <div className="flex items-center gap-4 pt-4 border-t border-border-primary">
-                      {p.demoUrl && <a href={p.demoUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
-                      {p.sourceUrl && <a href={p.sourceUrl} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
+                      {p.demo_url && <a href={p.demo_url} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
+                      {p.github_url && <a href={p.github_url} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-primary transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
                       <ArrowRight className="h-4 w-4 text-text-muted ml-auto group-hover:text-brand-primary group-hover:translate-x-1 transition-all" />
                     </div>
                   </CardContent>
