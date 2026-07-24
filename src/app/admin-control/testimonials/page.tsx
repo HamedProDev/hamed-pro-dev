@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Plus, Pencil, Trash2, GripVertical, Star } from 'lucide-react'
 
 interface Testimonial {
-  _id: string
+  id: string
   name: string
   role: string
   company: string
@@ -58,7 +58,7 @@ export default function AdminTestimonialsPage() {
             </thead>
             <tbody>
               {testimonials.map(t => (
-                <tr key={t._id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
+                <tr key={t.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                   <td className="px-4 py-3 text-text-muted"><GripVertical className="h-4 w-4" /></td>
                   <td className="px-4 py-3 font-medium text-text-primary">{t.name}</td>
                   <td className="px-4 py-3 text-text-secondary">{t.role}</td>
@@ -70,8 +70,8 @@ export default function AdminTestimonialsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin-control/testimonials/${t._id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
-                      <button onClick={() => handleDelete(t._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                      <Link href={`/admin-control/testimonials/${t.id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
+                      <button onClick={() => handleDelete(t.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
                 </tr>

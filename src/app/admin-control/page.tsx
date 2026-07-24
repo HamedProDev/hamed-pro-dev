@@ -24,11 +24,11 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/projects').then(r => r.json()),
+      fetch('/api/projects?all=true').then(r => r.json()),
       fetch('/api/courses?all=true').then(r => r.json()),
       fetch('/api/skills').then(r => r.json()),
       fetch('/api/achievements').then(r => r.json()),
-      fetch('/api/blog').then(r => r.json()),
+      fetch('/api/blog?all=true').then(r => r.json()),
       fetch('/api/users').then(r => r.json()),
       fetch('/api/stats').then(r => r.json()),
       fetch('/api/testimonials').then(r => r.json()),

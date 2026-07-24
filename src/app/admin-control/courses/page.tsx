@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Plus, Pencil, Trash2, Eye, Star, BookOpen } from 'lucide-react'
 
 interface Course {
-  _id: string; title: string; category: string; level: string; enrolled: number; rating: number; type: string; price: number
+  id: string; title: string; category: string; level: string; enrolled: number; rating: number; type: string; price: number
 }
 
 export default function AdminCoursesPage() {
@@ -42,7 +42,7 @@ export default function AdminCoursesPage() {
             <thead><tr className="border-b border-border-primary"><th className="px-4 py-3 text-left text-text-muted">Title</th><th className="px-4 py-3 text-left text-text-muted">Category</th><th className="px-4 py-3 text-left text-text-muted">Level</th><th className="px-4 py-3 text-left text-text-muted">Enrolled</th><th className="px-4 py-3 text-left text-text-muted">Rating</th><th className="px-4 py-3 text-left text-text-muted">Actions</th></tr></thead>
             <tbody>
               {courses.map(c => (
-                <tr key={c._id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
+                <tr key={c.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                   <td className="px-4 py-3 font-medium text-text-primary">{c.title}</td>
                   <td className="px-4 py-3 text-text-secondary">{c.category}</td>
                   <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500">{c.level}</span></td>
@@ -50,9 +50,9 @@ export default function AdminCoursesPage() {
                   <td className="px-4 py-3 text-amber-500 flex items-center gap-1"><Star className="h-3 w-3 fill-current" /> {c.rating}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin-control/courses/${c._id}/lessons`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors" title="Manage Lessons"><BookOpen className="h-4 w-4" /></Link>
-                      <Link href={`/admin-control/courses/${c._id}/edit`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
-                      <button onClick={() => handleDelete(c._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                      <Link href={`/admin-control/courses/${c.id}/lessons`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors" title="Manage Lessons"><BookOpen className="h-4 w-4" /></Link>
+                      <Link href={`/admin-control/courses/${c.id}/edit`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
+                      <button onClick={() => handleDelete(c.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
                 </tr>

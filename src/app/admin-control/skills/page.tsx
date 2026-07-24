@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react'
 
 interface Skill {
-  _id: string
+  id: string
   name: string
   category: string
   proficiency: number
   color: string
-  order: number
-  featured: boolean
+  order_index: number
+  is_published: boolean
 }
 
 export default function AdminSkillsPage() {
@@ -60,7 +60,7 @@ export default function AdminSkillsPage() {
             </thead>
             <tbody>
               {skills.map(skill => (
-                <tr key={skill._id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
+                <tr key={skill.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                   <td className="px-4 py-3 text-text-muted"><GripVertical className="h-4 w-4" /></td>
                   <td className="px-4 py-3 font-medium text-text-primary">{skill.name}</td>
                   <td className="px-4 py-3 text-text-secondary">{skill.category}</td>
@@ -77,10 +77,10 @@ export default function AdminSkillsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin-control/skills/${skill._id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors">
+                      <Link href={`/admin-control/skills/${skill.id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors">
                         <Pencil className="h-4 w-4" />
                       </Link>
-                      <button onClick={() => handleDelete(skill._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors">
+                      <button onClick={() => handleDelete(skill.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>

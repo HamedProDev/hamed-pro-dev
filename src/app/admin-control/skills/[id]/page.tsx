@@ -37,7 +37,7 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
       .then(d => {
         if (d.success) {
           const s = d.data
-          setForm({ name: s.name, category: s.category, proficiency: s.proficiency, color: s.color, order: s.order, featured: s.featured })
+          setForm({ name: s.name, category: s.category, proficiency: s.proficiency, color: s.color || '#3B82F6', order: s.order_index || 0, featured: s.is_published || false })
         }
         setLoading(false)
       })

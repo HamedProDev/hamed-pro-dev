@@ -82,6 +82,20 @@ export function mapFormToDb(table: string, data: Record<string, any>): Record<st
   return result
 }
 
+export function mapDbToForm(table: string, data: Record<string, any>): Record<string, any> {
+  const tableMap = FIELD_MAP[table] || {}
+  const reverseMap: Record<string, string> = {}
+  for (const [formKey, dbKey] of Object.entries(tableMap)) {
+    reverseMap[dbKey] = formKey
+  }
+  const result: Record<string, any> = {}
+  for (const [dbKey, value] of Object.entries(data)) {
+    const formKey = reverseMap[dbKey] || dbKey
+    result[formKey] = value
+  }
+  return result
+}
+
 export async function requireAdmin(req: NextRequest) {
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

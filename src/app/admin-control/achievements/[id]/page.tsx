@@ -26,7 +26,7 @@ export default function EditAchievementPage({ params }: { params: { id: string }
       .then(d => {
         if (d.success) {
           const a = d.data
-          setForm({ title: a.title, description: a.description, year: a.year, type: a.type, link: a.link || '', order: a.order, featured: a.featured })
+          setForm({ title: a.title, description: a.description, year: a.date || '', type: a.category || 'milestone', link: a.certificate_url || '', order: a.order_index || 0, featured: a.is_published || false })
         }
         setLoading(false)
       })

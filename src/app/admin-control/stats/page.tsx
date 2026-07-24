@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button'
 import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react'
 
 interface Stat {
-  _id: string
+  id: string
   label: string
   value: number
   suffix: string
   icon: string
-  order: number
+  order_index: number
 }
 
 export default function AdminStatsPage() {
@@ -56,7 +56,7 @@ export default function AdminStatsPage() {
             </thead>
             <tbody>
               {stats.map(s => (
-                <tr key={s._id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
+                <tr key={s.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                   <td className="px-4 py-3 text-text-muted"><GripVertical className="h-4 w-4" /></td>
                   <td className="px-4 py-3 font-medium text-text-primary">{s.label}</td>
                   <td className="px-4 py-3 text-text-secondary">{s.value}</td>
@@ -64,8 +64,8 @@ export default function AdminStatsPage() {
                   <td className="px-4 py-3 text-text-secondary">{s.icon}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin-control/stats/${s._id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
-                      <button onClick={() => handleDelete(s._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                      <Link href={`/admin-control/stats/${s.id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
+                      <button onClick={() => handleDelete(s.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
                 </tr>

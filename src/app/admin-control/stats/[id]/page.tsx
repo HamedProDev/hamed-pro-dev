@@ -18,7 +18,7 @@ export default function EditStatPage() {
   useEffect(() => {
     fetch(`/api/stats/${params.id}`)
       .then(r => r.json())
-      .then(d => { if (d.success) setForm(d.data); setLoading(false) })
+      .then(d => { if (d.success) { const s = d.data; setForm({ label: s.label || '', value: s.value || 0, suffix: s.suffix || '', icon: s.icon || 'FolderOpen', order: s.order_index || 0 }) }; setLoading(false) })
       .catch(() => setLoading(false))
   }, [params.id])
 

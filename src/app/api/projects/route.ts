@@ -13,7 +13,9 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get('search')
     const featured = searchParams.get('featured')
 
-    const filters: { field: string; operator: any; value: any }[] = [{ field: 'is_published', operator: 'eq', value: true }]
+    const filters: { field: string; operator: any; value: any }[] = []
+    const showAll = searchParams.get('all') === 'true'
+    if (!showAll) filters.push({ field: 'is_published', operator: 'eq', value: true })
     if (category) filters.push({ field: 'category', operator: 'eq', value: category })
     if (status === 'featured') filters.push({ field: 'featured', operator: 'eq', value: true })
     if (featured === 'true') filters.push({ field: 'featured', operator: 'eq', value: true })

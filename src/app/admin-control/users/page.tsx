@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Plus, Pencil, Trash2, Users as UsersIcon } from 'lucide-react'
 
 interface User {
-  _id: string; name: string; email: string; role: string; createdAt: string
+  id: string; name: string; email: string; role: string; createdAt: string
 }
 
 export default function AdminUsersPage() {
@@ -41,15 +41,15 @@ export default function AdminUsersPage() {
             <thead><tr className="border-b border-border-primary"><th className="px-4 py-3 text-left text-text-muted">Name</th><th className="px-4 py-3 text-left text-text-muted">Email</th><th className="px-4 py-3 text-left text-text-muted">Role</th><th className="px-4 py-3 text-left text-text-muted">Joined</th><th className="px-4 py-3 text-left text-text-muted">Actions</th></tr></thead>
             <tbody>
               {users.map(u => (
-                <tr key={u._id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
+                <tr key={u.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                   <td className="px-4 py-3 font-medium text-text-primary">{u.name}</td>
                   <td className="px-4 py-3 text-text-secondary">{u.email}</td>
                   <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full ${u.role === 'admin' ? 'bg-blue-500/10 text-blue-500' : 'bg-gray-500/10 text-gray-500'}`}>{u.role}</span></td>
                   <td className="px-4 py-3 text-text-muted text-xs">{new Date(u.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin-control/users/${u._id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
-                      {u.role !== 'admin' && <button onClick={() => handleDelete(u._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>}
+                      <Link href={`/admin-control/users/${u.id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
+                      {u.role !== 'admin' && <button onClick={() => handleDelete(u.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>}
                     </div>
                   </td>
                 </tr>

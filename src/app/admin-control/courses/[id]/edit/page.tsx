@@ -29,12 +29,12 @@ export default function EditCoursePage() {
       if (d.success && d.data) {
         const c = d.data
         setForm({
-          title: c.title || '', description: c.description || '', longDescription: c.longDescription || '',
-          coverImage: c.coverImage || '', category: c.category || 'Frontend', level: c.level || 'beginner',
+          title: c.title || '', description: c.description || '', longDescription: c.content || '',
+          coverImage: c.image_url || '', category: c.category || 'Frontend', level: c.level || 'beginner',
           type: c.type || 'free', price: String(c.price || 0), duration: String(c.duration || 0),
           rating: String(c.rating || ''),           tags: (c.tags || []).join(', '),
           prerequisites: (c.prerequisites || []).join(', '), outcomes: (c.outcomes || []).join(', '),
-          youtubePlaylistUrl: c.youtubePlaylistUrl || '',
+          youtubePlaylistUrl: c.youtube_url || '',
         })
       }
       setLoading(false)

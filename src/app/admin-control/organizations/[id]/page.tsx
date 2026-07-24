@@ -28,10 +28,10 @@ export default function EditOrganizationPage() {
       if (d.success && d.data) {
         const o = d.data
         setForm({
-          name: o.name || '', type: o.type || 'Startup', description: o.description || '',
-          location: o.location || '', team: o.team || '', roles: String(o.roles || 0),
-          tech: (o.tech || []).join(', '), hiring: o.hiring || false, website: o.website || '',
-          logo: o.logo || '', order: o.order || 0,
+          name: o.name || '', type: o.category || 'Startup', description: o.description || '',
+          location: o.location || '', team: o.team_size || '', roles: String(o.team_roles || 0),
+          tech: (o.tech_stack || []).join(', '), hiring: o.is_hiring || false, website: o.website_url || '',
+          logo: o.logo_url || '', order: o.order_index || 0,
         })
       }
       setLoading(false)

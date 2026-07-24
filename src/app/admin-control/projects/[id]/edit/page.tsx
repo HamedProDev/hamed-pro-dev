@@ -28,11 +28,11 @@ export default function EditProjectPage() {
       if (d.success && d.data) {
         const p = d.data
         setForm({
-          title: p.title || '', description: p.description || '', longDescription: p.longDescription || '',
-          coverImage: p.coverImage || '', demoUrl: p.demoUrl || '', sourceUrl: p.sourceUrl || '',
+          title: p.title || '', description: p.description || '', longDescription: p.content || '',
+          coverImage: p.image_url || '', demoUrl: p.demo_url || '', sourceUrl: p.github_url || '',
           category: p.category || 'large', subCategory: p.subCategory || 'other',
-          techStack: (p.techStack || []).join(', '), status: p.status || 'in-progress',
-          featured: p.featured || false, isPublished: p.isPublished !== false,
+          techStack: (p.tech_stack || []).join(', '), status: p.status || 'in-progress',
+          featured: p.featured || false, isPublished: p.is_published !== false,
         })
       }
       setLoading(false)

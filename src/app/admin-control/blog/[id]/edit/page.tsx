@@ -31,7 +31,7 @@ export default function EditBlogPostPage() {
           content: p.content || '',
           category: p.category || '',
           tags: (p.tags || []).join(', '),
-          coverImage: p.coverImage || '',
+          coverImage: p.image_url || '',
         })
       }
       setLoading(false)

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Plus, Pencil, Trash2, Eye, ArrowLeft, BookOpen, Youtube, FileText, HelpCircle } from 'lucide-react'
 
 interface Lesson {
-  _id: string; title: string; order: number; type: string; isFree: boolean; isPublished: boolean; youtubeUrl?: string
+  id: string; title: string; order_index: number; type: string; is_free: boolean; is_published: boolean; video_url?: string
 }
 
 const typeIcons: Record<string, any> = {
@@ -75,17 +75,17 @@ export default function AdminLessonsPage() {
               {lessons.map((l) => {
                 const TypeIcon = typeIcons[l.type] || BookOpen
                 return (
-                  <tr key={l._id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
-                    <td className="px-4 py-3 text-text-muted">{l.order}</td>
+                  <tr key={l.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
+                    <td className="px-4 py-3 text-text-muted">{l.order_index}</td>
                     <td className="px-4 py-3 font-medium text-text-primary">{l.title}</td>
                     <td className="px-4 py-3"><span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500"><TypeIcon className="h-3 w-3" /> {typeLabels[l.type] || l.type}</span></td>
-                    <td className="px-4 py-3">{l.youtubeUrl ? <span className="text-xs text-green-500">✓</span> : <span className="text-xs text-text-muted">—</span>}</td>
-                    <td className="px-4 py-3">{l.isFree ? <span className="text-xs text-green-500">Free</span> : <span className="text-xs text-text-muted">Premium</span>}</td>
-                    <td className="px-4 py-3">{l.isPublished ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-500">Published</span> : <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">Draft</span>}</td>
+                    <td className="px-4 py-3">{l.video_url ? <span className="text-xs text-green-500">✓</span> : <span className="text-xs text-text-muted">—</span>}</td>
+                    <td className="px-4 py-3">{l.is_free ? <span className="text-xs text-green-500">Free</span> : <span className="text-xs text-text-muted">Premium</span>}</td>
+                    <td className="px-4 py-3">{l.is_published ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-500">Published</span> : <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">Draft</span>}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <Link href={`/admin-control/courses/${courseId}/lessons/${l._id}/edit`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
-                        <button onClick={() => handleDelete(l._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                        <Link href={`/admin-control/courses/${courseId}/lessons/${l.id}/edit`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
+                        <button onClick={() => handleDelete(l.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
                       </div>
                     </td>
                   </tr>

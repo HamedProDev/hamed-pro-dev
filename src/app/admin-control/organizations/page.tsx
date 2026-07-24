@@ -6,14 +6,14 @@ import { Button } from '@/components/ui/button'
 import { Plus, Pencil, Trash2, Building2 } from 'lucide-react'
 
 interface Organization {
-  _id: string
+  id: string
   name: string
-  type: string
+  category: string
   description: string
   location: string
-  team: string
-  roles: number
-  hiring: boolean
+  team_size: string
+  team_roles: number
+  is_hiring: boolean
 }
 
 export default function AdminOrganizationsPage() {
@@ -58,16 +58,16 @@ export default function AdminOrganizationsPage() {
             </thead>
             <tbody>
               {orgs.map(o => (
-                <tr key={o._id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
+                <tr key={o.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                   <td className="px-4 py-3 font-medium text-text-primary">{o.name}</td>
-                  <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500">{o.type}</span></td>
+                  <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500">{o.category}</span></td>
                   <td className="px-4 py-3 text-text-secondary">{o.location}</td>
-                  <td className="px-4 py-3 text-text-muted">{o.team}</td>
-                  <td className="px-4 py-3">{o.hiring ? <span className="text-green-500 text-xs">Yes ({o.roles})</span> : <span className="text-text-muted text-xs">No</span>}</td>
+                  <td className="px-4 py-3 text-text-muted">{o.team_size}</td>
+                  <td className="px-4 py-3">{o.is_hiring ? <span className="text-green-500 text-xs">Yes ({o.team_roles})</span> : <span className="text-text-muted text-xs">No</span>}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin-control/organizations/${o._id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
-                      <button onClick={() => handleDelete(o._id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                      <Link href={`/admin-control/organizations/${o.id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
+                      <button onClick={() => handleDelete(o.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
                 </tr>
