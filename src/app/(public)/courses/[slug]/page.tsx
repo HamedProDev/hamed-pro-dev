@@ -88,7 +88,11 @@ export default function CourseDetailPage() {
         {course.price && course.price !== 'Free' ? (
           <Button asChild className="gradient-bg text-white"><Link href={`/contact?subject=I%20want%20to%20enroll%20in%20${encodeURIComponent(course.title)}&message=I%27m%20interested%20in%20the%20premium%20course%3A%20${encodeURIComponent(course.title)}.%20Please%20send%20me%20details%20about%20pricing%20and%20enrollment.`}>Contact for Enrollment</Link></Button>
         ) : (
-          <Button asChild className="gradient-bg text-white"><Link href="/contact">Enroll Now</Link></Button>
+          lessons.length > 0 ? (
+            <Button asChild className="gradient-bg text-white"><Link href={`/courses/${slug}/lessons/${lessons[0].id}`}>Start Learning</Link></Button>
+          ) : (
+            <Button disabled className="gradient-bg text-white opacity-50">Coming Soon</Button>
+          )
         )}
       </div>
     </main>

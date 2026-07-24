@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, CheckCircle2, Loader2 } from 'lucide-react'
+import { Mail, Phone, MapPin, Send, Clock, Globe, CheckCircle2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -15,7 +15,7 @@ const contactInfo = [
   { icon: Mail, label: 'Email', value: 'hamed@novasoft.rw', href: 'mailto:hamed@novasoft.rw', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
   { icon: Phone, label: 'Phone', value: '+250 788 123 456', href: 'tel:+250788123456', color: 'text-green-500', bg: 'bg-green-500/10' },
   { icon: MapPin, label: 'Location', value: 'Kigali, Rwanda', href: '#', color: 'text-amber-500', bg: 'bg-amber-500/10' },
-  { icon: Globe, label: 'Website', value: 'hamedprodev.onrender.com', href: 'https://hamedprodev.onrender.com', color: 'text-purple-500', bg: 'bg-purple-500/10' },
+  { icon: Globe, label: 'Website', value: 'hamedprodev.vercel.app', href: 'https://hamedprodev.vercel.app', color: 'text-purple-500', bg: 'bg-purple-500/10' },
 ]
 
 const availability = [
@@ -154,14 +154,6 @@ export default function ContactPage() {
               </CardContent>
             </Card>
 
-            <Card className="gradient-bg text-white">
-              <CardContent className="p-6 text-center">
-                <MessageCircle className="h-8 w-8 mx-auto mb-3 text-green-400" />
-                <h3 className="font-semibold mb-1">Need a Quick Response?</h3>
-                <p className="text-sm text-white/70 mb-4">DM me on WhatsApp for urgent inquiries.</p>
-                <Button asChild className="bg-green-500 hover:bg-green-600 text-white w-full"><a href="https://wa.me/250788123456" target="_blank">WhatsApp Me</a></Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
 

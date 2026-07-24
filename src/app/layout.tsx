@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   keywords: ['Hamed Hussein', 'Fullstack Developer', 'AI/ML Engineer', 'Rwanda', 'Kigali', 'React', 'Next.js', 'Python', 'Kwanda Facility'],
   authors: [{ name: 'Hamed Hussein' }],
   creator: 'Hamed Hussein',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.onrender.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.vercel.app'),
   openGraph: {
     type: 'website',
     locale: 'en_US',

@@ -38,7 +38,7 @@ const svgIcons: Record<string, string> = {
 }
 
 interface Settings {
-  siteName?: string
+  site_name?: string
   location?: string
   social_links?: Record<string, string>
 }
@@ -188,7 +188,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-border-primary flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-text-muted">
-            &copy; {new Date().getFullYear()} {settings.siteName || 'HamedProDev'}. All rights
+            &copy; {new Date().getFullYear()} {settings.site_name || 'HamedProDev'}. All rights
             reserved.
           </p>
           <div className="flex items-center gap-4 text-xs text-text-muted">

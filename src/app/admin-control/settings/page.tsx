@@ -40,7 +40,7 @@ export default function AdminSettingsPage() {
   const updateSocial = (key: string, value: string) => {
     setSettings((prev: any) => ({
       ...prev,
-      socialLinks: { ...(prev.socialLinks || {}), [key]: value },
+      social_links: { ...(prev.social_links || {}), [key]: value },
     }))
   }
 
@@ -83,14 +83,14 @@ export default function AdminSettingsPage() {
         <CardHeader><CardTitle>Profile & Hero</CardTitle><CardDescription>Your profile photo and hero section text</CardDescription></CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label htmlFor="profilePhoto" className="text-sm font-medium mb-2 block">Profile Photo</label>
-            <ImageUpload value={settings.profilePhoto || ''} onChange={v => update('profilePhoto', v)} folder="hamedpro/profile" />
+            <label htmlFor="profile_photo" className="text-sm font-medium mb-2 block">Profile Photo</label>
+            <ImageUpload value={settings.profile_photo || ''} onChange={v => update('profile_photo', v)} folder="hamedpro/profile" />
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            <div><label htmlFor="heroName" className="text-sm font-medium mb-1 block">Hero Name</label><Input id="heroName" name="heroName" value={settings.heroName || ''} onChange={e => update('heroName', e.target.value)} placeholder="Hamed Hussein" /></div>
-            <div><label htmlFor="heroTitle" className="text-sm font-medium mb-1 block">Hero Title</label><Input id="heroTitle" name="heroTitle" value={settings.heroTitle || ''} onChange={e => update('heroTitle', e.target.value)} placeholder="Full Stack Developer & AI Engineer" /></div>
+            <div><label htmlFor="hero_name" className="text-sm font-medium mb-1 block">Hero Name</label><Input id="hero_name" name="hero_name" value={settings.hero_name || ''} onChange={e => update('hero_name', e.target.value)} placeholder="Hamed Hussein" /></div>
+            <div><label htmlFor="hero_title" className="text-sm font-medium mb-1 block">Hero Title</label><Input id="hero_title" name="hero_title" value={settings.hero_title || ''} onChange={e => update('hero_title', e.target.value)} placeholder="Full Stack Developer & AI Engineer" /></div>
           </div>
-          <div><label htmlFor="heroSubtitle" className="text-sm font-medium mb-1 block">Hero Subtitle</label><Input id="heroSubtitle" name="heroSubtitle" value={settings.heroSubtitle || ''} onChange={e => update('heroSubtitle', e.target.value)} placeholder="Building scalable solutions..." /></div>
+          <div><label htmlFor="hero_subtitle" className="text-sm font-medium mb-1 block">Hero Subtitle</label><Input id="hero_subtitle" name="hero_subtitle" value={settings.hero_subtitle || ''} onChange={e => update('hero_subtitle', e.target.value)} placeholder="Building scalable solutions..." /></div>
           <div><label htmlFor="bio" className="text-sm font-medium mb-1 block">Bio / Description</label><Textarea id="bio" name="bio" rows={4} value={settings.description || ''} onChange={e => update('description', e.target.value)} placeholder="Tell your story..." /></div>
         </CardContent>
       </Card>
@@ -100,22 +100,22 @@ export default function AdminSettingsPage() {
         <CardHeader><CardTitle>Site Information</CardTitle><CardDescription>Basic site configuration</CardDescription></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
-            <div><label htmlFor="siteName" className="text-sm font-medium mb-1 block">Site Name</label><Input id="siteName" name="siteName" value={settings.siteName || ''} onChange={e => update('siteName', e.target.value)} /></div>
+            <div><label htmlFor="site_name" className="text-sm font-medium mb-1 block">Site Name</label><Input id="site_name" name="site_name" value={settings.site_name || ''} onChange={e => update('site_name', e.target.value)} /></div>
             <div><label htmlFor="tagline" className="text-sm font-medium mb-1 block">Tagline</label><Input id="tagline" name="tagline" value={settings.tagline || ''} onChange={e => update('tagline', e.target.value)} /></div>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             <div><label htmlFor="location" className="text-sm font-medium mb-1 block">Location</label><Input id="location" name="location" value={settings.location || ''} onChange={e => update('location', e.target.value)} placeholder="Kigali, Rwanda" /></div>
-            <div><label htmlFor="contactEmail" className="text-sm font-medium mb-1 block">Contact Email</label><Input id="contactEmail" name="contactEmail" type="email" value={settings.contactEmail || ''} onChange={e => update('contactEmail', e.target.value)} /></div>
+            <div><label htmlFor="contact_email" className="text-sm font-medium mb-1 block">Contact Email</label><Input id="contact_email" name="contact_email" type="email" value={settings.contact_email || ''} onChange={e => update('contact_email', e.target.value)} /></div>
           </div>
-          <div><label htmlFor="contactPhone" className="text-sm font-medium mb-1 block">Contact Phone</label><Input id="contactPhone" name="contactPhone" value={settings.contactPhone || ''} onChange={e => update('contactPhone', e.target.value)} placeholder="+250 788 123 456" /></div>
+          <div><label htmlFor="contact_phone" className="text-sm font-medium mb-1 block">Contact Phone</label><Input id="contact_phone" name="contact_phone" value={settings.contact_phone || ''} onChange={e => update('contact_phone', e.target.value)} placeholder="+250 788 123 456" /></div>
           <div><label htmlFor="address" className="text-sm font-medium mb-1 block">Address</label><Input id="address" name="address" value={settings.address || ''} onChange={e => update('address', e.target.value)} placeholder="Kwanda Facility, Kigali" /></div>
           <div>
-            <label htmlFor="siteLogo" className="text-sm font-medium mb-1 block">Site Logo</label>
+            <label htmlFor="logo" className="text-sm font-medium mb-1 block">Site Logo</label>
             <ImageUpload value={settings.logo || ''} onChange={v => update('logo', v)} folder="hamedpro/logo" />
           </div>
           <div>
-            <label htmlFor="ogImage" className="text-sm font-medium mb-1 block">OG Image (Social Share)</label>
-            <ImageUpload value={settings.ogImage || ''} onChange={v => update('ogImage', v)} folder="hamedpro/og" />
+            <label htmlFor="og_image" className="text-sm font-medium mb-1 block">OG Image (Social Share)</label>
+            <ImageUpload value={settings.og_image || ''} onChange={v => update('og_image', v)} folder="hamedpro/og" />
           </div>
         </CardContent>
       </Card>
@@ -130,13 +130,13 @@ export default function AdminSettingsPage() {
               <Input
                 id={`social-${p.key}`}
                 name={`social-${p.key}`}
-                value={settings.socialLinks?.[p.key] || ''}
+                value={settings.social_links?.[p.key] || ''}
                 onChange={e => updateSocial(p.key, e.target.value)}
                 placeholder={p.placeholder}
                 className="flex-1"
               />
-              {settings.socialLinks?.[p.key] && (
-                <a href={settings.socialLinks[p.key]} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-surface-tertiary transition-colors">
+              {settings.social_links?.[p.key] && (
+                <a href={settings.social_links[p.key]} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-surface-tertiary transition-colors">
                   <ExternalLink className="h-4 w-4 text-text-muted" />
                 </a>
               )}
@@ -160,11 +160,11 @@ export default function AdminSettingsPage() {
         <CardHeader><CardTitle>Site Options</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" checked={settings.maintenanceMode || false} onChange={e => update('maintenanceMode', e.target.checked)} className="rounded" />
+            <input type="checkbox" checked={settings.maintenance_mode || false} onChange={e => update('maintenance_mode', e.target.checked)} className="rounded" />
             <span className="text-sm text-text-secondary">Maintenance Mode</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" checked={settings.allowRegistration !== false} onChange={e => update('allowRegistration', e.target.checked)} className="rounded" />
+            <input type="checkbox" checked={settings.allow_registration !== false} onChange={e => update('allow_registration', e.target.checked)} className="rounded" />
             <span className="text-sm text-text-secondary">Allow Registration</span>
           </label>
         </CardContent>

@@ -1,5 +1,5 @@
 export function WebSiteJsonLd() {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.onrender.com'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.vercel.app'
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',

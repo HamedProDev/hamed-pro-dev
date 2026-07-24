@@ -30,13 +30,13 @@ export default function LessonPage() {
     if (!slug) return
     fetch('/api/courses').then(r => r.json()).then(d => {
       if (!d.success) { setLoading(false); return }
-      const found = d.data.find((c: any) => c.slug === slug || c._id === slug)
+      const found = d.data.find((c: any) => c.slug === slug || c.id === slug)
       if (!found) { setLoading(false); return }
       setCourse(found)
-      fetch(`/api/courses/${found._id}/lessons`).then(r2 => r2.json()).then(d2 => {
+      fetch(`/api/courses/${found.id}/lessons`).then(r2 => r2.json()).then(d2 => {
         if (d2.success) {
           setLessons(d2.data || [])
-          const current = d2.data.find((l: any) => l._id === lessonId || l.slug === lessonId)
+          const current = d2.data.find((l: any) => l.id === lessonId || l.slug === lessonId)
           if (current) setLesson(current)
         }
         setLoading(false)
@@ -52,7 +52,7 @@ export default function LessonPage() {
     </main>
   )
 
-  const currentIndex = lessons.findIndex(l => l._id === lesson._id)
+  const currentIndex = lessons.findIndex(l => l.id === lesson.id)
   const prevLesson = currentIndex > 0 ? lessons[currentIndex - 1] : null
   const nextLesson = currentIndex < lessons.length - 1 ? lessons[currentIndex + 1] : null
   const progress = lessons.length > 0 ? Math.round(((currentIndex + 1) / lessons.length) * 100) : 0
@@ -97,12 +97,12 @@ export default function LessonPage() {
             <div className="hidden sm:flex items-center gap-1">
               {prevLesson && (
                 <Button size="sm" variant="ghost" asChild className="h-8 px-2">
-                  <Link href={`/courses/${slug}/lessons/${prevLesson._id}`}><ChevronLeft className="h-4 w-4" /></Link>
+                  <Link href={`/courses/${slug}/lessons/${prevLesson.id}`}><ChevronLeft className="h-4 w-4" /></Link>
                 </Button>
               )}
               {nextLesson && (
                 <Button size="sm" variant="ghost" asChild className="h-8 px-2">
-                  <Link href={`/courses/${slug}/lessons/${nextLesson._id}`}><ChevronRight className="h-4 w-4" /></Link>
+                  <Link href={`/courses/${slug}/lessons/${nextLesson.id}`}><ChevronRight className="h-4 w-4" /></Link>
                 </Button>
               )}
             </div>
@@ -122,15 +122,15 @@ export default function LessonPage() {
 
         <div className="flex items-center gap-3 mb-6 mt-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 flex items-center gap-1"><TypeIcon className="h-3 w-3" /> {typeLabels[lesson.type] || lesson.type}</Badge>
-          {lesson.isFree && <Badge variant="outline" className="text-green-500 border-green-500/20">Free Preview</Badge>}
+          {lesson.is_free && <Badge variant="outline" className="text-green-500 border-green-500/20">Free Preview</Badge>}
           <span className="text-xs text-text-muted ml-auto">Lesson {currentIndex + 1} of {lessons.length}</span>
         </div>
 
         <h1 className="text-3xl md:text-4xl font-bold mb-8">{lesson.title}</h1>
 
-        {lesson.youtubeUrl && (
+        {lesson.video_url && (
           <div className="aspect-video rounded-2xl overflow-hidden mb-8 bg-surface-card border border-border-primary">
-            <iframe src={lesson.youtubeUrl.replace('watch?v=', 'embed/').split('&')[0]} title={lesson.title} allowFullScreen className="w-full h-full" />
+            <iframe src={lesson.video_url.replace('watch?v=', 'embed/').split('&')[0]} title={lesson.title} allowFullScreen className="w-full h-full" />
           </div>
         )}
 
@@ -211,7 +211,7 @@ export default function LessonPage() {
           <div>
             {prevLesson ? (
               <Button variant="outline" asChild>
-                <Link href={`/courses/${slug}/lessons/${prevLesson._id}`}><ChevronLeft className="h-4 w-4 mr-1" /> Previous: {prevLesson.title}</Link>
+                <Link href={`/courses/${slug}/lessons/${prevLesson.id}`}><ChevronLeft className="h-4 w-4 mr-1" /> Previous: {prevLesson.title}</Link>
               </Button>
             ) : (
               <Button variant="outline" asChild>
@@ -222,7 +222,7 @@ export default function LessonPage() {
           <div>
             {nextLesson ? (
               <Button className="gradient-bg text-white" asChild>
-                <Link href={`/courses/${slug}/lessons/${nextLesson._id}`}>Next: {nextLesson.title} <ChevronRight className="h-4 w-4 ml-1" /></Link>
+                <Link href={`/courses/${slug}/lessons/${nextLesson.id}`}>Next: {nextLesson.title} <ChevronRight className="h-4 w-4 ml-1" /></Link>
               </Button>
             ) : (
               <Button className="gradient-bg text-white" asChild>
