@@ -292,36 +292,62 @@ ALTER TABLE site_stats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics ENABLE ROW LEVEL SECURITY;
 
 -- Anonymous read access for published content
+DROP POLICY IF EXISTS "Anyone can view published projects" ON projects;
 CREATE POLICY "Anyone can view published projects" ON projects FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published courses" ON courses;
 CREATE POLICY "Anyone can view published courses" ON courses FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published lessons" ON lessons;
 CREATE POLICY "Anyone can view published lessons" ON lessons FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published blog posts" ON blog_posts;
 CREATE POLICY "Anyone can view published blog posts" ON blog_posts FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published jobs" ON jobs;
 CREATE POLICY "Anyone can view published jobs" ON jobs FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published skills" ON skills;
 CREATE POLICY "Anyone can view published skills" ON skills FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published achievements" ON achievements;
 CREATE POLICY "Anyone can view published achievements" ON achievements FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published organizations" ON organizations;
 CREATE POLICY "Anyone can view published organizations" ON organizations FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published testimonials" ON testimonials;
 CREATE POLICY "Anyone can view published testimonials" ON testimonials FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Anyone can view published stats" ON site_stats;
 CREATE POLICY "Anyone can view published stats" ON site_stats FOR SELECT USING (is_published = true);
 
 -- Profile access: users can read their own, admins can read all
+DROP POLICY IF EXISTS "Users can read own profile" ON profiles;
 CREATE POLICY "Users can read own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+DROP POLICY IF EXISTS "Admins can read all profiles" ON profiles;
 CREATE POLICY "Admins can read all profiles" ON profiles FOR SELECT USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 
--- Admin full access (note: uses app_metadata.role, not the JWT role claim)
+-- Admin full access
+DROP POLICY IF EXISTS "Admins can do everything on projects" ON projects;
 CREATE POLICY "Admins can do everything on projects" ON projects FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on courses" ON courses FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on lessons" ON lessons FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on blog_posts" ON blog_posts FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on jobs" ON jobs FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on skills" ON skills FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on achievements" ON achievements FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on organizations" ON organizations FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on testimonials" ON testimonials FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on settings" ON settings FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on site_stats" ON site_stats FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on contacts" ON contacts FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on newsletter_subscribers" ON newsletter_subscribers FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-CREATE POLICY "Admins can do everything on analytics" ON analytics FOR ALL USING (auth.jwt() ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on courses" ON courses;
+CREATE POLICY "Admins can do everything on courses" ON courses FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on lessons" ON lessons;
+CREATE POLICY "Admins can do everything on lessons" ON lessons FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on blog_posts" ON blog_posts;
+CREATE POLICY "Admins can do everything on blog_posts" ON blog_posts FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on jobs" ON jobs;
+CREATE POLICY "Admins can do everything on jobs" ON jobs FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on skills" ON skills;
+CREATE POLICY "Admins can do everything on skills" ON skills FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on achievements" ON achievements;
+CREATE POLICY "Admins can do everything on achievements" ON achievements FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on organizations" ON organizations;
+CREATE POLICY "Admins can do everything on organizations" ON organizations FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on testimonials" ON testimonials;
+CREATE POLICY "Admins can do everything on testimonials" ON testimonials FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on settings" ON settings;
+CREATE POLICY "Admins can do everything on settings" ON settings FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on site_stats" ON site_stats;
+CREATE POLICY "Admins can do everything on site_stats" ON site_stats FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on contacts" ON contacts;
+CREATE POLICY "Admins can do everything on contacts" ON contacts FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on newsletter_subscribers" ON newsletter_subscribers;
+CREATE POLICY "Admins can do everything on newsletter_subscribers" ON newsletter_subscribers FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admins can do everything on analytics" ON analytics;
+CREATE POLICY "Admins can do everything on analytics" ON analytics FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 
 -- Insert handler: auto-create profile on user signup
 CREATE OR REPLACE FUNCTION handle_new_user()
