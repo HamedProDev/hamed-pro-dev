@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Code2, Loader2 } from 'lucide-react'
+import { Code2, Loader2, Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,7 +32,7 @@ export default function LoginPage() {
         return
       }
 
-      window.location.href = '/dashboard'
+      window.location.href = '/admin-control'
     } catch {
       setError('Something went wrong')
       setLoading(false)
@@ -47,8 +48,24 @@ export default function LoginPage() {
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div><Label>Email</Label><Input type="email" name="email" required /></div>
-          <div><Label>Password</Label><Input type="password" name="password" required /></div>
+          <div>
+            <Label htmlFor="login-email">Email</Label>
+            <Input id="login-email" name="email" type="email" required autoComplete="email" />
+          </div>
+          <div>
+            <Label htmlFor="login-password">Password</Label>
+            <div className="relative">
+              <Input id="login-password" name="password" type={showPassword ? 'text' : 'password'} required autoComplete="current-password" className="pr-10" />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
           {error && <p className="text-red-400 text-sm">{error}</p>}
           <Button type="submit" className="w-full gradient-bg text-white" disabled={loading}>
             {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Signing in...</> : 'Sign In'}
