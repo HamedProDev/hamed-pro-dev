@@ -27,7 +27,7 @@ export function TagInput({ tags, onChange, placeholder }: TagInputProps) {
   return (
     <div className="space-y-2">
       <div className="flex gap-2">
-        <Input value={input} onChange={e => setInput(e.target.value)} placeholder={placeholder || 'Add tag...'} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag() } }} />
+        <Input id="tag-input" name="tagInput" value={input} onChange={e => setInput(e.target.value)} placeholder={placeholder || 'Add tag...'} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag() } }} />
         <Button type="button" variant="outline" onClick={addTag}>Add</Button>
       </div>
       <div className="flex flex-wrap gap-1.5">

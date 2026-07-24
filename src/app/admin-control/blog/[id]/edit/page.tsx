@@ -70,14 +70,14 @@ export default function EditBlogPostPage() {
         <Card>
           <CardHeader><CardTitle>Post Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><label className="text-sm font-medium mb-1 block">Title *</label><Input required value={form.title} onChange={e => update('title', e.target.value)} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Cover Image</label><ImageUpload value={form.coverImage} onChange={v => update('coverImage', v)} folder="hamedpro/blog" /></div>
+            <div><label htmlFor="blog-title" className="text-sm font-medium mb-1 block">Title *</label><Input id="blog-title" name="title" required value={form.title} onChange={e => update('title', e.target.value)} /></div>
+            <div><label htmlFor="blog-coverImage" className="text-sm font-medium mb-1 block">Cover Image</label><ImageUpload value={form.coverImage} onChange={v => update('coverImage', v)} folder="hamedpro/blog" /></div>
             <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-sm font-medium mb-1 block">Category</label><Input value={form.category} onChange={e => update('category', e.target.value)} /></div>
-              <div><label className="text-sm font-medium mb-1 block">Tags (comma separated)</label><Input value={form.tags} onChange={e => update('tags', e.target.value)} /></div>
+              <div><label htmlFor="blog-category" className="text-sm font-medium mb-1 block">Category</label><Input id="blog-category" name="category" value={form.category} onChange={e => update('category', e.target.value)} /></div>
+              <div><label htmlFor="blog-tags" className="text-sm font-medium mb-1 block">Tags (comma separated)</label><Input id="blog-tags" name="tags" value={form.tags} onChange={e => update('tags', e.target.value)} /></div>
             </div>
-            <div><label className="text-sm font-medium mb-1 block">Excerpt</label><Input value={form.excerpt} onChange={e => update('excerpt', e.target.value)} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Content (Markdown) *</label><Textarea rows={12} required value={form.content} onChange={e => update('content', e.target.value)} /></div>
+            <div><label htmlFor="blog-excerpt" className="text-sm font-medium mb-1 block">Excerpt</label><Input id="blog-excerpt" name="excerpt" value={form.excerpt} onChange={e => update('excerpt', e.target.value)} /></div>
+            <div><label htmlFor="blog-content" className="text-sm font-medium mb-1 block">Content (Markdown) *</label><Textarea id="blog-content" name="content" rows={12} required value={form.content} onChange={e => update('content', e.target.value)} /></div>
           </CardContent>
         </Card>
         <Button type="submit" disabled={saving} className="gradient-bg text-white">

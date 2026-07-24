@@ -23,9 +23,9 @@ export default function AdminSEOPage() {
       <Card>
         <CardHeader><CardTitle>Default Meta Tags</CardTitle><CardDescription>Applied across all pages unless overridden</CardDescription></CardHeader>
         <CardContent className="space-y-4">
-          <div><label className="text-sm font-medium mb-1 block">Default Meta Title Template</label><Input defaultValue="%s | HamedProDev" /></div>
-          <div><label className="text-sm font-medium mb-1 block">Default Meta Description</label><Textarea rows={3} placeholder="Default description for search engines..." /></div>
-          <div><label className="text-sm font-medium mb-1 block">Default OG Image URL</label><Input placeholder="https://..." /></div>
+          <div><label htmlFor="seo-title" className="text-sm font-medium mb-1 block">Default Meta Title Template</label><Input id="seo-title" name="metaTitle" defaultValue="%s | HamedProDev" /></div>
+          <div><label htmlFor="seo-description" className="text-sm font-medium mb-1 block">Default Meta Description</label><Textarea id="seo-description" name="metaDescription" rows={3} placeholder="Default description for search engines..." /></div>
+          <div><label htmlFor="seo-ogImage" className="text-sm font-medium mb-1 block">Default OG Image URL</label><Input id="seo-ogImage" name="ogImage" placeholder="https://..." /></div>
         </CardContent>
       </Card>
     </div>

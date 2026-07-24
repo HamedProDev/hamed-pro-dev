@@ -51,10 +51,10 @@ export default function AdminContactPage() {
       <Card>
         <CardHeader><CardTitle>Contact Information</CardTitle><CardDescription>Displayed on the contact page and footer</CardDescription></CardHeader>
         <CardContent className="space-y-4">
-          <div><label className="text-sm font-medium mb-1 block flex items-center gap-1"><Mail className="h-3 w-3" /> Contact Email</label><Input type="email" value={settings.contactEmail || ''} onChange={e => update('contactEmail', e.target.value)} placeholder="hello@hamedpro.rw" /></div>
-          <div><label className="text-sm font-medium mb-1 block flex items-center gap-1"><Phone className="h-3 w-3" /> Phone</label><Input value={settings.contactPhone || ''} onChange={e => update('contactPhone', e.target.value)} placeholder="+250 788 123 456" /></div>
-          <div><label className="text-sm font-medium mb-1 block flex items-center gap-1"><MapPin className="h-3 w-3" /> Address</label><Input value={settings.address || ''} onChange={e => update('address', e.target.value)} placeholder="Gasabo, Kigali, Rwanda" /></div>
-          <div><label className="text-sm font-medium mb-1 block flex items-center gap-1"><MessageSquare className="h-3 w-3" /> Contact Form Success Message</label><Textarea rows={2} value={settings.contactSuccessMessage || ''} onChange={e => update('contactSuccessMessage', e.target.value)} placeholder="Thank you for your message!" /></div>
+          <div><label htmlFor="contact-email" className="text-sm font-medium mb-1 block flex items-center gap-1"><Mail className="h-3 w-3" /> Contact Email</label><Input id="contact-email" name="contactEmail" type="email" value={settings.contactEmail || ''} onChange={e => update('contactEmail', e.target.value)} placeholder="hello@hamedpro.rw" /></div>
+          <div><label htmlFor="contact-phone" className="text-sm font-medium mb-1 block flex items-center gap-1"><Phone className="h-3 w-3" /> Phone</label><Input id="contact-phone" name="contactPhone" value={settings.contactPhone || ''} onChange={e => update('contactPhone', e.target.value)} placeholder="+250 788 123 456" /></div>
+          <div><label htmlFor="contact-address" className="text-sm font-medium mb-1 block flex items-center gap-1"><MapPin className="h-3 w-3" /> Address</label><Input id="contact-address" name="address" value={settings.address || ''} onChange={e => update('address', e.target.value)} placeholder="Gasabo, Kigali, Rwanda" /></div>
+          <div><label htmlFor="contact-successMessage" className="text-sm font-medium mb-1 block flex items-center gap-1"><MessageSquare className="h-3 w-3" /> Contact Form Success Message</label><Textarea id="contact-successMessage" name="contactSuccessMessage" rows={2} value={settings.contactSuccessMessage || ''} onChange={e => update('contactSuccessMessage', e.target.value)} placeholder="Thank you for your message!" /></div>
         </CardContent>
       </Card>
     </div>

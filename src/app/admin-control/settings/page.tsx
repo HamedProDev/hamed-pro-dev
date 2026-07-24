@@ -83,15 +83,15 @@ export default function AdminSettingsPage() {
         <CardHeader><CardTitle>Profile & Hero</CardTitle><CardDescription>Your profile photo and hero section text</CardDescription></CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">Profile Photo</label>
+            <label htmlFor="profilePhoto" className="text-sm font-medium mb-2 block">Profile Photo</label>
             <ImageUpload value={settings.profilePhoto || ''} onChange={v => update('profilePhoto', v)} folder="hamedpro/profile" />
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            <div><label className="text-sm font-medium mb-1 block">Hero Name</label><Input value={settings.heroName || ''} onChange={e => update('heroName', e.target.value)} placeholder="Hamed Hussein" /></div>
-            <div><label className="text-sm font-medium mb-1 block">Hero Title</label><Input value={settings.heroTitle || ''} onChange={e => update('heroTitle', e.target.value)} placeholder="Full Stack Developer & AI Engineer" /></div>
+            <div><label htmlFor="heroName" className="text-sm font-medium mb-1 block">Hero Name</label><Input id="heroName" name="heroName" value={settings.heroName || ''} onChange={e => update('heroName', e.target.value)} placeholder="Hamed Hussein" /></div>
+            <div><label htmlFor="heroTitle" className="text-sm font-medium mb-1 block">Hero Title</label><Input id="heroTitle" name="heroTitle" value={settings.heroTitle || ''} onChange={e => update('heroTitle', e.target.value)} placeholder="Full Stack Developer & AI Engineer" /></div>
           </div>
-          <div><label className="text-sm font-medium mb-1 block">Hero Subtitle</label><Input value={settings.heroSubtitle || ''} onChange={e => update('heroSubtitle', e.target.value)} placeholder="Building scalable solutions..." /></div>
-          <div><label className="text-sm font-medium mb-1 block">Bio / Description</label><Textarea rows={4} value={settings.description || ''} onChange={e => update('description', e.target.value)} placeholder="Tell your story..." /></div>
+          <div><label htmlFor="heroSubtitle" className="text-sm font-medium mb-1 block">Hero Subtitle</label><Input id="heroSubtitle" name="heroSubtitle" value={settings.heroSubtitle || ''} onChange={e => update('heroSubtitle', e.target.value)} placeholder="Building scalable solutions..." /></div>
+          <div><label htmlFor="bio" className="text-sm font-medium mb-1 block">Bio / Description</label><Textarea id="bio" name="bio" rows={4} value={settings.description || ''} onChange={e => update('description', e.target.value)} placeholder="Tell your story..." /></div>
         </CardContent>
       </Card>
 
@@ -100,21 +100,21 @@ export default function AdminSettingsPage() {
         <CardHeader><CardTitle>Site Information</CardTitle><CardDescription>Basic site configuration</CardDescription></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
-            <div><label className="text-sm font-medium mb-1 block">Site Name</label><Input value={settings.siteName || ''} onChange={e => update('siteName', e.target.value)} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Tagline</label><Input value={settings.tagline || ''} onChange={e => update('tagline', e.target.value)} /></div>
+            <div><label htmlFor="siteName" className="text-sm font-medium mb-1 block">Site Name</label><Input id="siteName" name="siteName" value={settings.siteName || ''} onChange={e => update('siteName', e.target.value)} /></div>
+            <div><label htmlFor="tagline" className="text-sm font-medium mb-1 block">Tagline</label><Input id="tagline" name="tagline" value={settings.tagline || ''} onChange={e => update('tagline', e.target.value)} /></div>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            <div><label className="text-sm font-medium mb-1 block">Location</label><Input value={settings.location || ''} onChange={e => update('location', e.target.value)} placeholder="Kigali, Rwanda" /></div>
-            <div><label className="text-sm font-medium mb-1 block">Contact Email</label><Input type="email" value={settings.contactEmail || ''} onChange={e => update('contactEmail', e.target.value)} /></div>
+            <div><label htmlFor="location" className="text-sm font-medium mb-1 block">Location</label><Input id="location" name="location" value={settings.location || ''} onChange={e => update('location', e.target.value)} placeholder="Kigali, Rwanda" /></div>
+            <div><label htmlFor="contactEmail" className="text-sm font-medium mb-1 block">Contact Email</label><Input id="contactEmail" name="contactEmail" type="email" value={settings.contactEmail || ''} onChange={e => update('contactEmail', e.target.value)} /></div>
           </div>
-          <div><label className="text-sm font-medium mb-1 block">Contact Phone</label><Input value={settings.contactPhone || ''} onChange={e => update('contactPhone', e.target.value)} placeholder="+250 788 123 456" /></div>
-          <div><label className="text-sm font-medium mb-1 block">Address</label><Input value={settings.address || ''} onChange={e => update('address', e.target.value)} placeholder="Kwanda Facility, Kigali" /></div>
+          <div><label htmlFor="contactPhone" className="text-sm font-medium mb-1 block">Contact Phone</label><Input id="contactPhone" name="contactPhone" value={settings.contactPhone || ''} onChange={e => update('contactPhone', e.target.value)} placeholder="+250 788 123 456" /></div>
+          <div><label htmlFor="address" className="text-sm font-medium mb-1 block">Address</label><Input id="address" name="address" value={settings.address || ''} onChange={e => update('address', e.target.value)} placeholder="Kwanda Facility, Kigali" /></div>
           <div>
-            <label className="text-sm font-medium mb-1 block">Site Logo</label>
+            <label htmlFor="siteLogo" className="text-sm font-medium mb-1 block">Site Logo</label>
             <ImageUpload value={settings.logo || ''} onChange={v => update('logo', v)} folder="hamedpro/logo" />
           </div>
           <div>
-            <label className="text-sm font-medium mb-1 block">OG Image (Social Share)</label>
+            <label htmlFor="ogImage" className="text-sm font-medium mb-1 block">OG Image (Social Share)</label>
             <ImageUpload value={settings.ogImage || ''} onChange={v => update('ogImage', v)} folder="hamedpro/og" />
           </div>
         </CardContent>
@@ -128,6 +128,8 @@ export default function AdminSettingsPage() {
             <div key={p.key} className="flex items-center gap-3">
               <span className="text-sm font-medium w-24 capitalize">{p.label}</span>
               <Input
+                id={`social-${p.key}`}
+                name={`social-${p.key}`}
                 value={settings.socialLinks?.[p.key] || ''}
                 onChange={e => updateSocial(p.key, e.target.value)}
                 placeholder={p.placeholder}
@@ -147,9 +149,9 @@ export default function AdminSettingsPage() {
       <Card>
         <CardHeader><CardTitle>Integrations</CardTitle><CardDescription>Third-party service configuration</CardDescription></CardHeader>
         <CardContent className="space-y-4">
-          <div><label className="text-sm font-medium mb-1 block">WhatsApp Number</label><Input value={settings.integrations?.whatsappNumber || ''} onChange={e => update('integrations', { ...settings.integrations, whatsappNumber: e.target.value })} placeholder="+250788123456" /></div>
-          <div><label className="text-sm font-medium mb-1 block">Discord Invite URL</label><Input value={settings.integrations?.discordInvite || ''} onChange={e => update('integrations', { ...settings.integrations, discordInvite: e.target.value })} placeholder="https://discord.gg/invite" /></div>
-          <div><label className="text-sm font-medium mb-1 block">Cal.com URL</label><Input value={settings.integrations?.calComUrl || ''} onChange={e => update('integrations', { ...settings.integrations, calComUrl: e.target.value })} placeholder="https://cal.com/username" /></div>
+          <div><label htmlFor="whatsappNumber" className="text-sm font-medium mb-1 block">WhatsApp Number</label><Input id="whatsappNumber" name="whatsappNumber" value={settings.integrations?.whatsappNumber || ''} onChange={e => update('integrations', { ...settings.integrations, whatsappNumber: e.target.value })} placeholder="+250788123456" /></div>
+          <div><label htmlFor="discordUrl" className="text-sm font-medium mb-1 block">Discord Invite URL</label><Input id="discordUrl" name="discordUrl" value={settings.integrations?.discordInvite || ''} onChange={e => update('integrations', { ...settings.integrations, discordInvite: e.target.value })} placeholder="https://discord.gg/invite" /></div>
+          <div><label htmlFor="calUrl" className="text-sm font-medium mb-1 block">Cal.com URL</label><Input id="calUrl" name="calUrl" value={settings.integrations?.calComUrl || ''} onChange={e => update('integrations', { ...settings.integrations, calComUrl: e.target.value })} placeholder="https://cal.com/username" /></div>
         </CardContent>
       </Card>
 

@@ -32,6 +32,8 @@ export function SearchBar({ placeholder = 'Search...', onSearch, className, debo
     <div className={cn('relative flex items-center', className)}>
       <Search className="absolute left-3 h-4 w-4 text-text-muted" />
       <input
+        id="search"
+        name="search"
         type="text"
         value={value}
         onChange={handleChange}

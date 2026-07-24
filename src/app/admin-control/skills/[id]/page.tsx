@@ -77,33 +77,33 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
       </div>
       <form onSubmit={handleSubmit} className="max-w-xl space-y-6">
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Name</label>
-          <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className={inputClass} />
+          <label htmlFor="skill-name" className="block text-sm font-medium text-text-secondary mb-1.5">Name</label>
+          <input id="skill-name" name="name" type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className={inputClass} />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Category</label>
-          <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className={inputClass}>
+          <label htmlFor="skill-category" className="block text-sm font-medium text-text-secondary mb-1.5">Category</label>
+          <select id="skill-category" name="category" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className={inputClass}>
             {['Frontend', 'Backend', 'Database', 'DevOps', 'Mobile', 'AI/ML', 'Tools'].map(c => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Proficiency ({form.proficiency}%)</label>
-          <input type="range" min={0} max={100} value={form.proficiency} onChange={e => setForm({ ...form, proficiency: Number(e.target.value) })} className="w-full accent-blue-500" />
+          <label htmlFor="skill-proficiency" className="block text-sm font-medium text-text-secondary mb-1.5">Proficiency ({form.proficiency}%)</label>
+          <input id="skill-proficiency" name="proficiency" type="range" min={0} max={100} value={form.proficiency} onChange={e => setForm({ ...form, proficiency: Number(e.target.value) })} className="w-full accent-blue-500" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Color</label>
+          <label htmlFor="skill-color" className="block text-sm font-medium text-text-secondary mb-1.5">Color</label>
           <div className="flex flex-wrap gap-2 mb-2">
             {colorPresets.map(p => (
               <button key={p.value} type="button" onClick={() => setForm({ ...form, color: p.value })} className={`h-8 w-8 rounded-full border-2 transition-all ${form.color === p.value ? 'border-blue-500 scale-110' : 'border-transparent hover:scale-105'}`} style={{ backgroundColor: p.value }} title={p.name} />
             ))}
           </div>
-          <input type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="h-10 w-20 rounded-lg bg-surface-card border border-border-primary cursor-pointer" />
+          <input id="skill-color" name="color" type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="h-10 w-20 rounded-lg bg-surface-card border border-border-primary cursor-pointer" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
-          <input type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
+          <label htmlFor="skill-order" className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
+          <input id="skill-order" name="order" type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-blue-500" />

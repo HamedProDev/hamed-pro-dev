@@ -54,6 +54,8 @@ export function NewsletterSignup() {
                   className="flex flex-col sm:flex-row gap-0"
                 >
                   <Input
+                    id="newsletter-email"
+                    name="email"
                     type="email"
                     placeholder="Enter your email"
                     value={email}

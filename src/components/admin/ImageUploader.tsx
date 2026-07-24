@@ -19,7 +19,7 @@ export function ImageUploader({ value, onChange }: ImageUploaderProps) {
         </div>
       )}
       <div className="flex gap-2">
-        <Input placeholder="Image URL (Cloudinary)" value={value} onChange={e => onChange(e.target.value)} />
+        <Input id="image-url" name="imageUrl" placeholder="Image URL (Cloudinary)" value={value} onChange={e => onChange(e.target.value)} />
         <Button type="button" variant="outline" size="icon"><Upload className="h-4 w-4" /></Button>
       </div>
     </div>

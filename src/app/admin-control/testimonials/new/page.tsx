@@ -29,23 +29,23 @@ export default function NewTestimonialPage() {
       </div>
       <form onSubmit={handleSubmit} className="max-w-xl space-y-6">
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Name</label>
-          <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className={inputClass} placeholder="e.g. Jean Claude" />
+          <label htmlFor="test-name" className="block text-sm font-medium text-text-secondary mb-1.5">Name</label>
+          <input id="test-name" name="name" type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className={inputClass} placeholder="e.g. Jean Claude" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Role</label>
-          <input type="text" required value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} className={inputClass} placeholder="e.g. CTO" />
+          <label htmlFor="test-role" className="block text-sm font-medium text-text-secondary mb-1.5">Role</label>
+          <input id="test-role" name="role" type="text" required value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} className={inputClass} placeholder="e.g. CTO" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Company</label>
-          <input type="text" required value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} className={inputClass} placeholder="e.g. AgriTech Rwanda" />
+          <label htmlFor="test-company" className="block text-sm font-medium text-text-secondary mb-1.5">Company</label>
+          <input id="test-company" name="company" type="text" required value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} className={inputClass} placeholder="e.g. AgriTech Rwanda" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Content</label>
-          <textarea required rows={4} value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} className={inputClass} placeholder="What they said about you..." />
+          <label htmlFor="test-content" className="block text-sm font-medium text-text-secondary mb-1.5">Content</label>
+          <textarea id="test-content" name="content" required rows={4} value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} className={inputClass} placeholder="What they said about you..." />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Rating ({form.rating}/5)</label>
+          <label htmlFor="test-rating" className="block text-sm font-medium text-text-secondary mb-1.5">Rating ({form.rating}/5)</label>
           <div className="flex gap-1">
             {[1,2,3,4,5].map(n => (
               <button key={n} type="button" onClick={() => setForm({ ...form, rating: n })} className={`h-8 w-8 rounded-lg border text-sm font-medium transition-all ${n <= form.rating ? 'bg-amber-400 text-white border-amber-400' : 'bg-surface-card border-border-primary text-text-muted hover:border-amber-400'}`}>{n}</button>
@@ -53,8 +53,8 @@ export default function NewTestimonialPage() {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
-          <input type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
+          <label htmlFor="test-order" className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
+          <input id="test-order" name="order" type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-blue-500" />

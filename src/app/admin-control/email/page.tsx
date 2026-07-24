@@ -19,12 +19,12 @@ export default function AdminEmailPage() {
       <Card>
         <CardHeader><CardTitle>Compose Email</CardTitle><CardDescription>Send a broadcast to all subscribers</CardDescription></CardHeader>
         <CardContent className="space-y-4">
-          <div><label className="text-sm font-medium mb-1 block">Subject</label><Input placeholder="Email subject..." /></div>
+          <div><label htmlFor="subject" className="text-sm font-medium mb-1 block">Subject</label><Input id="subject" name="subject" placeholder="Email subject..." /></div>
           <div>
-            <label className="text-sm font-medium mb-1 block">Recipients</label>
-            <select className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm text-text-primary"><option>All Subscribers</option></select>
+            <label htmlFor="recipients" className="text-sm font-medium mb-1 block">Recipients</label>
+            <select id="recipients" name="recipients" className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm text-text-primary"><option>All Subscribers</option></select>
           </div>
-          <div><label className="text-sm font-medium mb-1 block">Content</label><Textarea rows={8} placeholder="Write your email content..." /></div>
+          <div><label htmlFor="content" className="text-sm font-medium mb-1 block">Content</label><Textarea id="content" name="content" rows={8} placeholder="Write your email content..." /></div>
           <div className="flex gap-3">
             <Button onClick={() => { setSending(true); setTimeout(() => { setSending(false); setSent(true); setTimeout(() => setSent(false), 2000) }, 1500) }} disabled={sending} className="gradient-bg text-white">
               {sending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}

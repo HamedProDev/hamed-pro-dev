@@ -117,18 +117,18 @@ export default function EditLessonPage() {
         <Card>
           <CardHeader><CardTitle>Lesson Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><label className="text-sm font-medium mb-1 block">Title *</label><Input required value={form.title} onChange={e => update('title', e.target.value)} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Type</label><select value={form.type} onChange={e => update('type', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm">
+            <div><label htmlFor="lesson-title" className="text-sm font-medium mb-1 block">Title *</label><Input id="lesson-title" name="title" required value={form.title} onChange={e => update('title', e.target.value)} /></div>
+            <div><label htmlFor="lesson-type" className="text-sm font-medium mb-1 block">Type</label><select id="lesson-type" name="type" value={form.type} onChange={e => update('type', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm">
               <option value="text">Text</option><option value="video">Video</option><option value="quiz">Quiz</option><option value="mixed">Mixed</option>
             </select></div>
-            <div><label className="text-sm font-medium mb-1 block">Content (Markdown supported)</label><Textarea rows={8} value={form.content} onChange={e => update('content', e.target.value)} /></div>
+            <div><label htmlFor="lesson-content" className="text-sm font-medium mb-1 block">Content (Markdown supported)</label><Textarea id="lesson-content" name="content" rows={8} value={form.content} onChange={e => update('content', e.target.value)} /></div>
             <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-sm font-medium mb-1 block">YouTube URL</label><Input value={form.youtubeUrl} onChange={e => update('youtubeUrl', e.target.value)} placeholder="https://youtube.com/watch?v=..." /></div>
-              <div><label className="text-sm font-medium mb-1 block">Video Duration (minutes)</label><Input type="number" min="0" value={form.videoDuration} onChange={e => update('videoDuration', e.target.value)} /></div>
+              <div><label htmlFor="lesson-youtubeUrl" className="text-sm font-medium mb-1 block">YouTube URL</label><Input id="lesson-youtubeUrl" name="youtubeUrl" value={form.youtubeUrl} onChange={e => update('youtubeUrl', e.target.value)} placeholder="https://youtube.com/watch?v=..." /></div>
+              <div><label htmlFor="lesson-videoDuration" className="text-sm font-medium mb-1 block">Video Duration (minutes)</label><Input id="lesson-videoDuration" name="videoDuration" type="number" min="0" value={form.videoDuration} onChange={e => update('videoDuration', e.target.value)} /></div>
             </div>
             <div className="flex gap-4">
-              <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.isFree} onChange={e => update('isFree', e.target.checked)} className="accent-brand-primary" /> Free preview</label>
-              <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.isPublished} onChange={e => update('isPublished', e.target.checked)} className="accent-brand-primary" /> Published</label>
+              <label htmlFor="lesson-isFree" className="flex items-center gap-2 text-sm"><input id="lesson-isFree" name="isFree" type="checkbox" checked={form.isFree} onChange={e => update('isFree', e.target.checked)} className="accent-brand-primary" /> Free preview</label>
+              <label htmlFor="lesson-isPublished" className="flex items-center gap-2 text-sm"><input id="lesson-isPublished" name="isPublished" type="checkbox" checked={form.isPublished} onChange={e => update('isPublished', e.target.checked)} className="accent-brand-primary" /> Published</label>
             </div>
           </CardContent>
         </Card>

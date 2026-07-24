@@ -31,26 +31,26 @@ export default function NewStatPage() {
       </div>
       <form onSubmit={handleSubmit} className="max-w-xl space-y-6">
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Label</label>
-          <input type="text" required value={form.label} onChange={e => setForm({ ...form, label: e.target.value })} className={inputClass} placeholder="e.g. Projects Completed" />
+          <label htmlFor="stat-label" className="block text-sm font-medium text-text-secondary mb-1.5">Label</label>
+          <input id="stat-label" name="label" type="text" required value={form.label} onChange={e => setForm({ ...form, label: e.target.value })} className={inputClass} placeholder="e.g. Projects Completed" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Value</label>
-          <input type="number" required value={form.value} onChange={e => setForm({ ...form, value: Number(e.target.value) })} className={inputClass} />
+          <label htmlFor="stat-value" className="block text-sm font-medium text-text-secondary mb-1.5">Value</label>
+          <input id="stat-value" name="value" type="number" required value={form.value} onChange={e => setForm({ ...form, value: Number(e.target.value) })} className={inputClass} />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Suffix</label>
-          <input type="text" value={form.suffix} onChange={e => setForm({ ...form, suffix: e.target.value })} className={inputClass} placeholder="e.g. +, %" />
+          <label htmlFor="stat-suffix" className="block text-sm font-medium text-text-secondary mb-1.5">Suffix</label>
+          <input id="stat-suffix" name="suffix" type="text" value={form.suffix} onChange={e => setForm({ ...form, suffix: e.target.value })} className={inputClass} placeholder="e.g. +, %" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Icon</label>
-          <select value={form.icon} onChange={e => setForm({ ...form, icon: e.target.value })} className={inputClass}>
+          <label htmlFor="stat-icon" className="block text-sm font-medium text-text-secondary mb-1.5">Icon</label>
+          <select id="stat-icon" name="icon" value={form.icon} onChange={e => setForm({ ...form, icon: e.target.value })} className={inputClass}>
             {iconOptions.map(i => <option key={i} value={i}>{i}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
-          <input type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
+          <label htmlFor="stat-order" className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
+          <input id="stat-order" name="order" type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
         <Button type="submit" disabled={saving} className="gradient-bg text-white"><Save className="h-4 w-4 mr-2" />{saving ? 'Saving...' : 'Create Stat'}</Button>
       </form>

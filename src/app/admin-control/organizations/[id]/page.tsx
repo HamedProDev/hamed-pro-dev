@@ -69,21 +69,21 @@ export default function EditOrganizationPage() {
         <Card>
           <CardHeader><CardTitle>Organization Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><label className="text-sm font-medium mb-1 block">Name *</label><Input required value={form.name} onChange={e => update('name', e.target.value)} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Type</label><select value={form.type} onChange={e => update('type', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm"><option>Startup</option><option>Agency</option><option>Company</option><option>Open Source</option></select></div>
-            <div><label className="text-sm font-medium mb-1 block">Description *</label><Textarea rows={3} required value={form.description} onChange={e => update('description', e.target.value)} /></div>
+            <div><label htmlFor="org-name" className="text-sm font-medium mb-1 block">Name *</label><Input id="org-name" name="name" required value={form.name} onChange={e => update('name', e.target.value)} /></div>
+            <div><label htmlFor="org-type" className="text-sm font-medium mb-1 block">Type</label><select id="org-type" name="type" value={form.type} onChange={e => update('type', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm"><option>Startup</option><option>Agency</option><option>Company</option><option>Open Source</option></select></div>
+            <div><label htmlFor="org-description" className="text-sm font-medium mb-1 block">Description *</label><Textarea id="org-description" name="description" rows={3} required value={form.description} onChange={e => update('description', e.target.value)} /></div>
             <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-sm font-medium mb-1 block">Location</label><Input value={form.location} onChange={e => update('location', e.target.value)} /></div>
-              <div><label className="text-sm font-medium mb-1 block">Team Size</label><Input value={form.team} onChange={e => update('team', e.target.value)} /></div>
+              <div><label htmlFor="org-location" className="text-sm font-medium mb-1 block">Location</label><Input id="org-location" name="location" value={form.location} onChange={e => update('location', e.target.value)} /></div>
+              <div><label htmlFor="org-team" className="text-sm font-medium mb-1 block">Team Size</label><Input id="org-team" name="team" value={form.team} onChange={e => update('team', e.target.value)} /></div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-sm font-medium mb-1 block">Open Roles</label><Input type="number" min="0" value={form.roles} onChange={e => update('roles', e.target.value)} /></div>
-              <div><label className="text-sm font-medium mb-1 block">Order</label><Input type="number" value={form.order} onChange={e => update('order', Number(e.target.value))} /></div>
+              <div><label htmlFor="org-roles" className="text-sm font-medium mb-1 block">Open Roles</label><Input id="org-roles" name="roles" type="number" min="0" value={form.roles} onChange={e => update('roles', e.target.value)} /></div>
+              <div><label htmlFor="org-order" className="text-sm font-medium mb-1 block">Order</label><Input id="org-order" name="order" type="number" value={form.order} onChange={e => update('order', Number(e.target.value))} /></div>
             </div>
-            <div><label className="text-sm font-medium mb-1 block">Tech Stack (comma separated)</label><Input value={form.tech} onChange={e => update('tech', e.target.value)} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Website</label><Input value={form.website} onChange={e => update('website', e.target.value)} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Logo</label><ImageUpload value={form.logo} onChange={v => update('logo', v)} folder="hamedpro/orgs" /></div>
-            <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={form.hiring} onChange={e => update('hiring', e.target.checked)} className="accent-blue-500" /><span className="text-sm text-text-secondary">Currently hiring</span></label>
+            <div><label htmlFor="org-tech" className="text-sm font-medium mb-1 block">Tech Stack (comma separated)</label><Input id="org-tech" name="tech" value={form.tech} onChange={e => update('tech', e.target.value)} /></div>
+            <div><label htmlFor="org-website" className="text-sm font-medium mb-1 block">Website</label><Input id="org-website" name="website" value={form.website} onChange={e => update('website', e.target.value)} /></div>
+            <div><label htmlFor="org-logo" className="text-sm font-medium mb-1 block">Logo</label><ImageUpload value={form.logo} onChange={v => update('logo', v)} folder="hamedpro/orgs" /></div>
+            <label htmlFor="org-hiring" className="flex items-center gap-2 cursor-pointer"><input id="org-hiring" name="hiring" type="checkbox" checked={form.hiring} onChange={e => update('hiring', e.target.checked)} className="accent-blue-500" /><span className="text-sm text-text-secondary">Currently hiring</span></label>
           </CardContent>
         </Card>
         {error && <p className="text-red-400 text-sm">{error}</p>}

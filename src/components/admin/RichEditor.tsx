@@ -19,7 +19,7 @@ export function RichEditor({ value, onChange, placeholder }: RichEditorProps) {
         <TabsTrigger value="preview">Preview</TabsTrigger>
       </TabsList>
       <TabsContent value="write">
-        <Textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder || 'Write in Markdown...'} className="min-h-[300px] font-mono text-sm" />
+        <Textarea id="content" name="content" value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder || 'Write in Markdown...'} className="min-h-[300px] font-mono text-sm" />
       </TabsContent>
       <TabsContent value="preview">
         <div className="min-h-[300px] rounded-lg border border-dark-500 bg-dark-800 p-4 prose prose-invert max-w-none">
