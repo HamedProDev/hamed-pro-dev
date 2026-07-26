@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils/cn'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
-const categoryTabs = ['All Courses', 'Frontend', 'Backend', 'AI / ML', 'Mobile', 'DevOps']
+const categoryTabs = ['All Courses', 'Frontend', 'Backend', 'AI / ML', 'Mobile', 'DevOps', 'Game Dev']
 const levels = ['All Levels', 'beginner', 'intermediate', 'advanced']
 
 const levelLabels: Record<string, string> = {
