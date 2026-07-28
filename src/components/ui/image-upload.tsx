@@ -12,7 +12,7 @@ interface ImageUploadProps {
   folder?: string
 }
 
-export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, className, folder }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState('')
@@ -26,6 +26,7 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
     try {
       const formData = new FormData()
       formData.append('file', file)
+      if (folder) formData.append('folder', folder)
 
       const res = await fetch('/api/media/upload', {
         method: 'POST',
@@ -89,7 +90,7 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
 
       {!value && mode === 'upload' && (
         <div
-          className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-blue-500 bg-blue-500/5' : 'border-border-primary hover:border-blue-500/30')}
+          className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-blue-500 bg-blue-500/10' : 'border-slate-500 bg-slate-800/50 hover:border-blue-500/50 hover:bg-slate-800/80')}
           onDragOver={e => { e.preventDefault(); setDragOver(true) }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
@@ -99,9 +100,9 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
             <div className="flex flex-col items-center gap-2"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /><p className="text-sm text-text-muted">Uploading...</p></div>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <div className="h-12 w-12 rounded-xl bg-surface-tertiary flex items-center justify-center"><Upload className="h-5 w-5 text-text-muted" /></div>
-              <p className="text-sm text-text-secondary">Click or drag to upload image</p>
-              <p className="text-xs text-text-muted">PNG, JPG up to 5MB</p>
+              <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center"><Upload className="h-5 w-5 text-blue-400" /></div>
+              <p className="text-sm text-slate-300">Click or drag to upload image</p>
+              <p className="text-xs text-slate-400">PNG, JPG up to 5MB</p>
               {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
             </div>
           )}
