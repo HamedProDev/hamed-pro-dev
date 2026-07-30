@@ -36,6 +36,7 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
   },
   skills: {
     order: 'order_index',
+    color: 'color',
     featured: 'is_published',
   },
   achievements: {
