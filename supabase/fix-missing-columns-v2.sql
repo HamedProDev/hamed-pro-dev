@@ -12,3 +12,9 @@ ALTER TABLE lessons ADD COLUMN IF NOT EXISTS quiz JSONB DEFAULT '[]';
 
 -- Courses: missing 'youtube_url' column
 ALTER TABLE courses ADD COLUMN IF NOT EXISTS youtube_url TEXT;
+
+-- Lessons: missing 'type' column (text, video, quiz, mixed)
+ALTER TABLE lessons ADD COLUMN IF NOT EXISTS type TEXT DEFAULT 'text';
+
+-- Lessons: missing 'resources' column
+ALTER TABLE lessons ADD COLUMN IF NOT EXISTS resources JSONB DEFAULT '[]';
