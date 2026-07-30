@@ -35,7 +35,18 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 }
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
-  const body = await request.clone().json().catch(() => ({}))
-  if (body._method === 'DELETE') return DELETE(request, { params })
-  return PUT(request, { params })
+  try {
+    const body = await request.json()
+    if (body._method === 'DELETE') {
+      await requireAdmin(request)
+      await deleteDocument('achievements', params.id)
+      return apiSuccess(null, 'Achievement deleted')
+    }
+    await requireAdmin(request)
+    const achievement = await updateDocument('achievements', params.id, mapFormToDb('achievements', body))
+    if (!achievement) return apiError('Achievement not found', 404)
+    return apiSuccess(achievement, 'Achievement updated')
+  } catch (error: any) {
+    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
+  }
 }

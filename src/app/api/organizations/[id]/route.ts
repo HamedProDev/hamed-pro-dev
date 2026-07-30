@@ -35,7 +35,18 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 }
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const body = await req.clone().json().catch(() => ({}))
-  if (body._method === 'DELETE') return DELETE(req, { params })
-  return PUT(req, { params })
+  try {
+    const body = await req.json()
+    if (body._method === 'DELETE') {
+      await requireAdmin(req)
+      await deleteDocument('organizations', params.id)
+      return apiSuccess(null, 'Organization deleted')
+    }
+    await requireAdmin(req)
+    const org = await updateDocument('organizations', params.id, mapFormToDb('organizations', body))
+    if (!org) return apiError('Not found', 404)
+    return apiSuccess(org, 'Organization updated')
+  } catch (error: any) {
+    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
+  }
 }

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import ReactMarkdown from 'react-markdown'
 import { Loader2, Clock, BookOpen, Play, FileText, HelpCircle, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -61,7 +62,7 @@ export default function CourseDetailPage() {
         <div className="flex flex-wrap gap-4 mb-8 text-sm text-text-muted">
           {course.duration && <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> {course.duration}</span>}
         </div>
-        {course.content && <p className="text-text-secondary leading-relaxed mb-8 whitespace-pre-wrap">{course.content}</p>}
+        {course.content && <article className="prose prose-invert max-w-none mb-8 prose-headings:text-text-primary prose-p:text-text-secondary prose-p:leading-relaxed prose-a:text-brand-primary prose-strong:text-text-primary"><ReactMarkdown>{course.content}</ReactMarkdown></article>}
         {lessons.length > 0 && (
           <Card className="mb-8">
             <CardContent className="p-6">

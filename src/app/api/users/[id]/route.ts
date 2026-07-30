@@ -36,7 +36,18 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 }
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const body = await req.clone().json().catch(() => ({}))
-  if (body._method === 'DELETE') return DELETE(req, { params })
-  return PUT(req, { params })
+  try {
+    const body = await req.json()
+    if (body._method === 'DELETE') {
+      await requireAdmin(req)
+      await deleteDocument('profiles', params.id)
+      return apiSuccess(null, 'User deleted')
+    }
+    await requireAdmin(req)
+    const user = await updateDocument('profiles', params.id, mapFormToDb('profiles', body))
+    if (!user) return apiError('User not found', 404)
+    return apiSuccess(user, 'User updated')
+  } catch (error: any) {
+    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
+  }
 }
