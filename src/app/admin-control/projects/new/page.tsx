@@ -14,8 +14,8 @@ export default function NewProjectPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
-    title: '', description: '', longDescription: '', coverImage: '', category: 'large', subCategory: 'other',
-    techStack: '', demoUrl: '', sourceUrl: '', status: 'in-progress', featured: false, isPublished: true,
+    title: '', description: '', longDescription: '', coverImage: '', category: 'large',
+    techStack: '', demoUrl: '', sourceUrl: '', featured: false, isPublished: true,
   })
 
   const update = (key: string, value: any) => setForm(f => ({ ...f, [key]: value }))
@@ -29,8 +29,15 @@ export default function NewProjectPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...form,
+          title: form.title,
+          description: form.description,
+          longDescription: form.longDescription,
+          coverImage: form.coverImage,
+          demoUrl: form.demoUrl,
+          sourceUrl: form.sourceUrl,
+          category: form.category,
           techStack: form.techStack.split(',').map(t => t.trim()).filter(Boolean),
+          featured: form.featured,
           isPublished: form.isPublished,
         }),
       })
@@ -53,10 +60,7 @@ export default function NewProjectPage() {
             <div><label htmlFor="proj-description" className="text-sm font-medium mb-1 block">Short Description *</label><Input id="proj-description" name="description" required maxLength={160} value={form.description} onChange={e => update('description', e.target.value)} placeholder="Brief description (max 160 chars)" /></div>
             <div><label htmlFor="proj-longDescription" className="text-sm font-medium mb-1 block">Long Description</label><Textarea id="proj-longDescription" name="longDescription" rows={5} value={form.longDescription} onChange={e => update('longDescription', e.target.value)} placeholder="Detailed description..." /></div>
             <div><label htmlFor="proj-coverImage" className="text-sm font-medium mb-1 block">Cover Image</label><ImageUpload value={form.coverImage} onChange={v => update('coverImage', v)} folder="hamedpro/projects" /></div>
-            <div className="grid grid-cols-2 gap-4">
-              <div><label htmlFor="proj-category" className="text-sm font-medium mb-1 block">Category</label><select id="proj-category" name="category" value={form.category} onChange={e => update('category', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm"><option value="large">Large Project</option><option value="mini">Mini Project</option><option value="school">School Project</option></select></div>
-              <div><label htmlFor="proj-subCategory" className="text-sm font-medium mb-1 block">Sub Category</label><select id="proj-subCategory" name="subCategory" value={form.subCategory} onChange={e => update('subCategory', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm"><option value="other">Other</option><option value="finance">Finance</option><option value="education">Education</option><option value="healthcare">Healthcare</option><option value="ecommerce">E-commerce</option><option value="agriculture">Agriculture</option><option value="ai-ml">AI/ML</option></select></div>
-            </div>
+            <div><label htmlFor="proj-category" className="text-sm font-medium mb-1 block">Category</label><select id="proj-category" name="category" value={form.category} onChange={e => update('category', e.target.value)} className="w-full rounded-lg border border-border-primary bg-surface-card px-3 py-2.5 text-sm"><option value="large">Large Project</option><option value="mini">Mini Project</option><option value="school">School Project</option></select></div>
             <div><label htmlFor="proj-techStack" className="text-sm font-medium mb-1 block">Tech Stack (comma separated)</label><Input id="proj-techStack" name="techStack" value={form.techStack} onChange={e => update('techStack', e.target.value)} placeholder="React, Node.js, MongoDB" /></div>
             <div className="grid grid-cols-2 gap-4">
               <div><label htmlFor="proj-demoUrl" className="text-sm font-medium mb-1 block">Demo URL</label><Input id="proj-demoUrl" name="demoUrl" value={form.demoUrl} onChange={e => update('demoUrl', e.target.value)} placeholder="https://..." /></div>
