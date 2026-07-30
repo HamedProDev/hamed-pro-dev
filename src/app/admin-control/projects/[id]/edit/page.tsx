@@ -49,6 +49,7 @@ export default function EditProjectPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
+          status: undefined,
           techStack: form.techStack.split(',').map(t => t.trim()).filter(Boolean),
         }),
       })
