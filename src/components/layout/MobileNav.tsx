@@ -8,13 +8,20 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
 
-const navLinks = [
+const publicLinks = [
   { href: '/projects', label: 'Projects' },
   { href: '/courses', label: 'Courses' },
   { href: '/skills', label: 'Skills' },
   { href: '/achievements', label: 'Achievements' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+]
+
+const studentLinks = [
+  { href: '/courses', label: 'Courses' },
+  { href: '/certification', label: 'Certification' },
+  { href: '/invite', label: 'Invite' },
+  { href: '/dashboard', label: 'Dashboard' },
 ]
 
 interface MobileNavProps {
@@ -25,11 +32,12 @@ interface MobileNavProps {
 export function MobileNav({ open, onClose }: MobileNavProps) {
   const pathname = usePathname()
   const { user, isAuthenticated, signOut } = useAuth()
+  const navLinks = isAuthenticated ? studentLinks : publicLinks
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-[300px] p-0 border-l border-white/10 bg-[rgba(9,11,28,0.9)] backdrop-blur-2xl">
-        <SheetHeader className="border-b border-white/10 p-4">
+      <SheetContent side="right" className="w-[300px] p-0 border-l border-border-primary bg-surface-primary/90 backdrop-blur-2xl">
+        <SheetHeader className="border-b border-border-primary p-4">
           <SheetTitle className="text-text-primary flex items-center justify-between">
             <span className="flex items-center gap-2 font-bold">
               <span className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">
@@ -52,8 +60,8 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               className={cn(
                 'px-4 py-3 rounded-full text-sm font-medium transition-colors',
                 pathname === link.href
-                  ? 'text-white bg-blue-500/15 border border-blue-500/30'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                  ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/30'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary'
               )}
             >
               {link.label}
@@ -61,20 +69,17 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           ))}
         </nav>
 
-        <div className="border-t border-white/10 p-4 mt-auto space-y-2">
+        <div className="border-t border-border-primary p-4 mt-auto space-y-2">
           {isAuthenticated ? (
             <>
-              <Link href="/dashboard" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5">
-                Dashboard
+              <Link href="/profile" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-tertiary">
+                Profile
               </Link>
-              <Link href="/my-courses" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5">
+              <Link href="/my-courses" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-tertiary">
                 My Courses
               </Link>
-              <Link href="/certificates" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5">
-                Certificates
-              </Link>
               {user?.role === 'admin' && (
-                <Link href="/admin-control" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-blue-400 hover:bg-blue-500/10">
+                <Link href="/admin-control" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-brand-primary hover:bg-brand-primary/10">
                   Admin Panel
                 </Link>
               )}

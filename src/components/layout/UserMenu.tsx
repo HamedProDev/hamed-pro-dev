@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/hooks/useAuth'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { LogOut, User, LayoutDashboard, BookMarked } from 'lucide-react'
+import { LogOut, User, LayoutDashboard, BookMarked, Award, Gift } from 'lucide-react'
 
 export function UserMenu() {
   const { user, isAuthenticated, isAdmin, signOut } = useAuth()
@@ -37,6 +37,12 @@ export function UserMenu() {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/my-courses"><BookMarked className="mr-2 h-4 w-4" /> My Courses</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/certification"><Award className="mr-2 h-4 w-4" /> Certification</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/invite"><Gift className="mr-2 h-4 w-4" /> Invite</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/profile"><User className="mr-2 h-4 w-4" /> Profile</Link>

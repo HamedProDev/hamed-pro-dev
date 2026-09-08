@@ -23,7 +23,7 @@ export async function PUT(req: NextRequest) {
 
     const body = await req.json()
     // Only allow the user to update their own editable fields.
-    const allowed = ['name', 'bio', 'avatar_url', 'website', 'github_url', 'linkedin_url', 'twitter_url', 'location', 'headline']
+    const allowed = ['name', 'bio', 'avatar_url', 'website', 'github_url', 'linkedin_url', 'twitter_url', 'location', 'headline', 'interests']
     const data = mapFormToDb('profiles', body)
     const update: Record<string, any> = {}
     for (const key of allowed) {

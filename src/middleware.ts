@@ -10,6 +10,8 @@ export const config = {
     '/dashboard/:path*',
     '/my-courses/:path*',
     '/certificates/:path*',
+    '/certification/:path*',
+    '/invite/:path*',
     '/profile/:path*',
     '/admin-control/:path*',
     '/saved-jobs/:path*',

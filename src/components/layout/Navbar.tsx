@@ -11,13 +11,20 @@ import { UserMenu } from './UserMenu'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { cn } from '@/lib/utils/cn'
 
-const navLinks = [
+const publicLinks = [
   { href: '/projects', label: 'Projects' },
   { href: '/courses', label: 'Courses' },
   { href: '/skills', label: 'Skills' },
   { href: '/achievements', label: 'Achievements' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+]
+
+const studentLinks = [
+  { href: '/courses', label: 'Courses' },
+  { href: '/certification', label: 'Certification' },
+  { href: '/invite', label: 'Invite' },
+  { href: '/dashboard', label: 'Dashboard' },
 ]
 
 export function Navbar() {
@@ -29,10 +36,12 @@ export function Navbar() {
 
   useEffect(() => setMounted(true), [])
 
+  const navLinks = isAuthenticated ? studentLinks : publicLinks
+
   return (
     <>
       <header className="fixed top-0 z-50 w-full">
-        <div className="border-b border-white/10 bg-[rgba(9,11,28,0.55)] backdrop-blur-2xl">
+        <div className="relative border-b border-border-primary bg-surface-primary/60 backdrop-blur-2xl">
           {/* glowing underline */}
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
           <div className="container-wide flex h-16 items-center justify-between">
@@ -53,8 +62,8 @@ export function Navbar() {
                   className={cn(
                     'px-3.5 py-2 rounded-full text-sm font-medium transition-all',
                     pathname === link.href || pathname.startsWith(link.href + '/')
-                      ? 'text-white bg-blue-500/15 border border-blue-500/30 shadow-[0_0_20px_rgba(79,124,255,0.25)]'
-                      : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                      ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/30 shadow-[0_0_20px_rgba(79,124,255,0.25)]'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary'
                   )}
                 >
                   {link.label}
@@ -65,7 +74,7 @@ export function Navbar() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="h-8 w-8 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
+                className="h-8 w-8 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary hover:bg-surface-tertiary transition-all"
                 aria-label="Toggle theme"
               >
                 {mounted ? (theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />) : <div className="h-4 w-4" />}
@@ -85,9 +94,11 @@ export function Navbar() {
                 <Link href="/hire">Hire Me</Link>
               </Button>
 
-              <Button size="sm" asChild className="hidden md:inline-flex gradient-bg">
-                <Link href="/courses">Start Learning</Link>
-              </Button>
+              {!isAuthenticated && (
+                <Button size="sm" asChild className="hidden md:inline-flex gradient-bg">
+                  <Link href="/courses">Start Learning</Link>
+                </Button>
+              )}
 
               <Button
                 variant="ghost"

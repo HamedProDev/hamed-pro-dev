@@ -1,10 +1,13 @@
 import { NextRequest } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function POST(req: NextRequest) {
   try {
-    await requireAdmin(req)
+    // Authenticated users may upload (admins anywhere; users only to their own folder).
+    const user = await getCurrentUser(req)
+    if (!user) return apiError('Unauthorized', 401)
+
     const formData = await req.formData()
     const file = formData.get('file') as File | null
 
@@ -24,10 +27,15 @@ export async function POST(req: NextRequest) {
     const fileName = `${crypto.randomUUID()}.${ext}`
     const buffer = Buffer.from(await file.arrayBuffer())
 
+    const isAdmin = user.role === 'admin'
+    const folder = isAdmin
+      ? ((formData.get('folder') as string) || 'general')
+      : `users/${user.uid}`
+
     const supabase = createServiceClient()
     const { data, error } = await supabase.storage
       .from('uploads')
-      .upload(`images/${fileName}`, buffer, {
+      .upload(`${folder}/${fileName}`, buffer, {
         contentType: file.type,
         upsert: false,
       })
@@ -38,7 +46,7 @@ export async function POST(req: NextRequest) {
 
     const { data: { publicUrl } } = supabase.storage
       .from('uploads')
-      .getPublicUrl(`images/${fileName}`)
+      .getPublicUrl(`${folder}/${fileName}`)
 
     return apiSuccess({ url: publicUrl, filename: file.name })
   } catch (error: any) {

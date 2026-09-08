@@ -32,7 +32,9 @@ export default function LoginPage() {
         return
       }
 
-      window.location.href = '/admin-control'
+      const params = new URLSearchParams(window.location.search)
+      const redirect = params.get('redirect')
+      window.location.href = redirect && redirect.startsWith('/') ? redirect : '/dashboard'
     } catch {
       setError('Something went wrong')
       setLoading(false)

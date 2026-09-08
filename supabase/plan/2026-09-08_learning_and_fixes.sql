@@ -127,6 +127,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- 1.9 Student profile fields: interests (tags) + social links already exist.
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS interests TEXT[] DEFAULT '{}';
+
+-- 1.10 Course-level final assessment (gates certificate issuance).
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS final_quiz JSONB DEFAULT '[]';
+
 -- ============================================================================
 -- PART 2 — LEARNING & CERTIFICATES TABLES
 -- ============================================================================

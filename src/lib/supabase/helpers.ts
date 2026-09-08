@@ -159,6 +159,14 @@ export async function getCurrentUser(req: NextRequest) {
     image: profile?.avatar_url || null,
     role: profile?.role || 'visitor',
     bio: profile?.bio || '',
+    interests: profile?.interests || [],
+    avatar_url: profile?.avatar_url || null,
+    website: profile?.website || '',
+    github_url: profile?.github_url || '',
+    linkedin_url: profile?.linkedin_url || '',
+    twitter_url: profile?.twitter_url || '',
+    location: profile?.location || '',
+    headline: profile?.headline || '',
   }
 }
 

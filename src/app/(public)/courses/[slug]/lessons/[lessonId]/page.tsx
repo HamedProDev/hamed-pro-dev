@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
-import { Loader2, ArrowLeft, ArrowRight, CheckCircle, XCircle, ChevronLeft, ChevronRight, Youtube, FileText, BookOpen, HelpCircle, Check, X, Award, Download } from 'lucide-react'
+import { Loader2, ArrowRight, CheckCircle, XCircle, ChevronLeft, ChevronRight, Youtube, FileText, BookOpen, HelpCircle, Check, Award, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -29,11 +29,14 @@ export default function LessonPage() {
   const [showResources, setShowResources] = useState(false)
   const [marking, setMarking] = useState(false)
   const [done, setDone] = useState(false)
+  const [locked, setLocked] = useState(false)
+  const [needsFinalQuiz, setNeedsFinalQuiz] = useState(false)
+  const [completeError, setCompleteError] = useState('')
   const [certificate, setCertificate] = useState<string | null>(null)
 
   useEffect(() => {
     if (!slug) return
-    fetch('/api/courses').then(r => r.json()).then(d => {
+    fetch('/api/courses?limit=100').then(r => r.json()).then(d => {
       if (!d.success) { setLoading(false); return }
       const found = d.data.find((c: any) => c.slug === slug || c.id === slug)
       if (!found) { setLoading(false); return }
@@ -49,7 +52,20 @@ export default function LessonPage() {
     }).catch(() => setLoading(false))
   }, [slug, lessonId])
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  // Load progress to determine lock / completion state.
+  useEffect(() => {
+    if (!course || !user) return
+    fetch(`/api/courses/${course.id}/progress`).then(r => r.json()).then(d => {
+      if (!d.success || !d.data?.enrolled) return
+      const p = d.data
+      const idx = lessons.findIndex(l => l.id === lessonId)
+      setDone(p.completedLessonIds?.includes(lessonId) || false)
+      setLocked(idx > p.completedCount)
+      setNeedsFinalQuiz(p.needsFinalQuiz || false)
+    }).catch(() => {})
+  }, [course, user, lessonId, lessons])
+
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-brand-primary" /></div>
   if (!course || !lesson) return (
     <main id="main-content" className="section-padding pt-24 text-center">
       <h1 className="text-4xl font-bold mb-4">Lesson Not Found</h1>
@@ -60,8 +76,9 @@ export default function LessonPage() {
   const currentIndex = lessons.findIndex(l => l.id === lesson.id)
   const prevLesson = currentIndex > 0 ? lessons[currentIndex - 1] : null
   const nextLesson = currentIndex < lessons.length - 1 ? lessons[currentIndex + 1] : null
-  const progress = lessons.length > 0 ? Math.round(((currentIndex + 1) / lessons.length) * 100) : 0
+  const progressBar = lessons.length > 0 ? Math.round(((currentIndex + 1) / lessons.length) * 100) : 0
   const TypeIcon = typeIcons[lesson.type] || BookOpen
+  const hasQuiz = lesson.quiz && lesson.quiz.length > 0
 
   const handleAnswer = (qIdx: number, optionIdx: number) => {
     setAnswers(a => ({ ...a, [qIdx]: optionIdx }))
@@ -72,16 +89,8 @@ export default function LessonPage() {
   }
 
   const handleResetQuiz = (qIdx: number) => {
-    setAnswers(a => {
-      const n = { ...a }
-      delete n[qIdx]
-      return n
-    })
-    setSubmitted(s => {
-      const n = { ...s }
-      delete n[qIdx]
-      return n
-    })
+    setAnswers(a => { const n = { ...a }; delete n[qIdx]; return n })
+    setSubmitted(s => { const n = { ...s }; delete n[qIdx]; return n })
   }
 
   const getEnrollment = async () => {
@@ -99,31 +108,64 @@ export default function LessonPage() {
     return enrollment
   }
 
-  const completeCurrentLesson = async () => {
-    if (!user || !course) return
+  const completeCurrentLesson = async (): Promise<boolean> => {
+    if (!user || !course) return false
+    if (hasQuiz) {
+      const qCount = lesson.quiz.length
+      const answered = lesson.quiz.map((_: any, i: number) => answers[i]).filter((a: any) => a !== undefined).length
+      if (answered < qCount) {
+        setCompleteError('Answer all quiz questions to complete this lesson.')
+        return false
+      }
+    }
     setMarking(true)
+    setCompleteError('')
     try {
       const enrollment = await getEnrollment()
-      if (!enrollment) return
+      if (!enrollment) return false
+      const answerArray = hasQuiz ? lesson.quiz.map((_: any, i: number) => answers[i]) : []
       const res = await fetch(`/api/enrollments/${enrollment.id}/progress`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lessonId: lesson.id, completed: true }),
+        body: JSON.stringify({ lessonId: lesson.id, answers: answerArray }),
       }).then(r => r.json())
-      const enrollmentState = res.data?.enrollment
-      if (enrollmentState?.status === 'completed') {
+
+      if (!res.success) {
+        setCompleteError(res.error || 'Could not complete this lesson.')
+        return false
+      }
+      if (res.data?.passed === false) {
+        setCompleteError(`You scored ${res.data.score}% — you need 70% to pass. Review and try again.`)
+        return false
+      }
+
+      setDone(true)
+      if (res.data?.needsFinalQuiz) setNeedsFinalQuiz(true)
+      if (res.data?.enrollment?.status === 'completed' && !res.data?.needsFinalQuiz) {
         const certs = await fetch('/api/certificates/me').then(r => r.json())
         setCertificate(certs.data?.[0]?.certificate_number || null)
       }
-      setDone(true)
-    } catch {}
-    setMarking(false)
+      return true
+    } catch {
+      setCompleteError('Something went wrong. Try again.')
+      return false
+    } finally {
+      setMarking(false)
+    }
   }
 
   const handleNext = async () => {
-    await completeCurrentLesson()
-    if (nextLesson) router.push(`/courses/${slug}/lessons/${nextLesson.id}`)
-    else router.push('/certificates')
+    if (user) {
+      const ok = await completeCurrentLesson()
+      if (!ok) return
+    }
+    if (nextLesson) {
+      router.push(`/courses/${slug}/lessons/${nextLesson.id}`)
+    } else if (needsFinalQuiz) {
+      router.push(`/courses/${slug}`)
+    } else {
+      router.push('/certification')
+    }
   }
 
   return (
@@ -147,7 +189,7 @@ export default function LessonPage() {
                   <Link href={`/courses/${slug}/lessons/${prevLesson.id}`}><ChevronLeft className="h-4 w-4" /></Link>
                 </Button>
               )}
-              {nextLesson && (
+              {nextLesson && !locked && (
                 <Button size="sm" variant="ghost" asChild className="h-8 px-2">
                   <Link href={`/courses/${slug}/lessons/${nextLesson.id}`}><ChevronRight className="h-4 w-4" /></Link>
                 </Button>
@@ -156,7 +198,7 @@ export default function LessonPage() {
           </div>
         </div>
         <div className="h-1 bg-surface-tertiary">
-          <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 transition-all duration-500" style={{ width: `${progressBar}%` }} />
         </div>
       </div>
 
@@ -166,6 +208,22 @@ export default function LessonPage() {
           { label: course.title, href: `/courses/${slug}` },
           { label: lesson.title },
         ]} />
+
+        {/* Locked banner */}
+        {user && locked && (
+          <Card className="mb-6 border-amber-500/30 bg-amber-500/5">
+            <CardContent className="p-5 flex items-center gap-3">
+              <Lock className="h-6 w-6 text-amber-500 shrink-0" />
+              <div>
+                <h3 className="font-semibold text-text-primary">Lesson locked</h3>
+                <p className="text-sm text-text-secondary">Complete the previous lessons in order to unlock this one.</p>
+              </div>
+              <Button asChild variant="outline" size="sm" className="ml-auto shrink-0">
+                <Link href={`/courses/${slug}`}>Back to Course</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="flex items-center gap-3 mb-6 mt-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 flex items-center gap-1"><TypeIcon className="h-3 w-3" /> {typeLabels[lesson.type] || lesson.type}</Badge>
@@ -207,11 +265,11 @@ export default function LessonPage() {
           </Card>
         )}
 
-        {lesson.quiz && lesson.quiz.length > 0 && (
+        {hasQuiz && (
           <Card className="mb-8 border-brand-primary/20">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2"><HelpCircle className="h-5 w-5 text-brand-primary" /> Knowledge Check</CardTitle>
-              <p className="text-sm text-text-muted">Test your understanding of this lesson.</p>
+              <p className="text-sm text-text-muted">Pass this quiz (70%+) to complete the lesson.</p>
             </CardHeader>
             <CardContent className="space-y-6">
               {lesson.quiz.map((q: any, qIdx: number) => {
@@ -241,7 +299,7 @@ export default function LessonPage() {
                     ) : (
                       <div className="space-y-2">
                         <div className={`flex items-center gap-2 text-sm ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
-                          {isCorrect ? <><CheckCircle className="h-4 w-4" /> Correct!</> : <><XCircle className="h-4 w-4" /> Incorrect. The correct answer is option {q.correctIndex + 1}.</>}
+                          {isCorrect ? <><CheckCircle className="h-4 w-4" /> Correct!</> : <><XCircle className="h-4 w-4" /> Incorrect.</>}
                         </div>
                         {q.explanation && <p className="text-sm text-text-muted bg-surface-tertiary p-3 rounded-lg">{q.explanation}</p>}
                         <Button size="sm" variant="ghost" onClick={() => handleResetQuiz(qIdx)} className="text-xs">Retry</Button>
@@ -254,17 +312,20 @@ export default function LessonPage() {
           </Card>
         )}
 
-        {user && (
-          <div className="flex items-center justify-between gap-4 mb-6 p-4 rounded-xl border border-border-primary bg-surface-secondary/60 backdrop-blur-md">
-            <div className="flex items-center gap-3 text-sm">
-              {done || certificate ? (
+        {user && !locked && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 p-4 rounded-xl border border-border-primary bg-surface-secondary/60 backdrop-blur-md">
+            <div className="text-sm">
+              {done ? (
                 <span className="flex items-center gap-2 text-green-500"><CheckCircle className="h-4 w-4" /> Lesson completed</span>
+              ) : needsFinalQuiz ? (
+                <span className="flex items-center gap-2 text-amber-500"><Award className="h-4 w-4" /> All lessons done — take the final quiz.</span>
               ) : (
-                <span className="text-text-secondary">Mark this lesson as complete to track your progress.</span>
+                <span className="text-text-secondary">{hasQuiz ? 'Pass the quiz to complete this lesson.' : 'Mark this lesson as complete to continue.'}</span>
               )}
+              {completeError && <p className="text-red-400 text-xs mt-1">{completeError}</p>}
             </div>
-            {!done && !certificate && (
-              <Button size="sm" variant="outline" onClick={completeCurrentLesson} disabled={marking}>
+            {!done && (
+              <Button size="sm" variant="outline" onClick={completeCurrentLesson} disabled={marking} className="shrink-0">
                 {marking ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Check className="h-3.5 w-3.5 mr-1" />} Mark Complete
               </Button>
             )}
@@ -284,7 +345,7 @@ export default function LessonPage() {
                 </div>
               </div>
               <Button asChild className="gradient-bg text-white">
-                <Link href="/certificates"><Download className="h-4 w-4 mr-2" /> View Certificate</Link>
+                <Link href="/certification"><Award className="h-4 w-4 mr-2" /> View Certificate</Link>
               </Button>
             </CardContent>
           </Card>
@@ -294,7 +355,7 @@ export default function LessonPage() {
           <div>
             {prevLesson ? (
               <Button variant="outline" asChild>
-                <Link href={`/courses/${slug}/lessons/${prevLesson.id}`}><ChevronLeft className="h-4 w-4 mr-1" /> Previous: {prevLesson.title}</Link>
+                <Link href={`/courses/${slug}/lessons/${prevLesson.id}`}><ChevronLeft className="h-4 w-4 mr-1" /> Previous</Link>
               </Button>
             ) : (
               <Button variant="outline" asChild>
@@ -305,11 +366,11 @@ export default function LessonPage() {
           <div>
             {nextLesson ? (
               <Button className="gradient-bg text-white" onClick={handleNext} disabled={marking}>
-                {marking ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null} Next: {nextLesson.title} <ChevronRight className="h-4 w-4 ml-1" />
+                {marking ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null} Next Lesson <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             ) : (
               <Button className="gradient-bg text-white" onClick={handleNext} disabled={marking}>
-                {marking ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null} {user ? 'Finish Course & Get Certificate' : 'Complete Course'} <Check className="h-4 w-4 ml-1" />
+                {marking ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null} {user ? 'Finish Course' : 'Complete Course'} <Check className="h-4 w-4 ml-1" />
               </Button>
             )}
           </div>

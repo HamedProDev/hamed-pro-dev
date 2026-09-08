@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { MapPin } from 'lucide-react'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 const socialIconConfig: Record<string, { bg: string; hoverShadow: string; label: string }> = {
   github: { bg: 'bg-[#24292e]', hoverShadow: 'hover:shadow-[#24292e]/40', label: 'GitHub' },
@@ -44,6 +45,7 @@ interface Settings {
 }
 
 export function Footer() {
+  const { isAuthenticated } = useAuth()
   const [settings, setSettings] = useState<Settings>({})
 
   useEffect(() => {
@@ -60,26 +62,42 @@ export function Footer() {
     ([, url]) => url && typeof url === 'string' && url.trim()
   )
 
-  const footerLinks = {
-    platform: [
-      { label: 'Projects', href: '/projects' },
-      { label: 'Courses', href: '/courses' },
-      { label: 'Startups / Orgs', href: '/startups' },
-      { label: 'Skills', href: '/skills' },
-      { label: 'Achievements', href: '/achievements' },
-    ],
-    resources: [
-      { label: 'Documentation', href: '/docs' },
-      { label: 'Open Source', href: '/open-source' },
-      { label: 'Community', href: '/community' },
-      { label: 'Newsletter', href: '/newsletter' },
-    ],
-    company: [
-      { label: 'About', href: '/about' },
-      { label: 'Contact', href: '/contact' },
-      { label: 'Hire Me', href: '/hire' },
-    ],
-  }
+  const footerLinks = isAuthenticated
+    ? {
+        learn: [
+          { label: 'Courses', href: '/courses' },
+          { label: 'Certification', href: '/certification' },
+          { label: 'Invite', href: '/invite' },
+          { label: 'Dashboard', href: '/dashboard' },
+        ],
+        resources: [
+          { label: 'Documentation', href: '/docs' },
+          { label: 'Community', href: '/community' },
+          { label: 'Newsletter', href: '/newsletter' },
+        ],
+        hire: [
+          { label: 'Hire Me', href: '/hire' },
+        ],
+      }
+    : {
+        platform: [
+          { label: 'Projects', href: '/projects' },
+          { label: 'Courses', href: '/courses' },
+          { label: 'Skills', href: '/skills' },
+          { label: 'Achievements', href: '/achievements' },
+        ],
+        resources: [
+          { label: 'Documentation', href: '/docs' },
+          { label: 'Open Source', href: '/open-source' },
+          { label: 'Community', href: '/community' },
+          { label: 'Newsletter', href: '/newsletter' },
+        ],
+        company: [
+          { label: 'About', href: '/about' },
+          { label: 'Contact', href: '/contact' },
+          { label: 'Hire Me', href: '/hire' },
+        ],
+      }
 
   return (
     <footer className="border-t border-border-primary bg-surface-secondary">
@@ -143,7 +161,7 @@ export function Footer() {
                 {title}
               </h3>
               <ul className="space-y-2.5">
-                {links.map(link => (
+                {links.map((link: { label: string; href: string }) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
