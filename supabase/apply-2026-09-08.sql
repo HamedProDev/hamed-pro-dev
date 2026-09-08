@@ -3,7 +3,8 @@
 -- Target: Supabase project yawrixelaguczogjgxmv
 -- How to run: Supabase Dashboard > SQL Editor > paste this WHOLE file > Run.
 -- Idempotent: every statement is IF NOT EXISTS / OR REPLACE / DROP ... IF EXISTS,
--- so it is safe to re-run against an existing database.
+-- so it is safe to re-run against an existing database (including one where a
+-- previous run already applied part of this file).
 -- ============================================================================
 
 -- ════════════════════════════════════════════════════════════════════════════
@@ -503,12 +504,26 @@ BEGIN;
 -- ============================================================================
 
 -- 1.1 Standardize blog_posts.tags as JSONB (schema.sql says TEXT[], the admin form
---     and fix-missing-columns.sql expect JSONB). Converts existing text arrays.
---     DROP the old TEXT[] default first — Postgres cannot auto-cast it to jsonb.
-ALTER TABLE blog_posts ALTER COLUMN tags DROP DEFAULT;
-ALTER TABLE blog_posts
-  ALTER COLUMN tags TYPE JSONB USING to_jsonb(COALESCE(tags, ARRAY[]::TEXT[]));
-ALTER TABLE blog_posts ALTER COLUMN tags SET DEFAULT '[]'::jsonb;
+--     and fix-missing-columns.sql expect JSONB). Idempotent: converts only when the
+--     column is still TEXT[]; if it is already JSONB it just (re)sets the default.
+DO $$
+DECLARE
+  col_udt text;
+BEGIN
+  SELECT udt_name INTO col_udt
+  FROM information_schema.columns
+  WHERE table_schema = 'public'
+    AND table_name  = 'blog_posts'
+    AND column_name = 'tags';
+
+  IF col_udt = '_text' THEN
+    EXECUTE 'ALTER TABLE blog_posts ALTER COLUMN tags DROP DEFAULT';
+    EXECUTE 'ALTER TABLE blog_posts ALTER COLUMN tags TYPE JSONB USING to_jsonb(COALESCE(tags, ARRAY[]::TEXT[]))';
+    EXECUTE 'ALTER TABLE blog_posts ALTER COLUMN tags SET DEFAULT ''[]''::jsonb';
+  ELSIF col_udt = 'jsonb' THEN
+    EXECUTE 'ALTER TABLE blog_posts ALTER COLUMN tags SET DEFAULT ''[]''::jsonb';
+  END IF;
+END $$;
 
 -- 1.2 Add missing updated_at column + trigger where the CMS edits rows.
 ALTER TABLE skills      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
