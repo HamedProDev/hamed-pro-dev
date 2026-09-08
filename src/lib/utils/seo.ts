@@ -3,6 +3,11 @@ import type { Metadata } from 'next'
 const SITE_NAME = 'Hamed Hussein'
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.vercel.app'
 
+/** Stable absolute URL — identical on server and client (avoids hydration mismatch). */
+export function absoluteUrl(path: string): string {
+  return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`
+}
+
 interface SeoParams {
   title?: string
   description?: string

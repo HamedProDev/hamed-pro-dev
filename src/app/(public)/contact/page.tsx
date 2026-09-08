@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Phone, Send, Clock, Globe, CheckCircle2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -34,13 +34,18 @@ const reasons = [
 
 export default function ContactPage() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
-  const [form, setForm] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      return { name: '', email: '', subject: params.get('subject') || '', reason: params.get('reason') || '', message: params.get('message') || '' }
-    }
-    return { name: '', email: '', subject: '', reason: '', message: '' }
-  })
+  const [form, setForm] = useState({ name: '', email: '', subject: '', reason: '', message: '' })
+
+  // Pre-fill from query params after hydration (avoids a hydration mismatch).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setForm(f => ({
+      ...f,
+      subject: params.get('subject') || f.subject,
+      reason: params.get('reason') || f.reason,
+      message: params.get('message') || f.message,
+    }))
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

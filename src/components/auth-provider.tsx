@@ -31,42 +31,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const supabase = createClient()
 
-    const getProfile = async (authUser: User) => {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('name, avatar_url, role')
-        .eq('id', authUser.id)
-        .single()
-
+    // Fast path: build the user from auth metadata (no DB query), so pages
+    // render immediately. The profile row is refreshed in the background.
+    const fromMetadata = (authUser: User): AuthUser => {
+      const meta = (authUser.user_metadata || {}) as Record<string, any>
+      const appMeta = (authUser.app_metadata || {}) as Record<string, any>
       return {
         uid: authUser.id,
         email: authUser.email || null,
-        name: profile?.name || authUser.email?.split('@')[0] || '',
-        image: profile?.avatar_url || null,
-        role: profile?.role || 'visitor',
+        name: meta.name || authUser.email?.split('@')[0] || '',
+        image: meta.avatar_url || null,
+        role: appMeta.role || meta.role || 'visitor',
       }
     }
 
-    supabase.auth.getUser().then(async ({ data: { user: authUser } }) => {
+    const refreshProfile = async (authUser: User) => {
       try {
-        if (authUser) {
-          setUser(await getProfile(authUser))
-        } else {
-          setUser(null)
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('name, avatar_url, role')
+          .eq('id', authUser.id)
+          .single()
+        if (profile) {
+          setUser({
+            uid: authUser.id,
+            email: authUser.email || null,
+            name: profile.name || authUser.email?.split('@')[0] || '',
+            image: profile.avatar_url || null,
+            role: profile.role || 'visitor',
+          })
         }
-      } catch { setUser(null) }
-      setLoading(false)
+      } catch {
+        // ignore — metadata fallback is already shown
+      }
+    }
+
+    supabase.auth.getUser().then(({ data: { user: authUser } }) => {
+      if (authUser) {
+        setUser(fromMetadata(authUser))
+        setLoading(false)
+        refreshProfile(authUser)
+      } else {
+        setUser(null)
+        setLoading(false)
+      }
     }).catch(() => { setUser(null); setLoading(false) })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      try {
-        if (session?.user) {
-          setUser(await getProfile(session.user))
-        } else {
-          setUser(null)
-        }
-      } catch { setUser(null) }
-      setLoading(false)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(fromMetadata(session.user))
+        setLoading(false)
+        refreshProfile(session.user)
+      } else {
+        setUser(null)
+        setLoading(false)
+      }
     })
 
     return () => subscription.unsubscribe()

@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,11 +13,12 @@ export default function LoginPage() {
   const [notice, setNotice] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [registered, setRegistered] = useState(false)
 
-  // "registered" flag from the register page.
-  const registered = typeof window !== 'undefined'
-    ? new URLSearchParams(window.location.search).get('registered') === 'true'
-    : false
+  // Read the "registered" flag after hydration (avoids a hydration mismatch).
+  useEffect(() => {
+    setRegistered(new URLSearchParams(window.location.search).get('registered') === 'true')
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -27,31 +27,8 @@ export default function MyCoursesPage() {
 
   useEffect(() => {
     if (!user) { setFetching(false); return }
-    fetch('/api/enrollments').then(r => r.json()).then(async d => {
-      const enrollments = d.data || []
-      if (enrollments.length === 0) { setFetching(false); return }
-      const rows = await Promise.all(
-        enrollments.map(async (e: any) => {
-          const [courseRes, progressRes] = await Promise.all([
-            fetch(`/api/courses/${e.course_id}`).then(r => r.json()),
-            fetch(`/api/courses/${e.course_id}/progress`).then(r => r.json()),
-          ])
-          const p = progressRes.data || {}
-          return {
-            id: e.id,
-            course_id: e.course_id,
-            progress: p.enrollment?.progress ?? e.progress ?? 0,
-            status: p.enrollment?.status ?? e.status,
-            title: courseRes.data?.title || 'Course',
-            slug: courseRes.data?.slug || e.course_id,
-            unlockedLessonId: p.unlockedLessonId || null,
-            totalCount: p.totalCount || 0,
-            completedCount: p.completedCount || 0,
-            needsFinalQuiz: p.needsFinalQuiz || false,
-          }
-        })
-      )
-      setCourses(rows)
+    fetch('/api/enrollments/me').then(r => r.json()).then(d => {
+      setCourses(d.data || [])
       setFetching(false)
     }).catch(() => setFetching(false))
   }, [user])

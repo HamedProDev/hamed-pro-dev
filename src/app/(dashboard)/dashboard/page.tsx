@@ -30,7 +30,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!user) return
     Promise.all([
-      fetch('/api/enrollments').then(r => r.json()),
+      fetch('/api/enrollments/me').then(r => r.json()),
       fetch('/api/certificates/me').then(r => r.json()),
     ]).then(([enr, certs]) => {
       const enrollments = enr.data || []
@@ -38,27 +38,8 @@ export default function DashboardPage() {
         courses: enrollments.length,
         certs: certs.data?.length || 0,
       })
-      if (enrollments.length > 0) {
-        Promise.all(
-          enrollments.map(async (e: any) => {
-            const [courseRes, progressRes] = await Promise.all([
-              fetch(`/api/courses/${e.course_id}`).then(r => r.json()),
-              fetch(`/api/courses/${e.course_id}/progress`).then(r => r.json()),
-            ])
-            return {
-              id: e.id,
-              course_id: e.course_id,
-              progress: progressRes.data?.enrollment?.progress ?? e.progress ?? 0,
-              status: progressRes.data?.enrollment?.status ?? e.status,
-              title: courseRes.data?.title || 'Course',
-              slug: courseRes.data?.slug || e.course_id,
-              unlockedLessonId: progressRes.data?.unlockedLessonId || null,
-            }
-          })
-        ).then(setCourses).catch(() => {}).finally(() => setLoadingCourses(false))
-      } else {
-        setLoadingCourses(false)
-      }
+      setCourses(enrollments)
+      setLoadingCourses(false)
     }).catch(() => setLoadingCourses(false))
   }, [user])
 

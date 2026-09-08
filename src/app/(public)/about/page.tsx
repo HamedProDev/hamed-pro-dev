@@ -12,6 +12,7 @@ import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { PersonJsonLd, ProfilePageJsonLd } from '@/components/shared/JsonLd'
 import { Logo } from '@/components/shared/Logo'
+import { absoluteUrl } from '@/lib/utils/seo'
 
 const iconMap: Record<string, any> = {
   github: Github, twitter: Twitter, linkedin: Linkedin, youtube: Youtube,
@@ -72,8 +73,8 @@ export default function AboutPage() {
       <div className="container-wide">
         <MetadataInjector title="About Me" description={`About ${settings.hero_name || 'Hamed Hussein'} — ${settings.hero_title || 'Fullstack & AI/ML Engineer based in Kigali, Rwanda'}`} url="/about" />
         <Breadcrumbs items={[{ label: 'About' }]} />
-        <PersonJsonLd name={settings.hero_name || 'Hamed Hussein'} jobTitle={settings.hero_title || 'Fullstack & AI/ML Engineer'} url={typeof window !== 'undefined' ? window.location.href : '/about'} image={settings.profile_photo} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
-        <ProfilePageJsonLd name={settings.hero_name || 'Hamed Hussein'} jobTitle={settings.hero_title || 'Fullstack & AI/ML Engineer'} url={typeof window !== 'undefined' ? window.location.href : '/about'} image={settings.about_image || settings.profile_photo} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
+        <PersonJsonLd name={settings.hero_name || 'Hamed Hussein'} jobTitle={settings.hero_title || 'Fullstack & AI/ML Engineer'} url={absoluteUrl('/about')} image={settings.profile_photo} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
+        <ProfilePageJsonLd name={settings.hero_name || 'Hamed Hussein'} jobTitle={settings.hero_title || 'Fullstack & AI/ML Engineer'} url={absoluteUrl('/about')} image={settings.about_image || settings.profile_photo} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
         <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
           <div>
             <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">👋 About Me</Badge>
