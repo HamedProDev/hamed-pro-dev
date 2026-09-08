@@ -43,6 +43,35 @@ npm run dev               # http://localhost:3000
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Used by `/api/seed` to create the admin user |
 | `SEED_SECRET` | Optional shared secret to gate `/api/seed` |
 | `GITHUB_ACCESS_TOKEN` | Optional, for GitHub stats |
+| `RESEND_API_KEY` | Resend API key — powers app emails + Supabase Auth emails |
+| `RESEND_FROM_EMAIL` | Verified "from" address for emails |
+
+## Email Setup (confirmation links + welcome emails)
+
+New accounts require email confirmation. Confirmation links are sent by
+**Supabase Auth**, which uses its own limited email service by default. To send
+from your own domain reliably, connect **Resend**:
+
+1. Create an account at [resend.com](https://resend.com) and **verify your
+   domain** (Domains → Add Domain → follow the DNS records).
+2. Create an **API key** (API Keys → Create API Key).
+3. In **Supabase Dashboard → Authentication → SMTP**, enable custom SMTP:
+
+   | Field | Value |
+   |---|---|
+   | Sender email | `no-reply@<your-domain>` (e.g. `no-reply@hamedprodev.rw`) |
+   | SMTP Host | `smtp.resend.com` |
+   | Port | `465` (SSL) |
+   | Username | `resend` |
+   | Password | your Resend API key |
+
+4. Add the same key to your app env:
+   ```
+   RESEND_API_KEY=re_xxxxxxx
+   RESEND_FROM_EMAIL=no-reply@hamedprodev.rw
+   ```
+5. Send a test email from the Supabase SMTP settings page, then try
+   registering a new account — the confirmation email should arrive instantly.
 
 ## Database Setup
 
