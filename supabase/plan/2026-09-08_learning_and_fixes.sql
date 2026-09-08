@@ -15,6 +15,8 @@ BEGIN;
 
 -- 1.1 Standardize blog_posts.tags as JSONB (schema.sql says TEXT[], the admin form
 --     and fix-missing-columns.sql expect JSONB). Converts existing text arrays.
+--     DROP the old TEXT[] default first — Postgres cannot auto-cast it to jsonb.
+ALTER TABLE blog_posts ALTER COLUMN tags DROP DEFAULT;
 ALTER TABLE blog_posts
   ALTER COLUMN tags TYPE JSONB USING to_jsonb(COALESCE(tags, ARRAY[]::TEXT[]));
 ALTER TABLE blog_posts ALTER COLUMN tags SET DEFAULT '[]'::jsonb;

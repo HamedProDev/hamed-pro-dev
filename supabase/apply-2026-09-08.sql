@@ -504,6 +504,8 @@ BEGIN;
 
 -- 1.1 Standardize blog_posts.tags as JSONB (schema.sql says TEXT[], the admin form
 --     and fix-missing-columns.sql expect JSONB). Converts existing text arrays.
+--     DROP the old TEXT[] default first — Postgres cannot auto-cast it to jsonb.
+ALTER TABLE blog_posts ALTER COLUMN tags DROP DEFAULT;
 ALTER TABLE blog_posts
   ALTER COLUMN tags TYPE JSONB USING to_jsonb(COALESCE(tags, ARRAY[]::TEXT[]));
 ALTER TABLE blog_posts ALTER COLUMN tags SET DEFAULT '[]'::jsonb;
@@ -831,3 +833,31 @@ COMMIT;
 --   SET site_name = 'Hamed Hussein',
 --       description = 'Fullstack & AI/ML Engineer based in Kigali, Rwanda. Known online as @hamedprodev.'
 --   WHERE id = (SELECT id FROM settings ORDER BY created_at ASC LIMIT 1);
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- PART C — STORAGE (uploads bucket for images/profile photos/media)
+--          (folded in from supabase/storage-policies.sql)
+-- ════════════════════════════════════════════════════════════════════════════
+INSERT INTO storage.buckets (id, name, public) VALUES ('uploads', 'uploads', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+DROP POLICY IF EXISTS "Public read access" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated insert access" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated update access" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated delete access" ON storage.objects;
+
+CREATE POLICY "Public read access"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'uploads');
+
+CREATE POLICY "Authenticated insert access"
+ON storage.objects FOR INSERT
+WITH CHECK (bucket_id = 'uploads');
+
+CREATE POLICY "Authenticated update access"
+ON storage.objects FOR UPDATE
+USING (bucket_id = 'uploads');
+
+CREATE POLICY "Authenticated delete access"
+ON storage.objects FOR DELETE
+USING (bucket_id = 'uploads');
