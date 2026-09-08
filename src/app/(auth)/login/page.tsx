@@ -30,7 +30,7 @@ export default function LoginPage() {
 
     try {
       const supabase = createClient()
-      const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
       if (authError) {
         const msg = authError.message.toLowerCase()
@@ -47,6 +47,11 @@ export default function LoginPage() {
 
       const params = new URLSearchParams(window.location.search)
       const redirect = params.get('redirect')
+      const isAdmin = (data.user?.app_metadata as any)?.role === 'admin' || (data.user?.user_metadata as any)?.role === 'admin'
+      if (isAdmin) {
+        window.location.href = '/admin-control'
+        return
+      }
       window.location.href = redirect && redirect.startsWith('/') ? redirect : '/dashboard'
     } catch {
       setError('Something went wrong. Please try again.')

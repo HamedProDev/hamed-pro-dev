@@ -37,7 +37,10 @@ export default function RegisterPage() {
       const { data: res, error: signUpError } = await supabase.auth.signUp({
         email: (data.email as string).trim(),
         password: data.password as string,
-        options: { data: { name: data.name as string, referred_by: ref || '' } },
+        options: {
+          emailRedirectTo: `${window.location.origin}/login?registered=true`,
+          data: { name: data.name as string, referred_by: ref || '' },
+        },
       })
 
       if (signUpError) {
@@ -58,7 +61,7 @@ export default function RegisterPage() {
 
       // No session yet → email confirmation is required.
       if (!res?.session) {
-        const message = 'Account created! Check your inbox for a confirmation email, then sign in.'
+        const message = 'Account created! We sent a confirmation link to your email — click it, then sign in below.'
         setNotice(message)
         toast.success('Account created! Please check your email to confirm it.')
         setLoading(false)
@@ -98,7 +101,11 @@ export default function RegisterPage() {
 
         {notice && (
           <div className="mb-4 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400">
-            {notice}
+            <p className="font-semibold mb-1">Almost done ✅</p>
+            <p>{notice}</p>
+            <Link href="/login" className="mt-2 inline-block font-semibold underline underline-offset-2">
+              Go to sign in
+            </Link>
           </div>
         )}
 

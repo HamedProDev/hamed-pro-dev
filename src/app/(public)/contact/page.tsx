@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Send, Clock, Globe, CheckCircle2, Loader2 } from 'lucide-react'
+import { Mail, Phone, Send, Clock, Globe, CheckCircle2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,7 +14,6 @@ import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 const contactInfo = [
   { icon: Mail, label: 'Email', value: 'hamed@novasoft.rw', href: 'mailto:hamed@novasoft.rw', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
   { icon: Phone, label: 'Phone', value: '+250 788 123 456', href: 'tel:+250788123456', color: 'text-green-500', bg: 'bg-green-500/10' },
-  { icon: MapPin, label: 'Location', value: 'Kigali, Rwanda', href: '#', color: 'text-amber-500', bg: 'bg-amber-500/10' },
   { icon: Globe, label: 'Website', value: 'hamedprodev.vercel.app', href: 'https://hamedprodev.vercel.app', color: 'text-purple-500', bg: 'bg-purple-500/10' },
 ]
 
@@ -157,13 +156,6 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="mt-12 rounded-2xl overflow-hidden border border-border-primary h-64 bg-surface-card flex items-center justify-center">
-          <div className="text-center text-text-muted">
-            <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">Kigali, Rwanda</p>
-            <p className="text-xs">Kwanda Facility</p>
-          </div>
-        </div>
       </div>
     </main>
   )

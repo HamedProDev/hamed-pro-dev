@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils/cn'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { SectionHeading } from '@/components/shared/SectionHeading'
+import { FAQJsonLd, ItemListJsonLd } from '@/components/shared/JsonLd'
 
 const categories = ['All Courses', 'Frontend', 'Backend', 'AI / ML', 'Mobile', 'DevOps', 'Game Dev']
 const levels = ['All Levels', 'beginner', 'intermediate', 'advanced']
@@ -60,6 +61,18 @@ export default function CoursesPage() {
       <div className="container-wide">
         <MetadataInjector title="Free Courses" description="Practical, project-based courses for developers — free to learn, with a verifiable certificate when you finish." url="/courses" />
         <Breadcrumbs items={[{ label: 'Courses' }]} />
+        <ItemListJsonLd
+          type="Course"
+          name="Free Courses by Hamed Hussein"
+          items={filtered.map(c => ({ name: c.title, url: `/courses/${c.slug}`, description: c.description }))}
+        />
+        <FAQJsonLd
+          items={[
+            { question: 'Are Hamed Hussein’s courses really free?', answer: 'Yes. Every course is 100% free — no paywalls and no credit card required.' },
+            { question: 'Do I get a certificate after finishing a course?', answer: 'Yes. Complete every lesson in order and pass the final quiz to earn a verifiable, downloadable certificate.' },
+            { question: 'Do I need experience to start?', answer: 'No. Courses range from beginner to advanced, and progress unlocks sequentially so you always know what to learn next.' },
+          ]}
+        />
 
         <SectionHeading
           eyebrow="Free learning library"
@@ -103,11 +116,14 @@ export default function CoursesPage() {
               <motion.div key={c.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
                 <Link href={`/courses/${c.slug}`} className="block h-full">
                   <Card className="h-full card-hover group overflow-hidden">
-                    <div className="h-44 relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-surface-card to-surface-secondary">
+                    <div className="h-44 relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-500">
                       {c.image_url ? (
                         <Image src={c.image_url} alt={`${c.title} course cover`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" unoptimized />
                       ) : (
-                        <span className="text-5xl opacity-50">📚</span>
+                        <div className="text-center px-6">
+                          <span className="block text-4xl font-extrabold text-white/90">{c.title.split(' ').slice(0, 3).map(w => w[0]).join('').toUpperCase() || '📚'}</span>
+                          <span className="mt-2 block text-xs font-medium uppercase tracking-widest text-white/70">{c.category}</span>
+                        </div>
                       )}
                       <Badge className="absolute top-3 left-3 bg-brand-primary text-white border-0 text-xs z-10">{c.category}</Badge>
                       <Badge className="absolute top-3 right-3 bg-green-500/90 text-white border-0 text-xs z-10">Free</Badge>

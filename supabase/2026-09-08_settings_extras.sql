@@ -8,3 +8,6 @@ ALTER TABLE settings ADD COLUMN IF NOT EXISTS resume_url TEXT;
 
 -- Admin-managed services & pricing shown on the Hire Me page
 ALTER TABLE settings ADD COLUMN IF NOT EXISTS hire_services JSONB DEFAULT '[]';
+
+-- Admin-uploaded image shown on the About page
+ALTER TABLE settings ADD COLUMN IF NOT EXISTS about_image TEXT;

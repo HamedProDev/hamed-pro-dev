@@ -46,8 +46,8 @@ loadDotEnv('.env')
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-const adminEmail = process.env.ADMIN_EMAIL || 'hamussein01@gmail.com'
-const adminPassword = process.env.ADMIN_PASSWORD
+const adminEmail = (process.env.ADMIN_EMAIL || 'hamussein01@gmail.com').trim()
+const adminPassword = (process.env.ADMIN_PASSWORD || '').trim()
 
 if (!url) fail('NEXT_PUBLIC_SUPABASE_URL is not set')
 if (!serviceKey || serviceKey === 'your-service-role-key-here') {
@@ -115,6 +115,19 @@ async function ensureAdmin() {
   await supabase
     .from('profiles')
     .upsert({ id: user.id, email: adminEmail, name: 'Hamed Hussein', role: 'admin' }, { onConflict: 'id' })
+
+  // Verify the credentials actually work with the anon key (exactly what /login uses).
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (anonKey) {
+    const anonClient = createClient(url as string, anonKey)
+    const { error: signInError } = await anonClient.auth.signInWithPassword({ email: adminEmail, password: adminPassword })
+    if (signInError) {
+      console.log(`⚠️  Admin login verification FAILED: ${signInError.message}`)
+      console.log('   → If it says "Email not confirmed", open Supabase → Authentication → Users and confirm it, or re-run this script.')
+    } else {
+      console.log(`✔ Admin login verified OK: ${adminEmail}`)
+    }
+  }
 }
 
 // Content tables, in FK-safe delete order (children first). Profiles/auth are kept.
@@ -182,7 +195,7 @@ async function main() {
   await seedIfEmpty('site_stats', seedSiteStats, 'Site stats')
   await seedIfEmpty('testimonials', seedTestimonials, 'Testimonials')
 
-  console.log(`\n✔ Done. Admin login: ${adminEmail} (password from ADMIN_PASSWORD)`)
+  console.log(`\n✔ Done. Admin login: ${adminEmail} (password is exactly ADMIN_PASSWORD from .env, trimmed)`)
   console.log('  Sign in at /login or /admin-control.\n')
 }
 

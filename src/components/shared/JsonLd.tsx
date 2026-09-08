@@ -7,6 +7,61 @@ export function WebSiteJsonLd() {
     url: baseUrl,
     description: 'Personal developer ecosystem of Hamed Hussein — Fullstack & AI/ML Engineer',
     author: { '@type': 'Person', name: 'Hamed Hussein' },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: { '@type': 'EntryPoint', urlTemplate: `${baseUrl}/search?q={search_term_string}` },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
+export function ProfilePageJsonLd({ name, jobTitle, url, image, sameAs }: {
+  name: string; jobTitle: string; url: string; image?: string; sameAs?: string[]
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    name: `About ${name}`,
+    mainEntity: {
+      '@type': 'Person',
+      name,
+      jobTitle,
+      url,
+      image,
+      sameAs,
+    },
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
+export function FAQJsonLd({ items }: { items: { question: string; answer: string }[] }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map(i => ({
+      '@type': 'Question',
+      name: i.question,
+      acceptedAnswer: { '@type': 'Answer', text: i.answer },
+    })),
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
+export function ItemListJsonLd({ items, type, name }: {
+  items: { name: string; url: string; description?: string }[]
+  type: string
+  name: string
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name,
+    itemListElement: items.map((i, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      item: { '@type': type, name: i.name, url: i.url, description: i.description },
+    })),
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }

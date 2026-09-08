@@ -173,7 +173,14 @@ export default function CourseDetailPage() {
         <Breadcrumbs items={[{ label: 'Courses', href: '/courses' }, { label: course.title }]} />
         <CourseJsonLd name={course.title} description={course.description} provider="Hamed Hussein" url={typeof window !== 'undefined' ? window.location.href : `/courses/${slug}`} />
 
-        {course.image_url && <Image src={course.image_url} alt={`${course.title} course cover`} width={1200} height={480} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" unoptimized />}
+        {course.image_url ? (
+          <Image src={course.image_url} alt={`${course.title} course cover`} width={1200} height={480} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" unoptimized />
+        ) : (
+          <div className="w-full h-52 md:h-72 rounded-2xl mb-8 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-purple-500 flex flex-col items-center justify-center text-center px-6">
+            <span className="text-4xl md:text-5xl font-extrabold text-white/95">{course.title.split(' ').slice(0, 4).map((w: string) => w[0]).join('').toUpperCase()}</span>
+            <span className="mt-2 text-sm font-medium uppercase tracking-widest text-white/75">{course.category} · Free</span>
+          </div>
+        )}
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{course.category}</Badge>

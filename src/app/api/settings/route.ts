@@ -35,7 +35,7 @@ async function handleSave(req: NextRequest) {
       'profile_photo', 'hero_name', 'hero_title', 'hero_subtitle',
       'contact_email', 'contact_phone', 'address', 'location',
       'maintenance_mode', 'allow_registration',
-      'resume_url',
+      'resume_url', 'about_image',
     ]
 
     const camelToSnake: Record<string, string> = {
@@ -44,7 +44,7 @@ async function handleSave(req: NextRequest) {
       heroTitle: 'hero_title', heroSubtitle: 'hero_subtitle',
       contactEmail: 'contact_email', contactPhone: 'contact_phone',
       maintenanceMode: 'maintenance_mode', allowRegistration: 'allow_registration',
-      resumeUrl: 'resume_url', hireServices: 'hire_services',
+      resumeUrl: 'resume_url', hireServices: 'hire_services', aboutImage: 'about_image',
     }
 
     const updateData: any = {}

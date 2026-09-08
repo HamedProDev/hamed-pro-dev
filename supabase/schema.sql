@@ -266,6 +266,7 @@ CREATE TABLE IF NOT EXISTS settings (
   integrations JSONB DEFAULT '{}',
   resume_url TEXT,
   hire_services JSONB DEFAULT '[]',
+  about_image TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

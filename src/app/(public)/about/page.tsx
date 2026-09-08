@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils/cn'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
-import { PersonJsonLd } from '@/components/shared/JsonLd'
+import { PersonJsonLd, ProfilePageJsonLd } from '@/components/shared/JsonLd'
 import { Logo } from '@/components/shared/Logo'
 
 const iconMap: Record<string, any> = {
@@ -73,6 +73,7 @@ export default function AboutPage() {
         <MetadataInjector title="About Me" description={`About ${settings.hero_name || 'Hamed Hussein'} — ${settings.hero_title || 'Fullstack & AI/ML Engineer based in Kigali, Rwanda'}`} url="/about" />
         <Breadcrumbs items={[{ label: 'About' }]} />
         <PersonJsonLd name={settings.hero_name || 'Hamed Hussein'} jobTitle={settings.hero_title || 'Fullstack & AI/ML Engineer'} url={typeof window !== 'undefined' ? window.location.href : '/about'} image={settings.profile_photo} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
+        <ProfilePageJsonLd name={settings.hero_name || 'Hamed Hussein'} jobTitle={settings.hero_title || 'Fullstack & AI/ML Engineer'} url={typeof window !== 'undefined' ? window.location.href : '/about'} image={settings.about_image || settings.profile_photo} sameAs={socialUrls.length > 0 ? socialUrls : undefined} />
         <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
           <div>
             <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">👋 About Me</Badge>
@@ -102,8 +103,8 @@ export default function AboutPage() {
           <div className="relative flex justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-secondary/10 to-transparent rounded-3xl blur-3xl" />
             <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-surface-card to-surface-secondary border border-border-primary flex items-center justify-center overflow-hidden">
-              {settings.profile_photo ? (
-                  <Image src={settings.profile_photo || 'https://i.ibb.co/3YP4yps3/hamedai.jpg'} alt="Profile photo of Hamed Hussein" fill sizes="288px" className="object-cover" unoptimized />
+              {(settings.about_image || settings.profile_photo) ? (
+                  <Image src={settings.about_image || settings.profile_photo || 'https://i.ibb.co/3YP4yps3/hamedai.jpg'} alt="Hamed Hussein" fill sizes="288px" className="object-cover" unoptimized />
               ) : (
                 <div className="text-center">
                   <Logo className="h-24 w-24 mx-auto mb-4" />
@@ -141,6 +142,11 @@ export default function AboutPage() {
                 <p>{settings.description || 'I started my programming journey in university, building simple websites and falling in love with the power of code. Over the past 5+ years, I\'ve evolved into a fullstack developer with expertise spanning frontend frameworks, backend systems, cloud infrastructure, and AI/ML. You can find me online as @hamedprodev.'}</p>
                 <p>Based in {settings.location || 'Kigali, Rwanda'}, I&apos;m passionate about building technology that solves real problems in Africa. From agricultural marketplaces to enterprise management systems, I focus on creating solutions that are both technically excellent and impactful.</p>
               </div>
+              {(settings.about_image || settings.profile_photo) && (
+                <div className="mt-6 relative h-56 rounded-2xl overflow-hidden border border-border-primary">
+                  <Image src={settings.about_image || settings.profile_photo} alt="Hamed Hussein — about" fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" unoptimized />
+                </div>
+              )}
             </div>
             <div>
               <h2 className="text-xl font-semibold mb-4">Technical Skills</h2>

@@ -118,6 +118,11 @@ export default function AdminSettingsPage() {
             <label htmlFor="og_image" className="text-sm font-medium mb-1 block">OG Image (Social Share)</label>
             <ImageUpload value={settings.og_image || ''} onChange={v => update('og_image', v)} folder="hamedpro/og" />
           </div>
+          <div>
+            <label htmlFor="about_image" className="text-sm font-medium mb-1 block">About Page Image</label>
+            <ImageUpload value={settings.about_image || ''} onChange={v => update('about_image', v)} folder="hamedpro/about" />
+            <p className="text-xs text-text-muted mt-1">Shown on the About page hero and story section.</p>
+          </div>
         </CardContent>
       </Card>
 
