@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import QRCode from 'react-qr-code'
-import { Award, BadgeCheck, Printer, Link2, Check } from 'lucide-react'
+import { toPng } from 'html-to-image'
+import { Award, BadgeCheck, Printer, Download, Link2, Check, Loader2 } from 'lucide-react'
 
 function ShareIcon({ path }: { path: string }) {
   return (
@@ -33,6 +34,8 @@ export function CertificateDocument({
   verified = true,
 }: CertificateDocumentProps) {
   const [copied, setCopied] = useState(false)
+  const [downloading, setDownloading] = useState(false)
+  const docRef = useRef<HTMLDivElement>(null)
 
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/verify/${certificateNumber}` : ''
 
@@ -44,15 +47,39 @@ export function CertificateDocument({
     } catch {}
   }
 
+  const downloadPng = async () => {
+    if (!docRef.current) return
+    setDownloading(true)
+    try {
+      const dataUrl = await toPng(docRef.current, { pixelRatio: 2, backgroundColor: '#ffffff', cacheBust: true })
+      const link = document.createElement('a')
+      link.download = `certificate-${certificateNumber}.png`
+      link.href = dataUrl
+      link.click()
+    } catch {
+      // Fall back to the browser's print dialog if image capture fails.
+      window.print()
+    }
+    setDownloading(false)
+  }
+
   return (
     <div>
       {/* Toolbar (hidden on print) */}
       <div className="no-print flex flex-wrap items-center justify-center gap-3 mb-6">
         <button
-          onClick={() => window.print()}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg gradient-bg text-white text-sm font-medium shadow-lg shadow-blue-500/25 hover:brightness-110 transition-all"
+          onClick={downloadPng}
+          disabled={downloading}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg gradient-bg text-white text-sm font-medium shadow-lg shadow-blue-500/25 hover:brightness-110 transition-all disabled:opacity-60"
         >
-          <Printer className="h-4 w-4" /> Download / Print
+          {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+          {downloading ? 'Generating…' : 'Download PNG'}
+        </button>
+        <button
+          onClick={() => window.print()}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg glass text-text-primary text-sm font-medium hover:border-blue-500/40 transition-all"
+        >
+          <Printer className="h-4 w-4" /> Print / PDF
         </button>
         <button
           onClick={copyLink}
@@ -86,7 +113,7 @@ export function CertificateDocument({
       </div>
 
       {/* Certificate document */}
-      <div className="relative rounded-3xl p-[3px] bg-gradient-to-br from-blue-500/40 via-indigo-500/40 to-cyan-400/40 shadow-2xl shadow-blue-500/20">
+      <div ref={docRef} className="relative rounded-3xl p-[3px] bg-gradient-to-br from-blue-500/40 via-indigo-500/40 to-cyan-400/40 shadow-2xl shadow-blue-500/20">
         <div className="rounded-[22px] bg-white text-slate-900 overflow-hidden">
           {/* inner gold/blue double border */}
           <div className="m-2 rounded-2xl border-2 border-blue-200 p-2">
@@ -109,7 +136,7 @@ export function CertificateDocument({
                 </p>
                 <p className="text-sm text-slate-500 mb-6">This is to certify that</p>
 
-                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent">
+                <h2 className="text-3xl sm:text-4xl font-bold text-indigo-700 mb-6">
                   {recipientName}
                 </h2>
 

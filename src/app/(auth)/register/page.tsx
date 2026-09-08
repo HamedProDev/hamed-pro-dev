@@ -46,7 +46,7 @@ export default function RegisterPage() {
       fetch('/api/email/welcome', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: data.email, name: data.name }),
+        body: JSON.stringify({ email: data.email, name: data.name, referred_by: ref || '' }),
       }).catch(() => {})
 
       window.location.href = '/login?registered=true'

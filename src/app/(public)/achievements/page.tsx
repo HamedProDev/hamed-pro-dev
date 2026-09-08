@@ -1,11 +1,22 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ExternalLink, Download, Trophy, Award, Star, Milestone, BookOpen } from 'lucide-react'
+import { ExternalLink, Download, Trophy, Award, Star, Milestone, BookOpen, BadgeCheck } from 'lucide-react'
 import { FadeIn, ScaleIn, PopupIn, GlowPulse } from '@/components/shared/Animations'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
+import { useAuth } from '@/lib/hooks/useAuth'
+
+interface Certificate {
+  id: string
+  certificate_number: string
+  course_title: string
+  recipient_name: string
+  issue_date: string
+  score: number | null
+}
 
 interface Achievement {
   _id: string
@@ -30,7 +41,9 @@ const typeConfig: Record<string, { color: string; bg: string; border: string; gl
 const ease = [0.25, 0.46, 0.45, 0.94]
 
 export default function AchievementsPage() {
+  const { user } = useAuth()
   const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [certificates, setCertificates] = useState<Certificate[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -42,6 +55,14 @@ export default function AchievementsPage() {
       })
       .catch(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (!user) return
+    fetch('/api/certificates/me')
+      .then(r => r.json())
+      .then(d => { if (d.success) setCertificates(d.data || []) })
+      .catch(() => {})
+  }, [user])
 
   if (loading) {
     return (
@@ -176,6 +197,40 @@ export default function AchievementsPage() {
             </div>
             <p className="text-text-muted text-lg">No achievements yet</p>
           </motion.div>
+        )}
+
+        {/* My earned certificates */}
+        {certificates.length > 0 && (
+          <FadeIn className="mt-20">
+            <div className="text-center mb-8">
+              <span className="eyebrow mb-4">My Credentials</span>
+              <h2 className="display text-3xl md:text-4xl text-text-primary">
+                My <span className="gradient-text">Certificates</span>
+              </h2>
+              <p className="text-text-secondary mt-3 max-w-xl mx-auto">Every course you complete earns a verifiable certificate — all in one place.</p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {certificates.map(c => (
+                <Link
+                  key={c.id}
+                  href={`/verify/${c.certificate_number}`}
+                  className="group flex items-center gap-4 rounded-2xl border border-border-primary bg-surface-card/60 p-5 card-hover"
+                >
+                  <div className="h-12 w-12 rounded-xl bg-green-500/10 border border-green-500/30 flex items-center justify-center shrink-0">
+                    <BadgeCheck className="h-6 w-6 text-green-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-text-primary truncate group-hover:text-brand-primary transition-colors">{c.course_title}</h3>
+                    <p className="text-xs text-text-muted">
+                      {new Date(c.issue_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      {c.score !== null && c.score !== undefined ? ` · ${c.score}%` : ''}
+                    </p>
+                    <p className="text-[11px] font-mono text-text-muted truncate">{c.certificate_number}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </FadeIn>
         )}
 
         <PopupIn delay={0.4} className="mt-20">

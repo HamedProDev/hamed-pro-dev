@@ -127,6 +127,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- 1.8b Project detail fields (client, year, status, role, screenshot gallery).
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS screenshots JSONB DEFAULT '[]';
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS client TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS year TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS status TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS role TEXT;
+
 -- 1.9 Student profile fields: interests (tags) + referral tracking.
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS interests TEXT[] DEFAULT '{}';
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS referred_by UUID REFERENCES profiles(id);

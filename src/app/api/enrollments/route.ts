@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, updateDocument } from '@/lib/supabase/db'
 import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { awardXp, XP } from '@/lib/gamification'
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,6 +25,7 @@ export async function POST(req: NextRequest) {
       status: 'active',
       progress: 0,
     })
+    await awardXp(user.uid, XP.COURSE_ENROLLED, 'course_enrolled', { course_id: courseId })
     return apiSuccess(enrollment, 'Enrolled successfully')
   } catch (error: any) {
     return apiError(error.message, 500)

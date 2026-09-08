@@ -165,7 +165,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-text-secondary hover:text-blue-500 transition-all duration-200 hover:translate-x-1 inline-block"
+                      className="text-sm text-text-secondary hover:text-brand-primary transition-all duration-200 hover:translate-x-1 inline-block"
                     >
                       {link.label}
                     </Link>
@@ -180,7 +180,7 @@ export function Footer() {
               Location
             </h3>
             <div className="flex items-start gap-2 mb-3">
-              <MapPin className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
+              <MapPin className="h-4 w-4 text-brand-primary mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm text-text-secondary">
                   {settings.location || 'Kigali, Rwanda'}
@@ -190,7 +190,7 @@ export function Footer() {
             </div>
             <div className="h-20 rounded-lg bg-surface-tertiary border border-border-primary overflow-hidden relative">
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
               </div>
               <div
                 className="absolute inset-0"

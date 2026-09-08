@@ -8,6 +8,8 @@ export const XP = {
   FINAL_QUIZ_PASS: 50,
   COMMENT_POSTED: 2,
   CERTIFICATE_EARNED: 25,
+  COURSE_ENROLLED: 5,
+  REFERRAL: 50,
 } as const
 
 function todayISO(): string {
@@ -18,6 +20,49 @@ function daysAgoISO(days: number): string {
   const d = new Date()
   d.setDate(d.getDate() - days)
   return d.toISOString().slice(0, 10)
+}
+
+/**
+ * Compute the learner level from total XP.
+ * Level 1 → 100 XP, then +50 XP per level.
+ */
+export function levelForXp(xp: number) {
+  let level = 1
+  let remaining = Math.max(0, xp)
+  let need = 100
+  while (remaining >= need) {
+    remaining -= need
+    level += 1
+    need += 50
+  }
+  return { level, intoLevel: remaining, nextLevelNeed: need }
+}
+
+export interface Badge {
+  id: string
+  label: string
+  description: string
+  icon: string
+  earned: boolean
+}
+
+/**
+ * Milestone badges derived from a user's XP/streak/events.
+ */
+export function badgesFor({
+  xp_points,
+  longest_streak,
+  events,
+}: { xp_points: number; longest_streak: number; events: { event: string }[] }): Badge[] {
+  const has = (e: string) => events.some((x: any) => x.event === e)
+  return [
+    { id: 'first-lesson', label: 'First Step', description: 'Complete your first lesson', icon: '📘', earned: has('lesson_complete') },
+    { id: 'course-graduate', label: 'Graduate', description: 'Complete a full course', icon: '🎓', earned: has('course_complete') },
+    { id: 'quiz-ace', label: 'Quiz Ace', description: 'Pass a quiz', icon: '🧠', earned: has('lesson_quiz_perfect') || has('final_quiz_pass') },
+    { id: 'community', label: 'Community Voice', description: 'Post a comment', icon: '💬', earned: has('comment_posted') },
+    { id: 'streak-7', label: 'On Fire', description: 'Reach a 7-day streak', icon: '🔥', earned: longest_streak >= 7 },
+    { id: 'xp-1000', label: 'Scholar', description: 'Earn 1,000 XP', icon: '🏅', earned: xp_points >= 1000 },
+  ]
 }
 
 /**
@@ -34,11 +79,19 @@ export async function awardXp(
   const supabase = createServiceClient()
   try {
     await supabase.from('user_xp_events').insert({ user_id: userId, event, points, meta })
-    await supabase.rpc('add_xp', { uid: userId, amount: points })
-    await updateStreak(userId)
   } catch {
-    // Non-critical — never block the primary flow on gamification errors.
+    // Non-critical.
   }
+  try {
+    await supabase.rpc('add_xp', { uid: userId, amount: points })
+  } catch {
+    // Fallback: read-modify-write if the RPC hasn't been applied yet.
+    try {
+      const { data } = await supabase.from('profiles').select('xp_points').eq('id', userId).single()
+      await supabase.from('profiles').update({ xp_points: (data?.xp_points || 0) + points }).eq('id', userId)
+    } catch {}
+  }
+  await updateStreak(userId)
 }
 
 /**
@@ -77,7 +130,7 @@ export async function updateStreak(userId: string): Promise<void> {
 }
 
 /**
- * Fetch a user's gamification summary (XP, streaks, recent events, weekly totals).
+ * Fetch a user's gamification summary (XP, level, streaks, badges, weekly totals).
  */
 export async function getGamification(userId: string) {
   const supabase = createServiceClient()
@@ -110,14 +163,26 @@ export async function getGamification(userId: string) {
       days.push({ day: label, xp })
     }
 
+    const xp_points = profile?.xp_points || 0
+    const longest_streak = profile?.longest_streak || 0
+    const { level, intoLevel, nextLevelNeed } = levelForXp(xp_points)
+
     return {
-      xp_points: profile?.xp_points || 0,
+      xp_points,
+      level,
+      level_progress: intoLevel,
+      level_need: nextLevelNeed,
       current_streak: profile?.current_streak || 0,
-      longest_streak: profile?.longest_streak || 0,
+      longest_streak,
       recent_events: (events || []).slice(-10).reverse(),
       weekly: days,
+      badges: badgesFor({ xp_points, longest_streak, events: events || [] }),
     }
   } catch {
-    return { xp_points: 0, current_streak: 0, longest_streak: 0, recent_events: [], weekly: [] }
+    return {
+      xp_points: 0, level: 1, level_progress: 0, level_need: 100,
+      current_streak: 0, longest_streak: 0, recent_events: [], weekly: [],
+      badges: badgesFor({ xp_points: 0, longest_streak: 0, events: [] }),
+    }
   }
 }

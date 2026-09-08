@@ -11,6 +11,9 @@ const iconMap: Record<string, any> = {
   instagram: Instagram, facebook: Send, discord: Send, whatsapp: Send, telegram: Send, tiktok: Send,
 }
 
+// Hardcoded hero portrait (fallback when no profile photo is set in settings).
+const HERO_IMAGE = 'https://i.ibb.co/3YP4yps3/hamedai.jpg'
+
 const techBadges = [
   { name: 'Next.js', icon: 'N', color: 'bg-white text-black', x: '10%', y: '15%', delay: 0.5 },
   { name: 'Python', icon: '🐍', color: 'bg-yellow-500/20 text-yellow-400', x: '75%', y: '10%', delay: 0.7 },
@@ -126,7 +129,7 @@ export function HeroSection() {
           </motion.div>
         </div>
 
-        <div className="relative flex justify-center items-center hidden md:flex">
+        <div className="relative flex justify-center items-center">
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }} className="relative">
             <motion.div
               animate={{ rotate: 360 }}
@@ -136,13 +139,9 @@ export function HeroSection() {
             <motion.div
               animate={{ scale: [1, 1.02, 1] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-surface-card via-surface-tertiary to-surface-secondary glow-border overflow-hidden flex items-center justify-center shadow-2xl shadow-blue-500/10"
+              className="relative w-60 h-60 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-surface-card via-surface-tertiary to-surface-secondary glow-border overflow-hidden flex items-center justify-center shadow-2xl shadow-blue-500/10"
             >
-              {settings.profile_photo ? (
-                <Image src={settings.profile_photo} alt={settings.hero_name || 'Profile'} fill sizes="384px" className="object-cover" unoptimized />
-              ) : (
-                <div className="text-6xl font-bold text-blue-500/30">HH</div>
-              )}
+              <Image src={settings.profile_photo || HERO_IMAGE} alt={settings.hero_name || 'Hamed Hussein'} fill sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 384px" className="object-cover" unoptimized priority />
             </motion.div>
 
             {mounted && techBadges.map((badge, i) => (

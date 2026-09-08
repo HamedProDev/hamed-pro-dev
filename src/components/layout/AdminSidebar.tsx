@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils/cn'
 import {
   LayoutDashboard, GraduationCap,
   Users, Search, UserCircle, Settings, ChevronLeft, ChevronRight,
-  Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare
+  Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare, FileText, Image, Mail
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAdminAuth } from '@/components/admin/AdminGate'
@@ -17,10 +17,13 @@ const links = [
   { href: '/admin-control/courses', label: 'Courses', icon: GraduationCap },
   { href: '/admin-control/skills', label: 'Skills', icon: Zap },
   { href: '/admin-control/achievements', label: 'Achievements', icon: Trophy },
+  { href: '/admin-control/blog', label: 'Blog', icon: FileText },
   { href: '/admin-control/organizations', label: 'Organizations', icon: Building2 },
   { href: '/admin-control/stats', label: 'Stats', icon: BarChart3 },
   { href: '/admin-control/testimonials', label: 'Testimonials', icon: MessageSquare },
   { href: '/admin-control/comments', label: 'Comments', icon: MessageSquare },
+  { href: '/admin-control/contact', label: 'Messages', icon: Mail },
+  { href: '/admin-control/media', label: 'Media', icon: Image },
   { href: '/admin-control/users', label: 'Users', icon: Users },
   { href: '/admin-control/seo', label: 'SEO', icon: Search },
   { href: '/admin-control/about', label: 'About Page', icon: UserCircle },

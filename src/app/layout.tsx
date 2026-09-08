@@ -20,9 +20,9 @@ const inter = localFont({
 })
 
 export const metadata: Metadata = {
-  title: { default: 'Hamed Hussein — Fullstack & AI/ML Engineer', template: '%s | Hamed Hussein' },
-  description: 'Personal developer ecosystem of Hamed Hussein — Fullstack & AI/ML Engineer based in Kigali, Rwanda. Building innovative solutions for Africa and beyond.',
-  keywords: ['Hamed Hussein', 'Fullstack Developer', 'AI/ML Engineer', 'Rwanda', 'Kigali', 'React', 'Next.js', 'Python', 'Kwanda Facility'],
+  title: { default: 'Hamed Hussein (AKA hamedprodev) — Full Stack Developer & AI/ML Engineer', template: '%s | Hamed Hussein' },
+  description: 'Hamed Hussein, AKA hamedprodev, is a full stack developer and AI/ML engineer based in Kigali, Rwanda — building modern web apps, AI-powered solutions, free courses, and verifiable certificates.',
+  keywords: ['Hamed Hussein', 'hamedprodev', 'Full Stack Developer', 'AI/ML Engineer', 'Rwanda', 'Kigali', 'React', 'Next.js', 'Python', 'Machine Learning', 'Kwanda Facility'],
   authors: [{ name: 'Hamed Hussein' }],
   creator: 'Hamed Hussein',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.vercel.app'),
@@ -31,14 +31,14 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: '/',
     siteName: 'Hamed Hussein',
-    title: 'Hamed Hussein — Fullstack & AI/ML Engineer',
-    description: 'Personal developer ecosystem of Hamed Hussein — building innovative solutions from Kigali, Rwanda.',
+    title: 'Hamed Hussein (AKA hamedprodev) — Full Stack Developer & AI/ML Engineer',
+    description: 'Full stack developer & AI/ML engineer from Kigali, Rwanda. Free courses, verifiable certificates, and innovative products.',
     images: [{ url: '/og/default.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Hamed Hussein — Fullstack & AI/ML Engineer',
-    description: 'Personal developer ecosystem of Hamed Hussein — building innovative solutions from Kigali, Rwanda.',
+    title: 'Hamed Hussein (AKA hamedprodev) — Full Stack Developer & AI/ML Engineer',
+    description: 'Full stack developer & AI/ML engineer from Kigali, Rwanda. Free courses and verifiable certificates.',
     creator: '@hamedProDev',
     images: ['/og/default.png'],
   },

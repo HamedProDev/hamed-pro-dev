@@ -26,7 +26,7 @@ export function MetadataInjector({ title, description, image, url, keywords, noi
       el.setAttribute('content', c)
     }
     setMeta('description', description)
-    setMeta('keywords', keywords || 'Hamed Hussein, Fullstack Developer, AI/ML, Rwanda, Kigali, Next.js, React')
+    setMeta('keywords', keywords || 'Hamed Hussein, hamedprodev, Full Stack Developer, AI/ML Engineer, Rwanda, Kigali, Next.js, React')
     setMeta('og:title', fullTitle); setMeta('og:description', description)
     setMeta('og:image', ogImage); setMeta('og:url', canonical)
     setMeta('og:type', 'website'); setMeta('og:site_name', siteName)

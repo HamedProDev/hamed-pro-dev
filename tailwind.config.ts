@@ -15,6 +15,11 @@ const config: Config = {
           secondary: '#8b5cf6',
           accent: '#22d3ee',
         },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          secondary: 'var(--accent-2)',
+          tertiary: 'var(--accent-3)',
+        },
         dark: {
           900: '#05060f',
           800: '#090b1c',
@@ -52,6 +57,7 @@ const config: Config = {
         blink: 'blink 1s step-end infinite',
         'spin-slow': 'spin 6s linear infinite',
         aurora: 'aurora 26s ease-in-out infinite alternate',
+        marquee: 'marquee 32s linear infinite',
       },
       keyframes: {
         fadeIn: {
