@@ -134,7 +134,6 @@ export default function CoursesPage() {
                       <div className="flex items-center gap-4 text-xs text-text-muted">
                         {c.duration && <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {c.duration}</span>}
                         <span className="flex items-center gap-1 capitalize"><BarChart3 className="h-3 w-3" /> {levelLabels[c.level] || c.level}</span>
-                        <span className="ml-auto font-semibold text-green-500">Free</span>
                       </div>
                       <div className="mt-4 flex items-center justify-center gap-1.5 rounded-xl border border-brand-primary/25 bg-brand-primary/10 py-2.5 text-sm font-semibold text-brand-primary transition-colors group-hover:bg-brand-primary group-hover:text-white">
                         Enroll Free <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

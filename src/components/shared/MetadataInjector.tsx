@@ -12,7 +12,7 @@ interface Props {
 
 export function MetadataInjector({ title, description, image, url, keywords, noindex }: Props) {
   const siteName = 'Hamed Hussein'
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://hamedprodev.vercel.app'
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://hamedhussein.is-a.dev'
   const fullTitle = `${title} | ${siteName}`
   const ogImage = image || `${baseUrl}/og/default.png`
   const canonical = url ? `${baseUrl}${url}` : (typeof window !== 'undefined' ? window.location.href : baseUrl)

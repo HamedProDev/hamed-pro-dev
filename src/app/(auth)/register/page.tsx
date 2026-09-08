@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createClient } from '@/lib/supabase/client'
 import { Logo } from '@/components/shared/Logo'
+import { SITE_URL } from '@/lib/utils/seo'
 import { toast } from 'sonner'
 
 export default function RegisterPage() {
@@ -25,7 +26,7 @@ export default function RegisterPage() {
       const { error: resendError } = await supabase.auth.resend({
         type: 'signup',
         email: registeredEmail,
-        options: { emailRedirectTo: `${window.location.origin}/login?registered=true` },
+        options: { emailRedirectTo: `${SITE_URL}/login?registered=true` },
       })
       if (resendError) toast.error(resendError.message)
       else toast.success('Confirmation email resent — check your inbox and spam folder.')
@@ -58,7 +59,7 @@ export default function RegisterPage() {
         email: (data.email as string).trim(),
         password: data.password as string,
         options: {
-          emailRedirectTo: `${window.location.origin}/login?registered=true`,
+          emailRedirectTo: `${SITE_URL}/login?registered=true`,
           data: { name: data.name as string, referred_by: ref || '' },
         },
       })

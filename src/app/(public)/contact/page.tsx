@@ -14,7 +14,7 @@ import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 const contactInfo = [
   { icon: Mail, label: 'Email', value: 'hamed@novasoft.rw', href: 'mailto:hamed@novasoft.rw', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
   { icon: Phone, label: 'Phone', value: '+250 788 123 456', href: 'tel:+250788123456', color: 'text-green-500', bg: 'bg-green-500/10' },
-  { icon: Globe, label: 'Website', value: 'hamedprodev.vercel.app', href: 'https://hamedprodev.vercel.app', color: 'text-purple-500', bg: 'bg-purple-500/10' },
+  { icon: Globe, label: 'Website', value: 'hamedhussein.is-a.dev', href: 'https://hamedhussein.is-a.dev', color: 'text-purple-500', bg: 'bg-purple-500/10' },
 ]
 
 const availability = [

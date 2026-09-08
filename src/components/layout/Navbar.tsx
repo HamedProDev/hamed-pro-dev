@@ -48,9 +48,11 @@ export function Navbar() {
           <div className="container-wide flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
               <Logo className="h-8 w-8 shrink-0" />
-              <span>
-                Hamed<span className="gradient-text"> Hussein</span>
-              </span>
+              {isAuthenticated ? (
+                <span>Learn<span className="gradient-text"> With Hamed</span></span>
+              ) : (
+                <span>Hamed<span className="gradient-text"> Hussein</span></span>
+              )}
             </Link>
 
             <nav className="hidden md:flex items-center gap-1">

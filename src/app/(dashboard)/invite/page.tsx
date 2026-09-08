@@ -6,15 +6,14 @@ import { Gift, Loader2, Check, Copy, Users, Twitter, MessageCircle, Send, Award 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
+import { SITE_URL } from '@/lib/utils/seo'
 
 export default function InvitePage() {
   const { user, isLoading } = useAuth()
   const [copied, setCopied] = useState(false)
   const [stats, setStats] = useState<{ count: number; referrals: { name: string; created_at: string }[] }>({ count: 0, referrals: [] })
 
-  const inviteUrl = typeof window !== 'undefined' && user
-    ? `${window.location.origin}/register?ref=${user.uid}`
-    : ''
+  const inviteUrl = user ? `${SITE_URL}/register?ref=${user.uid}` : ''
 
   useEffect(() => {
     if (!user) return

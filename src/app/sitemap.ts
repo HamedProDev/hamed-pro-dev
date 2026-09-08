@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { getDocuments } from '@/lib/supabase/db'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedhussein.is-a.dev'
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 1.0 },
