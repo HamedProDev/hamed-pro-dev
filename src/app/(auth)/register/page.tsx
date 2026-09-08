@@ -12,8 +12,28 @@ import { toast } from 'sonner'
 export default function RegisterPage() {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [registeredEmail, setRegisteredEmail] = useState('')
   const [loading, setLoading] = useState(false)
+  const [resending, setResending] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+
+  const handleResend = async () => {
+    if (!registeredEmail) return
+    setResending(true)
+    try {
+      const supabase = createClient()
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email: registeredEmail,
+        options: { emailRedirectTo: `${window.location.origin}/login?registered=true` },
+      })
+      if (resendError) toast.error(resendError.message)
+      else toast.success('Confirmation email resent — check your inbox and spam folder.')
+    } catch {
+      toast.error('Could not resend. Please try again.')
+    }
+    setResending(false)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,6 +62,8 @@ export default function RegisterPage() {
           data: { name: data.name as string, referred_by: ref || '' },
         },
       })
+      // eslint-disable-next-line no-console
+      console.log('[register] signUp response:', { res, signUpError })
 
       if (signUpError) {
         const msg = signUpError.message.toLowerCase()
@@ -61,8 +83,8 @@ export default function RegisterPage() {
 
       // No session yet → email confirmation is required.
       if (!res?.session) {
-        const message = 'Account created! We sent a confirmation link to your email — click it, then sign in below.'
-        setNotice(message)
+        setRegisteredEmail((data.email as string).trim())
+        setNotice('We sent a confirmation link to your email — click it to activate your account, then sign in. If you don\'t see it, check your spam folder.')
         toast.success('Account created! Please check your email to confirm it.')
         setLoading(false)
         return
@@ -78,7 +100,9 @@ export default function RegisterPage() {
       }).catch(() => {})
 
       window.location.href = '/dashboard'
-    } catch {
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[register] signUp failed:', err)
       setError('Something went wrong. Please try again.')
       setLoading(false)
     }
@@ -103,9 +127,20 @@ export default function RegisterPage() {
           <div className="mb-4 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400">
             <p className="font-semibold mb-1">Almost done ✅</p>
             <p>{notice}</p>
-            <Link href="/login" className="mt-2 inline-block font-semibold underline underline-offset-2">
-              Go to sign in
-            </Link>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <Link href="/login" className="font-semibold underline underline-offset-2">
+                Go to sign in
+              </Link>
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resending}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/40 px-3 py-1.5 font-medium text-green-600 hover:bg-green-500/10 transition-colors disabled:opacity-60"
+              >
+                {resending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                Resend email
+              </button>
+            </div>
           </div>
         )}
 
