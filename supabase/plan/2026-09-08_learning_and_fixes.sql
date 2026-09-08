@@ -127,11 +127,42 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 1.9 Student profile fields: interests (tags) + social links already exist.
+-- 1.9 Student profile fields: interests (tags) + referral tracking.
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS interests TEXT[] DEFAULT '{}';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS referred_by UUID REFERENCES profiles(id);
 
 -- 1.10 Course-level final assessment (gates certificate issuance).
 ALTER TABLE courses ADD COLUMN IF NOT EXISTS final_quiz JSONB DEFAULT '[]';
+
+-- 1.11 Lesson comments (community).
+CREATE TABLE IF NOT EXISTS lesson_comments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  lesson_id UUID REFERENCES lessons(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+DROP TRIGGER IF EXISTS update_lesson_comments_updated_at ON lesson_comments;
+CREATE TRIGGER update_lesson_comments_updated_at BEFORE UPDATE ON lesson_comments FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- 1.12 Referral capture in handle_new_user (override the earlier definition).
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO profiles (id, email, name, avatar_url, role, referred_by)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data ->> 'name', split_part(NEW.email, '@', 1)),
+    NEW.raw_user_meta_data ->> 'avatar_url',
+    'visitor',
+    NULLIF(NEW.raw_user_meta_data ->> 'referred_by', '')::uuid
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ============================================================================
 -- PART 2 — LEARNING & CERTIFICATES TABLES
@@ -213,6 +244,7 @@ ALTER TABLE enrollments      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lesson_progress  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE certificates     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE saved_jobs       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE lesson_comments  ENABLE ROW LEVEL SECURITY;
 
 -- Users manage their own rows
 DROP POLICY IF EXISTS "Users can read own enrollments" ON enrollments;
@@ -238,11 +270,19 @@ CREATE POLICY "Users can read own saved jobs" ON saved_jobs FOR SELECT USING (au
 DROP POLICY IF EXISTS "Users can write own saved jobs" ON saved_jobs;
 CREATE POLICY "Users can write own saved jobs" ON saved_jobs FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
+-- Lesson comments: anyone can read, authenticated users can write their own.
+DROP POLICY IF EXISTS "Anyone can read lesson comments" ON lesson_comments;
+CREATE POLICY "Anyone can read lesson comments" ON lesson_comments FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Users can insert lesson comments" ON lesson_comments;
+CREATE POLICY "Users can insert lesson comments" ON lesson_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can delete own comments" ON lesson_comments;
+CREATE POLICY "Users can delete own comments" ON lesson_comments FOR DELETE USING (auth.uid() = user_id);
+
 -- Admins: full access (reuses public.is_admin())
 DO $$
 DECLARE t text;
 BEGIN
-  FOREACH t IN ARRAY ARRAY['enrollments','lesson_progress','certificates','saved_jobs'] LOOP
+  FOREACH t IN ARRAY ARRAY['enrollments','lesson_progress','certificates','saved_jobs','lesson_comments'] LOOP
     EXECUTE format('DROP POLICY IF EXISTS "Admins can do everything on %I" ON %I;', t, t);
     EXECUTE format(
       'CREATE POLICY "Admins can do everything on %I" ON %I FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());',

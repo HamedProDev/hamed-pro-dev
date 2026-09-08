@@ -35,10 +35,10 @@ const config: Config = {
         },
       },
       boxShadow: {
-        'glow-sm': '0 0 24px rgba(79, 124, 255, 0.35)',
-        glow: '0 0 44px rgba(79, 124, 255, 0.45)',
-        'glow-violet': '0 0 44px rgba(139, 92, 246, 0.45)',
-        glass: '0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.09)',
+        'glow-sm': '0 0 16px rgba(109, 141, 255, 0.28)',
+        glow: '0 0 28px rgba(109, 141, 255, 0.32)',
+        'glow-violet': '0 0 28px rgba(139, 92, 246, 0.32)',
+        glass: '0 8px 24px rgba(0, 0, 0, 0.35)',
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],

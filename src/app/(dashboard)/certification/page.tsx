@@ -43,7 +43,7 @@ export default function CertificationPage() {
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <Award className="h-12 w-12 text-text-muted mb-4" />
         <h1 className="text-3xl font-bold mb-2">Certification</h1>
-        <p className="text-text-muted mb-6">Sign in to view certificates you've earned.</p>
+        <p className="text-text-muted mb-6">Sign in to view certificates you&apos;ve earned.</p>
         <Button asChild className="gradient-bg text-white"><Link href="/login">Sign In</Link></Button>
       </div>
     )

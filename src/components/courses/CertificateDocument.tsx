@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import QRCode from 'react-qr-code'
 import { Award, BadgeCheck, Printer, Link2, Check } from 'lucide-react'
 
 interface CertificateDocumentProps {
@@ -111,9 +112,18 @@ export function CertificateDocument({
                     </div>
                     <p className="text-xs font-semibold text-green-600 uppercase tracking-wider">Verified</p>
                     {verified && (
-                      <p className="text-[10px] text-slate-400">Verify at hamedprodev.rw/verify</p>
+                      <p className="text-[10px] text-slate-400">Verify at {shareUrl.replace(/^https?:\/\//, '').replace(/\/.*/, '')}/verify</p>
                     )}
                   </div>
+
+                  {/* QR code for instant verification */}
+                  <div className="text-center">
+                    <div className="mx-auto mb-1 w-20 h-20 p-1 bg-white rounded-lg border border-blue-100">
+                      {shareUrl && <QRCode value={shareUrl} size={72} fgColor="#0f172a" bgColor="#ffffff" />}
+                    </div>
+                    <p className="text-[10px] uppercase tracking-wider text-slate-400">Scan to verify</p>
+                  </div>
+
                   <div className="text-center">
                     <p className="font-serif text-xl italic text-slate-700 mb-1">Hamed Hussein</p>
                     <div className="w-32 h-px bg-slate-300 mx-auto mb-1" />

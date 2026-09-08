@@ -71,7 +71,7 @@ export default function MyCoursesPage() {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-2">My Courses</h1>
-      <p className="text-text-secondary mb-6">Track your progress. Lessons unlock in order — you can't skip ahead.</p>
+      <p className="text-text-secondary mb-6">Track your progress. Lessons unlock in order — you can&apos;t skip ahead.</p>
 
       {courses.length === 0 ? (
         <Card className="card-hover">

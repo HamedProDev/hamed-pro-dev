@@ -26,11 +26,14 @@ export default function RegisterPage() {
     }
 
     try {
+      // Capture referral code (a referring user's id) if present.
+      const ref = new URLSearchParams(window.location.search).get('ref')
+
       const supabase = createClient()
       const { error: signUpError } = await supabase.auth.signUp({
         email: data.email as string,
         password: data.password as string,
-        options: { data: { name: data.name as string } },
+        options: { data: { name: data.name as string, referred_by: ref || '' } },
       })
 
       if (signUpError) {
@@ -38,6 +41,13 @@ export default function RegisterPage() {
         setLoading(false)
         return
       }
+
+      // Fire-and-forget welcome email (no-op if Resend isn't configured).
+      fetch('/api/email/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: data.email, name: data.name }),
+      }).catch(() => {})
 
       window.location.href = '/login?registered=true'
     } catch {
@@ -55,12 +65,12 @@ export default function RegisterPage() {
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div><Label>Name</Label><Input name="name" required /></div>
-          <div><Label>Email</Label><Input type="email" name="email" required /></div>
-          <div><Label>Password</Label><Input type="password" name="password" required minLength={8} /></div>
-          <div><Label>Confirm Password</Label><Input type="password" name="confirmPassword" required /></div>
+          <div className="space-y-1.5"><Label htmlFor="name">Name</Label><Input id="name" name="name" required autoComplete="name" /></div>
+          <div className="space-y-1.5"><Label htmlFor="email">Email</Label><Input id="email" type="email" name="email" required autoComplete="email" /></div>
+          <div className="space-y-1.5"><Label htmlFor="password">Password</Label><Input id="password" type="password" name="password" required minLength={8} autoComplete="new-password" /></div>
+          <div className="space-y-1.5"><Label htmlFor="confirmPassword">Confirm Password</Label><Input id="confirmPassword" type="password" name="confirmPassword" required autoComplete="new-password" /></div>
           {error && <p className="text-red-400 text-sm">{error}</p>}
-          <Button type="submit" className="w-full gradient-bg text-white" disabled={loading}>
+          <Button type="submit" className="w-full gradient-bg" disabled={loading}>
             {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating account...</> : 'Create Account'}
           </Button>
         </form>

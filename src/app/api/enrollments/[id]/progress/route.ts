@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, updateDocument, createDocument, getDocument } from '@/lib/supabase/db'
 import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { sendEmail, certificateEmailHtml } from '@/lib/email'
 
 // Record lesson completion (ordered — no skipping) and grade any lesson quiz.
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
@@ -118,8 +119,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           ],
         })
         if (certs.length === 0) {
+          const certificateNumber = `HH-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
           await createDocument('certificates', {
-            certificate_number: `HH-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+            certificate_number: certificateNumber,
             user_id: user.uid,
             course_id: enrollment.course_id,
             enrollment_id: enrollmentId,
@@ -129,6 +131,12 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             issue_date: new Date().toISOString().slice(0, 10),
             is_verified: true,
           })
+          const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+          sendEmail({
+            to: user.email || '',
+            subject: `Your certificate for ${course?.title || 'the course'} is ready 🎉`,
+            html: certificateEmailHtml(user.name || 'Student', course?.title || 'Course', `${baseUrl}/verify/${certificateNumber}`),
+          }).catch(() => {})
         }
         return apiSuccess({ passed: true, score, progress: 100, enrollment: updatedEnrollment, needsFinalQuiz: false })
       }

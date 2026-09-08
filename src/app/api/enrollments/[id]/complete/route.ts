@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, updateDocument, createDocument, getDocument } from '@/lib/supabase/db'
 import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { sendEmail, certificateEmailHtml } from '@/lib/email'
 
 // Final assessment: grade the course final quiz and issue the certificate on pass.
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
@@ -72,6 +73,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         is_verified: true,
       })
     }
+
+    // Notify the student (no-op when Resend isn't configured).
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    sendEmail({
+      to: user.email || '',
+      subject: `Your certificate for ${course?.title || 'the course'} is ready 🎉`,
+      html: certificateEmailHtml(user.name || 'Student', course?.title || 'Course', `${baseUrl}/verify/${certificateNumber}`),
+    }).catch(() => {})
 
     return apiSuccess({ passed: true, score, certificateNumber, enrollment: updatedEnrollment }, 'Certificate issued')
   } catch (error: any) {

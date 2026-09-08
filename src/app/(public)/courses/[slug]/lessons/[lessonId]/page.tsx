@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { LessonComments } from '@/components/courses/LessonComments'
 
 const typeIcons: Record<string, any> = { video: Youtube, text: FileText, quiz: HelpCircle, mixed: BookOpen }
 const typeLabels: Record<string, string> = { video: 'Video', text: 'Text', quiz: 'Quiz', mixed: 'Mixed' }
@@ -331,6 +332,8 @@ export default function LessonPage() {
             )}
           </div>
         )}
+
+        <LessonComments lessonId={lesson.id} />
 
         {certificate && (
           <Card className="mb-8 border-green-500/30 bg-green-500/5">

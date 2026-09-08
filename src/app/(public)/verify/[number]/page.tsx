@@ -48,7 +48,7 @@ export default function VerifyCertificatePage() {
             <CardContent className="p-12 text-center">
               <XCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <h1 className="text-2xl font-bold mb-2">Certificate not found</h1>
-              <p className="text-text-muted mb-6">This certificate number doesn't exist or has been revoked.</p>
+              <p className="text-text-muted mb-6">This certificate number doesn&apos;t exist or has been revoked.</p>
               <Button asChild variant="outline"><Link href="/courses">Browse Courses</Link></Button>
             </CardContent>
           </Card>

@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS profiles (
   twitter_url TEXT,
   location TEXT,
   headline TEXT,
+  interests TEXT[] DEFAULT '{}',
+  referred_by UUID REFERENCES profiles(id),
   is_published BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -84,6 +86,16 @@ CREATE TABLE IF NOT EXISTS lessons (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(course_id, slug)
+);
+
+-- Lesson comments (community)
+CREATE TABLE IF NOT EXISTS lesson_comments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  lesson_id UUID REFERENCES lessons(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Blog Posts
@@ -371,13 +383,14 @@ CREATE POLICY "Admins can do everything on analytics" ON analytics FOR ALL USING
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO profiles (id, email, name, avatar_url, role)
+  INSERT INTO profiles (id, email, name, avatar_url, role, referred_by)
   VALUES (
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data ->> 'name', split_part(NEW.email, '@', 1)),
     NEW.raw_user_meta_data ->> 'avatar_url',
-    'visitor'
+    'visitor',
+    NULLIF(NEW.raw_user_meta_data ->> 'referred_by', '')::uuid
   );
   RETURN NEW;
 END;

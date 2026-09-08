@@ -53,7 +53,7 @@ export default function OpenSourcePage() {
             <CardContent className="p-12 text-center">
               <Github className="h-12 w-12 text-text-muted mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">Repositories unavailable</h3>
-              <p className="text-sm text-text-secondary mb-4">Couldn't load GitHub repositories right now.</p>
+              <p className="text-sm text-text-secondary mb-4">Couldn&apos;t load GitHub repositories right now.</p>
               <Button variant="outline" asChild>
                 <a href="https://github.com/HamedProDev?tab=repositories" target="_blank" rel="noopener noreferrer">
                   View on GitHub <ExternalLink className="h-4 w-4 ml-1" />

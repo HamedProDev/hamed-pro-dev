@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { FinalQuizEditor, type QuizQuestion } from '@/components/admin/FinalQuizEditor'
 
 export default function NewCoursePage() {
   const router = useRouter()
@@ -17,6 +18,7 @@ export default function NewCoursePage() {
     title: '', description: '', longDescription: '', coverImage: '', category: 'Frontend',
     level: 'beginner', type: 'free', price: '0', duration: '', tags: '', prerequisites: '', outcomes: '',
     youtubePlaylistUrl: '', rating: '',
+    finalQuiz: [] as QuizQuestion[],
   })
 
   const update = (key: string, value: any) => setForm(f => ({ ...f, [key]: value }))
@@ -38,6 +40,7 @@ export default function NewCoursePage() {
           tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
           prerequisites: form.prerequisites.split(',').map(t => t.trim()).filter(Boolean),
           outcomes: form.outcomes.split(',').map(t => t.trim()).filter(Boolean),
+          final_quiz: form.finalQuiz.filter(q => q.question && q.options.some(o => o)),
           isPublished: true,
         }),
       })
@@ -76,6 +79,7 @@ export default function NewCoursePage() {
             <div><label htmlFor="course-youtubePlaylistUrl" className="text-sm font-medium mb-1 block">YouTube Playlist URL</label><Input id="course-youtubePlaylistUrl" name="youtubePlaylistUrl" value={form.youtubePlaylistUrl} onChange={e => update('youtubePlaylistUrl', e.target.value)} placeholder="https://youtube.com/playlist?list=..." /></div>
           </CardContent>
         </Card>
+        <FinalQuizEditor value={form.finalQuiz} onChange={v => update('finalQuiz', v)} />
         {error && <p className="text-red-400 text-sm">{error}</p>}
         <Button type="submit" disabled={saving} className="gradient-bg text-white">
           {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}

@@ -10,10 +10,18 @@ import { MetadataInjector } from '@/components/shared/MetadataInjector'
 export default function InvitePage() {
   const { user, isLoading } = useAuth()
   const [copied, setCopied] = useState(false)
+  const [stats, setStats] = useState<{ count: number; referrals: { name: string; created_at: string }[] }>({ count: 0, referrals: [] })
 
   const inviteUrl = typeof window !== 'undefined' && user
     ? `${window.location.origin}/register?ref=${user.uid}`
     : ''
+
+  useEffect(() => {
+    if (!user) return
+    fetch('/api/invites').then(r => r.json()).then(d => {
+      if (d.success) setStats({ count: d.data.count || 0, referrals: d.data.referrals || [] })
+    }).catch(() => {})
+  }, [user])
 
   const copy = async () => {
     try {
@@ -86,6 +94,32 @@ export default function InvitePage() {
                 </a>
               </Button>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="card-hover mt-6">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-10 w-10 rounded-xl bg-brand-primary/10 flex items-center justify-center">
+                <Users className="h-5 w-5 text-brand-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Your referrals</h3>
+                <p className="text-sm text-text-secondary">{stats.count} friend{stats.count === 1 ? '' : 's'} joined with your link</p>
+              </div>
+            </div>
+            {stats.referrals.length === 0 ? (
+              <p className="text-sm text-text-muted">No one has joined with your link yet — share it to grow the community.</p>
+            ) : (
+              <ul className="space-y-2">
+                {stats.referrals.map((r, i) => (
+                  <li key={i} className="flex items-center justify-between text-sm">
+                    <span className="text-text-primary">{r.name}</span>
+                    <span className="text-xs text-text-muted">{new Date(r.created_at).toLocaleDateString()}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
 
