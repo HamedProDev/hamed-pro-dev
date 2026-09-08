@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Search, MapPin, Users, ExternalLink, Globe, ArrowRight, Building2, Rocket, Briefcase, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -69,7 +70,7 @@ export default function StartupsPage() {
                 <Card className="h-full card-hover group overflow-hidden">
                   <div className={cn('h-32 rounded-t-xl bg-gradient-to-br relative', gradientMap[o.type] || gradientMap.Startup)}>
                     <div className="absolute bottom-4 left-4 flex items-center gap-3">
-                      {o.logo ? <img src={o.logo} alt={`${o.name} logo`} loading="lazy" className="h-12 w-12 rounded-xl object-cover border border-border-primary" /> : <div className="h-12 w-12 rounded-xl bg-surface-card border border-border-primary flex items-center justify-center text-sm font-bold text-brand-primary">{o.name.slice(0, 2).toUpperCase()}</div>}
+                      {o.logo ? <Image src={o.logo} alt={`${o.name} logo`} width={48} height={48} className="h-12 w-12 rounded-xl object-cover border border-border-primary" unoptimized /> : <div className="h-12 w-12 rounded-xl bg-surface-card border border-border-primary flex items-center justify-center text-sm font-bold text-brand-primary">{o.name.slice(0, 2).toUpperCase()}</div>}
                       <div>
                         <h3 className="font-semibold text-text-primary">{o.name}</h3>
                         <Badge variant="outline" className="text-xs">{o.type}</Badge>

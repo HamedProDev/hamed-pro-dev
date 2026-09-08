@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ExternalLink, Github, CircleDot } from 'lucide-react' // Added CircleDot
@@ -39,7 +40,7 @@ export function ProjectCard({ title, slug, description, techStack, status, demoU
           "h-48 rounded-t-xl overflow-hidden relative",
           imageUrl ? "" : (gradientClass || defaultGradient) // Dynamic gradient fallback
         )}>
-          {imageUrl && <img src={imageUrl} alt={title} className="w-full h-full object-cover" />} {/* Placeholder for actual image */}
+          {imageUrl && <Image src={imageUrl} alt={title} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" unoptimized />}
         </div>
         <CardContent className="p-6">
           {/* Status Badge */}

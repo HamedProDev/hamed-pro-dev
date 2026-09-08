@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, updateDocument, createDocument, getDocument } from '@/lib/supabase/db'
 import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
-import { sendEmail, certificateEmailHtml } from '@/lib/email'
+import { sendEmail, certificateEmailHtml, lessonCompletionEmailHtml, quizResultEmailHtml } from '@/lib/email'
+import { awardXp, XP } from '@/lib/gamification'
 
 // Record lesson completion (ordered — no skipping) and grade any lesson quiz.
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
@@ -22,6 +23,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     })
     const lesson = lessons.find(l => l.id === lessonId)
     if (!lesson) return apiError('Lesson not found', 404)
+    const course = await getDocument('courses', enrollment.course_id)
 
     // Enforce sequential progress: this lesson must be the first uncompleted one.
     const progress = await getDocuments('lesson_progress', {
@@ -35,6 +37,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     if (firstUncompleted && firstUncompleted.id !== lessonId) {
       return apiError('Complete previous lessons first', 403)
     }
+    const alreadyCompleted = completedIds.has(lessonId)
 
     // Grade the lesson quiz (if present). Passing = score >= 70.
     const quiz = lesson.quiz || []
@@ -87,8 +90,30 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     })
     const percent = lessons.length > 0 ? Math.round((updatedProgress.length / lessons.length) * 100) : 0
 
+    // Gamification + notifications (only on first completion of the lesson).
+    if (!alreadyCompleted) {
+      await awardXp(user.uid, XP.LESSON_COMPLETE, 'lesson_complete', { lesson_id: lessonId, course_id: enrollment.course_id })
+      if (score === 100) await awardXp(user.uid, XP.LESSON_QUIZ_PERFECT, 'lesson_quiz_perfect', { lesson_id: lessonId })
+
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+      const nextLesson = lessons.find(l => !completedIds.has(l.id) && l.id !== lessonId)
+      if (nextLesson) {
+        sendEmail({
+          to: user.email || '',
+          subject: `Lesson complete: ${lesson.title}`,
+          html: lessonCompletionEmailHtml(user.name || 'Student', lesson.title, course?.title || 'Course', `${baseUrl}/courses/${course?.slug}/lessons/${nextLesson.id}`),
+        }).catch(() => {})
+      }
+      if (quiz.length > 0) {
+        sendEmail({
+          to: user.email || '',
+          subject: `Quiz result: ${score}% on ${lesson.title}`,
+          html: quizResultEmailHtml(user.name || 'Student', score ?? 0, (score ?? 0) >= 70, course?.title || 'Course', `${baseUrl}/dashboard`),
+        }).catch(() => {})
+      }
+    }
+
     if (percent === 100) {
-      const course = await getDocument('courses', enrollment.course_id)
       const finalQuiz = course?.final_quiz || []
 
       if (finalQuiz.length > 0 && enrollment.status !== 'completed') {
@@ -131,6 +156,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             issue_date: new Date().toISOString().slice(0, 10),
             is_verified: true,
           })
+          await awardXp(user.uid, XP.COURSE_COMPLETE + XP.CERTIFICATE_EARNED, 'course_complete', { course_id: enrollment.course_id })
           const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
           sendEmail({
             to: user.email || '',

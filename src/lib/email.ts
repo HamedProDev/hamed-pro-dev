@@ -56,3 +56,61 @@ export function certificateEmailHtml(name: string, courseTitle: string, verifyUr
       </a>
     </div>`
 }
+
+export function lessonCompletionEmailHtml(name: string, lessonTitle: string, courseTitle: string, nextUrl: string) {
+  return `
+    <div style="font-family:Inter,system-ui,sans-serif;max-width:520px;margin:auto;padding:24px;color:#0f172a">
+      <h2 style="margin:0 0 8px">Nice work, ${name || 'student'}! 👏</h2>
+      <p style="color:#475569;line-height:1.6">
+        You just completed <strong>${lessonTitle}</strong> in <strong>${courseTitle}</strong>.
+        Keep the momentum going — your next lesson is waiting.
+      </p>
+      <a href="${nextUrl}"
+         style="display:inline-block;margin-top:12px;padding:12px 20px;background:#4f6ef7;color:#fff;text-decoration:none;border-radius:9999px">
+        Continue learning
+      </a>
+    </div>`
+}
+
+export function quizResultEmailHtml(name: string, score: number, passed: boolean, courseTitle: string, dashboardUrl: string) {
+  const emoji = passed ? '🎉' : '💪'
+  const headline = passed ? 'You passed!' : 'Almost there!'
+  return `
+    <div style="font-family:Inter,system-ui,sans-serif;max-width:520px;margin:auto;padding:24px;color:#0f172a">
+      <h2 style="margin:0 0 8px">${emoji} ${headline}</h2>
+      <p style="color:#475569;line-height:1.6">
+        ${name || 'Student'}, you scored <strong>${score}%</strong> on the assessment for
+        <strong>${courseTitle}</strong>. ${passed ? 'Great job — keep it up!' : 'Review the material and try again — you have got this.'}
+      </p>
+      <a href="${dashboardUrl}"
+         style="display:inline-block;margin-top:12px;padding:12px 20px;background:#4f6ef7;color:#fff;text-decoration:none;border-radius:9999px">
+        Go to dashboard
+      </a>
+    </div>`
+}
+
+export function weeklyDigestEmailHtml(name: string, courses: { title: string; progress: number; url: string }[]) {
+  const items = courses.map(c => `
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #e2e8f0">
+        <div style="font-weight:600">${c.title}</div>
+        <div style="height:6px;background:#e2e8f0;border-radius:3px;margin-top:6px">
+          <div style="height:6px;width:${c.progress}%;background:#4f6ef7;border-radius:3px"></div>
+        </div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px">${c.progress}% complete</div>
+      </td>
+    </tr>`).join('')
+
+  return `
+    <div style="font-family:Inter,system-ui,sans-serif;max-width:520px;margin:auto;padding:24px;color:#0f172a">
+      <h2 style="margin:0 0 8px">Your weekly learning update 📚</h2>
+      <p style="color:#475569;line-height:1.6">
+        Hi ${name || 'student'}, here's where you left off. A few minutes a day adds up fast!
+      </p>
+      ${courses.length > 0 ? `<table style="width:100%;border-collapse:collapse;margin:12px 0">${items}</table>` : `<p style="color:#64748b">You have no active courses yet — pick one below to start.</p>`}
+      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/courses"
+         style="display:inline-block;margin-top:12px;padding:12px 20px;background:#4f6ef7;color:#fff;text-decoration:none;border-radius:9999px">
+        Browse courses
+      </a>
+    </div>`
+}

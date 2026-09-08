@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
+import Image from 'next/image'
 import { MessageCircle, Send, Trash2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -84,7 +85,7 @@ export function LessonComments({ lessonId }: { lessonId: string }) {
             {comments.map(c => (
               <li key={c.id} className="flex items-start gap-3 p-3 rounded-xl bg-surface-secondary/50">
                 <div className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold overflow-hidden">
-                  {c.author?.avatar_url ? <img src={c.author.avatar_url} alt="" className="h-8 w-8 object-cover" /> : (c.author?.name?.[0] || 'S').toUpperCase()}
+                  {c.author?.avatar_url ? <Image src={c.author.avatar_url} alt="" width={32} height={32} className="h-8 w-8 object-cover rounded-full" unoptimized /> : (c.author?.name?.[0] || 'S').toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">

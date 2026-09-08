@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Loader2, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -40,7 +41,7 @@ export default function BlogPostPage() {
         <MetadataInjector title={post.title} description={post.excerpt || post.description} image={post.image_url} url={`/blog/${slug}`} />
         <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
         <BlogPostingJsonLd headline={post.title} description={post.excerpt || post.description} author="Hamed Hussein" datePublished={post.created_at} image={post.image_url} url={typeof window !== 'undefined' ? window.location.href : `/blog/${slug}`} />
-        {post.image_url && <img src={post.image_url} alt={`${post.title} blog cover`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        {post.image_url && <Image src={post.image_url} alt={`${post.title} blog cover`} width={1200} height={480} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" unoptimized />}
         <div className="flex items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{post.category}</Badge>
           <span className="flex items-center gap-1 text-xs text-text-muted"><Calendar className="h-3 w-3" /> {new Date(post.created_at).toLocaleDateString()}</span>

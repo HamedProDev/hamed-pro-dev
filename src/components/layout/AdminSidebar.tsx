@@ -20,6 +20,7 @@ const links = [
   { href: '/admin-control/organizations', label: 'Organizations', icon: Building2 },
   { href: '/admin-control/stats', label: 'Stats', icon: BarChart3 },
   { href: '/admin-control/testimonials', label: 'Testimonials', icon: MessageSquare },
+  { href: '/admin-control/comments', label: 'Comments', icon: MessageSquare },
   { href: '/admin-control/users', label: 'Users', icon: Users },
   { href: '/admin-control/seo', label: 'SEO', icon: Search },
   { href: '/admin-control/about', label: 'About Page', icon: UserCircle },

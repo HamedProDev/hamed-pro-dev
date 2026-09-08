@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { GraduationCap, MapPin, Calendar, Briefcase, Award, Users, Code2, ArrowRight, Star, Download, Loader2, Github, Linkedin, Twitter, Youtube, Instagram, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -101,7 +102,7 @@ export default function AboutPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-brand-secondary/10 to-transparent rounded-3xl blur-3xl" />
             <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-surface-card to-surface-secondary border border-border-primary flex items-center justify-center overflow-hidden">
               {settings.profile_photo ? (
-                  <img src={settings.profile_photo} alt="Profile photo of Hamed Hussein" loading="lazy" className="w-full h-full object-cover" />
+                  <Image src={settings.profile_photo} alt="Profile photo of Hamed Hussein" fill sizes="288px" className="object-cover" unoptimized />
               ) : (
                 <div className="text-center">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">HH</div>

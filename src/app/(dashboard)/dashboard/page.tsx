@@ -2,8 +2,10 @@
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { BookMarked, Award, Mail, Shield, ArrowRight, Loader2, PlayCircle, GraduationCap, Users } from 'lucide-react'
+import { GamificationCard } from '@/components/dashboard/GamificationCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -82,7 +84,7 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-500/30">
-            {user.image ? <img src={user.image} alt={user.name || ''} className="h-16 w-16 rounded-full object-cover" /> : initials}
+            {user.image ? <Image src={user.image} alt={user.name || ''} width={64} height={64} className="rounded-full object-cover" unoptimized /> : initials}
           </div>
           <div>
             <h1 className="text-2xl font-bold">Welcome back, {user.name?.split(' ')[0] || 'Student'}</h1>
@@ -116,6 +118,11 @@ export default function DashboardPage() {
             </Link>
           </motion.div>
         ))}
+      </div>
+
+      {/* Gamification */}
+      <div className="mb-8 max-w-xl">
+        <GamificationCard />
       </div>
 
       {/* Continue Learning */}

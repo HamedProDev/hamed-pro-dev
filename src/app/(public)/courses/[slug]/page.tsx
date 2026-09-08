@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import { Loader2, Clock, BookOpen, Play, FileText, HelpCircle, Check, Lock, Award, ChevronRight, XCircle, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -152,7 +153,7 @@ export default function CourseDetailPage() {
         <Breadcrumbs items={[{ label: 'Courses', href: '/courses' }, { label: course.title }]} />
         <CourseJsonLd name={course.title} description={course.description} provider="Hamed Hussein" url={typeof window !== 'undefined' ? window.location.href : `/courses/${slug}`} />
 
-        {course.image_url && <img src={course.image_url} alt={`${course.title} course cover`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        {course.image_url && <Image src={course.image_url} alt={`${course.title} course cover`} width={1200} height={480} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" unoptimized />}
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{course.category}</Badge>

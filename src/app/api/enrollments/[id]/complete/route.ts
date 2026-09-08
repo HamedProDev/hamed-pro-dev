@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, updateDocument, createDocument, getDocument } from '@/lib/supabase/db'
 import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
-import { sendEmail, certificateEmailHtml } from '@/lib/email'
+import { sendEmail, certificateEmailHtml, quizResultEmailHtml } from '@/lib/email'
+import { awardXp, XP } from '@/lib/gamification'
 
 // Final assessment: grade the course final quiz and issue the certificate on pass.
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
@@ -43,8 +44,16 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const passed = score >= 70
 
     if (!passed) {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+      sendEmail({
+        to: user.email || '',
+        subject: `Final assessment result: ${score}%`,
+        html: quizResultEmailHtml(user.name || 'Student', score, false, course?.title || 'Course', `${baseUrl}/dashboard`),
+      }).catch(() => {})
       return apiSuccess({ passed: false, score }, 'Final quiz not passed yet')
     }
+
+    await awardXp(user.uid, XP.FINAL_QUIZ_PASS, 'final_quiz_pass', { course_id: enrollment.course_id })
 
     const updatedEnrollment = await updateDocument('enrollments', enrollmentId, {
       progress: 100,
@@ -72,6 +81,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         issue_date: new Date().toISOString().slice(0, 10),
         is_verified: true,
       })
+      await awardXp(user.uid, XP.COURSE_COMPLETE + XP.CERTIFICATE_EARNED, 'course_complete', { course_id: enrollment.course_id })
     }
 
     // Notify the student (no-op when Resend isn't configured).

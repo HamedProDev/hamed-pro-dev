@@ -140,11 +140,40 @@ CREATE TABLE IF NOT EXISTS lesson_comments (
   lesson_id UUID REFERENCES lessons(id) ON DELETE CASCADE,
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
+  status TEXT DEFAULT 'visible' CHECK (status IN ('visible', 'pending', 'hidden')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 DROP TRIGGER IF EXISTS update_lesson_comments_updated_at ON lesson_comments;
 CREATE TRIGGER update_lesson_comments_updated_at BEFORE UPDATE ON lesson_comments FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- 1.11a add_xp(uid, amount) — atomic XP increment helper for gamification.
+CREATE OR REPLACE FUNCTION add_xp(uid uuid, amount int)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE profiles SET xp_points = COALESCE(xp_points, 0) + amount WHERE id = uid;
+END;
+$$;
+
+-- 1.11b Gamification: XP + streaks on profiles, and an XP event log.
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS xp_points INT DEFAULT 0;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS current_streak INT DEFAULT 0;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS longest_streak INT DEFAULT 0;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS last_activity_date DATE;
+
+CREATE TABLE IF NOT EXISTS user_xp_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  event TEXT NOT NULL,
+  points INT NOT NULL DEFAULT 0,
+  meta JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_xp_events_user ON user_xp_events(user_id, created_at);
 
 -- 1.12 Referral capture in handle_new_user (override the earlier definition).
 CREATE OR REPLACE FUNCTION handle_new_user()
@@ -270,19 +299,24 @@ CREATE POLICY "Users can read own saved jobs" ON saved_jobs FOR SELECT USING (au
 DROP POLICY IF EXISTS "Users can write own saved jobs" ON saved_jobs;
 CREATE POLICY "Users can write own saved jobs" ON saved_jobs FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
--- Lesson comments: anyone can read, authenticated users can write their own.
+-- Lesson comments: anyone can read visible comments, authenticated users can write their own.
 DROP POLICY IF EXISTS "Anyone can read lesson comments" ON lesson_comments;
-CREATE POLICY "Anyone can read lesson comments" ON lesson_comments FOR SELECT USING (true);
+CREATE POLICY "Anyone can read lesson comments" ON lesson_comments FOR SELECT USING (status = 'visible');
 DROP POLICY IF EXISTS "Users can insert lesson comments" ON lesson_comments;
 CREATE POLICY "Users can insert lesson comments" ON lesson_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
 DROP POLICY IF EXISTS "Users can delete own comments" ON lesson_comments;
 CREATE POLICY "Users can delete own comments" ON lesson_comments FOR DELETE USING (auth.uid() = user_id);
 
+-- XP events: users read their own.
+ALTER TABLE user_xp_events ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can read own xp events" ON user_xp_events;
+CREATE POLICY "Users can read own xp events" ON user_xp_events FOR SELECT USING (auth.uid() = user_id);
+
 -- Admins: full access (reuses public.is_admin())
 DO $$
 DECLARE t text;
 BEGIN
-  FOREACH t IN ARRAY ARRAY['enrollments','lesson_progress','certificates','saved_jobs','lesson_comments'] LOOP
+  FOREACH t IN ARRAY ARRAY['enrollments','lesson_progress','certificates','saved_jobs','lesson_comments','user_xp_events'] LOOP
     EXECUTE format('DROP POLICY IF EXISTS "Admins can do everything on %I" ON %I;', t, t);
     EXECUTE format(
       'CREATE POLICY "Admins can do everything on %I" ON %I FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());',

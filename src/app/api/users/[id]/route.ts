@@ -1,51 +1,55 @@
 import { NextRequest } from 'next/server'
-import { getDocument, updateDocument, deleteDocument } from '@/lib/supabase/db'
-import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
+import { getDocument, updateDocument } from '@/lib/supabase/db'
+import { createServiceClient } from '@/lib/supabase/server'
+import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireAdmin(req)
-    const user = await getDocument('profiles', params.id)
-    if (!user) return apiError('User not found', 404)
-    return apiSuccess(user)
+    const profile = await getDocument('profiles', params.id).catch(() => null)
+    return apiSuccess(profile || { id: params.id })
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    await requireAdmin(req)
-    const body = await req.json()
-    const user = await updateDocument('profiles', params.id, mapFormToDb('profiles', body))
-    if (!user) return apiError('User not found', 404)
-    return apiSuccess(user, 'User updated')
-  } catch (error: any) {
-    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
-  }
-}
-
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    await requireAdmin(req)
-    await deleteDocument('profiles', params.id)
-    return apiSuccess(null, 'User deleted')
-  } catch (error: any) {
-    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
-  }
-}
-
+// Admin actions on a user: update role, suspend/unsuspend, or delete.
+// POST body: { action?: 'updateRole'|'suspend'|'unsuspend'|'deleteUser', role?, ... }
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    await requireAdmin(req)
     const body = await req.json()
-    if (body._method === 'DELETE') {
-      await requireAdmin(req)
-      await deleteDocument('profiles', params.id)
+    const supabase = createServiceClient()
+    const action = body.action || 'update'
+
+    if (action === 'deleteUser') {
+      const { error } = await supabase.auth.admin.deleteUser(params.id)
+      if (error) return apiError(error.message, 500)
       return apiSuccess(null, 'User deleted')
     }
-    await requireAdmin(req)
-    const user = await updateDocument('profiles', params.id, mapFormToDb('profiles', body))
-    if (!user) return apiError('User not found', 404)
+
+    if (action === 'suspend') {
+      const { error } = await supabase.auth.admin.updateUserById(params.id, { ban_duration: '87600h' })
+      if (error) return apiError(error.message, 500)
+      return apiSuccess(null, 'User suspended')
+    }
+
+    if (action === 'unsuspend') {
+      const { error } = await supabase.auth.admin.updateUserById(params.id, { ban_duration: 'none' })
+      if (error) return apiError(error.message, 500)
+      return apiSuccess(null, 'User unsuspended')
+    }
+
+    if (action === 'updateRole') {
+      const role = body.role
+      if (!['admin', 'editor', 'visitor'].includes(role)) return apiError('Invalid role', 400)
+      await updateDocument('profiles', params.id, { role })
+      await supabase.auth.admin.updateUserById(params.id, { user_metadata: { role } }).catch(() => {})
+      return apiSuccess({ role }, 'Role updated')
+    }
+
+    // Generic profile update.
+    const user = await updateDocument('profiles', params.id, { name: body.name, bio: body.bio })
     return apiSuccess(user, 'User updated')
   } catch (error: any) {
     return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)

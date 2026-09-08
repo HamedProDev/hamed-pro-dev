@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, Moon, Sun, LogIn } from 'lucide-react'
+import { Menu, Moon, Sun, LogIn, Search } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { MobileNav } from './MobileNav'
@@ -72,6 +72,13 @@ export function Navbar() {
             </nav>
 
             <div className="flex items-center gap-2">
+              <Link
+                href="/search"
+                className="h-8 w-8 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary hover:bg-surface-tertiary transition-all"
+                aria-label="Search"
+              >
+                <Search className="h-4 w-4" />
+              </Link>
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 className="h-8 w-8 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary hover:bg-surface-tertiary transition-all"

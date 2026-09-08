@@ -17,6 +17,10 @@ CREATE TABLE IF NOT EXISTS profiles (
   headline TEXT,
   interests TEXT[] DEFAULT '{}',
   referred_by UUID REFERENCES profiles(id),
+  xp_points INT DEFAULT 0,
+  current_streak INT DEFAULT 0,
+  longest_streak INT DEFAULT 0,
+  last_activity_date DATE,
   is_published BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -94,8 +98,19 @@ CREATE TABLE IF NOT EXISTS lesson_comments (
   lesson_id UUID REFERENCES lessons(id) ON DELETE CASCADE,
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
+  status TEXT DEFAULT 'visible' CHECK (status IN ('visible', 'pending', 'hidden')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- XP events (gamification / learning activity log)
+CREATE TABLE IF NOT EXISTS user_xp_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  event TEXT NOT NULL,
+  points INT NOT NULL DEFAULT 0,
+  meta JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Blog Posts
@@ -418,3 +433,36 @@ CREATE TRIGGER on_auth_user_created_admin
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION set_admin_role();
+
+-- Lesson comments RLS: anyone can read visible comments, users manage their own.
+ALTER TABLE lesson_comments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can read lesson comments" ON lesson_comments;
+CREATE POLICY "Anyone can read lesson comments" ON lesson_comments FOR SELECT USING (status = 'visible');
+DROP POLICY IF EXISTS "Users can insert lesson comments" ON lesson_comments;
+CREATE POLICY "Users can insert lesson comments" ON lesson_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can delete own comments" ON lesson_comments;
+CREATE POLICY "Users can delete own comments" ON lesson_comments FOR DELETE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admins can do everything on lesson_comments" ON lesson_comments;
+CREATE POLICY "Admins can do everything on lesson_comments" ON lesson_comments FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+
+-- XP events RLS
+ALTER TABLE user_xp_events ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can read own xp events" ON user_xp_events;
+CREATE POLICY "Users can read own xp events" ON user_xp_events FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admins can do everything on user_xp_events" ON user_xp_events;
+CREATE POLICY "Admins can do everything on user_xp_events" ON user_xp_events FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+
+CREATE INDEX IF NOT EXISTS idx_xp_events_user ON user_xp_events(user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_lesson_comments_lesson ON lesson_comments(lesson_id, created_at);
+
+-- add_xp(uid, amount) — atomic XP increment helper for gamification.
+CREATE OR REPLACE FUNCTION add_xp(uid uuid, amount int)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE profiles SET xp_points = COALESCE(xp_points, 0) + amount WHERE id = uid;
+END;
+$$;

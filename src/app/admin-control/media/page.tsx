@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { Upload, Trash2, Image, Loader2, Copy, Check } from 'lucide-react'
+import NextImage from 'next/image'
+import { Upload, Trash2, Loader2, Copy, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ui/image-upload'
@@ -40,7 +41,7 @@ export default function AdminMediaPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {uploaded.map((url, i) => (
                 <div key={i} className="relative group rounded-lg overflow-hidden border border-border-primary">
-                  <img src={url} alt="Uploaded" className="w-full h-32 object-cover" />
+                  <NextImage src={url} alt="Uploaded" width={320} height={128} className="w-full h-32 object-cover" unoptimized />
                   <button onClick={() => handleCopy(url)} className="absolute top-2 right-2 p-1.5 rounded bg-surface-card/80 hover:bg-surface-card transition-colors opacity-0 group-hover:opacity-100">
                     {copied === url ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
                   </button>

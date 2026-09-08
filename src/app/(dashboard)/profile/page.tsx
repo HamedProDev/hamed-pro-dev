@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { GamificationCard } from '@/components/dashboard/GamificationCard'
 import { Save, Loader2, ArrowLeft, X, Plus, Github, Linkedin, Twitter, Globe, Heart } from 'lucide-react'
 
 export default function ProfilePage() {
@@ -95,6 +96,8 @@ export default function ProfilePage() {
       <h1 className="text-3xl font-bold mb-6">My Profile</h1>
 
       <div className="space-y-6">
+        <GamificationCard />
+
         <Card>
           <CardHeader><CardTitle>Profile Picture</CardTitle><CardDescription>Upload a profile photo.</CardDescription></CardHeader>
           <CardContent>

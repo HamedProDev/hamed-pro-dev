@@ -39,7 +39,12 @@ export default function VerifyCertificatePage() {
   return (
     <main id="main-content" className="section-padding pt-24">
       <div className="container-wide max-w-3xl">
-        <MetadataInjector title="Verify Certificate" description="Verify a Hamed Hussein course certificate." url={`/verify/${number}`} />
+        <MetadataInjector
+          title={cert ? `${cert.recipient_name} — ${cert.course_title} Certificate` : 'Verify Certificate'}
+          description={cert ? `Verified certificate awarded to ${cert.recipient_name} for completing ${cert.course_title}.` : 'Verify a Hamed Hussein course certificate.'}
+          image={`/verify/${number}/opengraph-image`}
+          url={`/verify/${number}`}
+        />
 
         {loading ? (
           <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-brand-primary" /></div>

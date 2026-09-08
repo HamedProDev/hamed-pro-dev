@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
+import Image from 'next/image'
 import { Upload, X, Loader2, Link as LinkIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -78,7 +79,7 @@ export function ImageUpload({ value, onChange, className, folder }: ImageUploadP
 
       {value && (
         <div className="relative group rounded-xl overflow-hidden border border-border-primary">
-          <img src={value} alt="Uploaded" className="w-full h-48 object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+          <Image src={value} alt="Uploaded" width={800} height={400} className="w-full h-48 object-cover" unoptimized />
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
             {mode === 'upload' && <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()}>Replace</Button>}
             <Button size="sm" variant="destructive" onClick={() => onChange('')}><X className="h-4 w-4" /></Button>

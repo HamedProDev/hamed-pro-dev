@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Loader2, Calendar } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -46,7 +47,7 @@ export default function BlogPage() {
             {posts.map(p => (
               <Link key={p.id} href={`/blog/${p.slug || p.id}`}>
                 <Card className="card-hover h-full overflow-hidden">
-                  {p.image_url && <img src={p.image_url} alt={`${p.title} blog cover`} loading="lazy" className="w-full h-48 object-cover" />}
+                  {p.image_url && <Image src={p.image_url} alt={`${p.title} blog cover`} width={800} height={400} className="w-full h-48 object-cover" unoptimized />}
                   <CardContent className="p-5">
                     <Badge className="mb-2 text-xs">{p.category}</Badge>
                     <h3 className="text-lg font-semibold mb-2 line-clamp-2">{p.title}</h3>

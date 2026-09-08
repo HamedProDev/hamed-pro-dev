@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ExternalLink, Github, Loader2, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -49,7 +50,7 @@ export default function ProjectDetailPage() {
       <div className="container-wide max-w-4xl">
         <MetadataInjector title={project.title} description={project.description} url={`/projects/${slug}`} />
         <Breadcrumbs items={[{ label: 'Projects', href: '/projects' }, { label: project.title }]} />
-        {project.image_url && <img src={project.image_url} alt={`${project.title} project screenshot`} loading="lazy" className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />}
+        {project.image_url && <Image src={project.image_url} alt={`${project.title} project screenshot`} width={1200} height={480} className="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" unoptimized />}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{project.category}</Badge>
           {project.featured && <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Featured</Badge>}

@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import Image from 'next/image'
 import { Upload, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,7 +15,7 @@ export function ImageUploader({ value, onChange }: ImageUploaderProps) {
     <div className="space-y-2">
       {value && (
         <div className="relative inline-block">
-          <img src={value} alt="Uploaded" className="h-40 rounded-lg object-cover" />
+          <Image src={value} alt="Uploaded" width={320} height={160} className="h-40 rounded-lg object-cover" unoptimized />
           <button onClick={() => onChange('')} className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center"><X className="h-3 w-3" /></button>
         </div>
       )}

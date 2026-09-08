@@ -1,11 +1,15 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, deleteDocument } from '@/lib/supabase/db'
 import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { awardXp, XP } from '@/lib/gamification'
 
 export async function GET(req: NextRequest, { params }: { params: { lessonId: string } }) {
   try {
     const comments = await getDocuments('lesson_comments', {
-      filters: [{ field: 'lesson_id', operator: 'eq', value: params.lessonId }],
+      filters: [
+        { field: 'lesson_id', operator: 'eq', value: params.lessonId },
+        { field: 'status', operator: 'eq', value: 'visible' },
+      ],
       orderBy: { field: 'created_at', direction: 'asc' },
     })
 
@@ -39,7 +43,10 @@ export async function POST(req: NextRequest, { params }: { params: { lessonId: s
       lesson_id: params.lessonId,
       user_id: user.uid,
       content: content.trim().slice(0, 1000),
+      status: 'visible',
     })
+
+    await awardXp(user.uid, XP.COMMENT_POSTED, 'comment_posted', { lesson_id: params.lessonId })
 
     return apiSuccess({ ...comment, author: { name: user.name, avatar_url: user.image || null } }, 'Comment posted')
   } catch (error: any) {

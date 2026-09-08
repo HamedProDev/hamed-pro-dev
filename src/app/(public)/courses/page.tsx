@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Search, Star, Clock, BookOpen, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -152,7 +153,7 @@ export default function CoursesPage() {
                     <Card className="h-full card-hover group overflow-hidden">
                       <div className="h-40 rounded-t-xl bg-gradient-to-br from-brand-primary/30 via-brand-secondary/20 to-surface-secondary relative flex items-center justify-center overflow-hidden">
                         {c.image_url ? (
-                          <img src={c.image_url} alt={`${c.title} course cover`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                          <Image src={c.image_url} alt={`${c.title} course cover`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" unoptimized />
                         ) : (
                           <span className="text-5xl opacity-60">📚</span>
                         )}

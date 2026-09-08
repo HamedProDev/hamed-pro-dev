@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ArrowRight, ExternalLink, Github, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -68,7 +69,7 @@ export function FeaturedProjects() {
                 <Card className="h-full group overflow-hidden border-border-primary hover:border-blue-500/30 transition-all duration-300">
                 <div className={cn('h-52 rounded-t-xl bg-gradient-to-br relative overflow-hidden', gradients[i % gradients.length])}>
                   {p.image_url ? (
-                    <img src={p.image_url} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                    <Image src={p.image_url} alt={`${p.title} project screenshot`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" unoptimized />
                   ) : (
                     <>
                       <motion.div

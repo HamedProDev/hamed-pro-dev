@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Search, ExternalLink, Github, ArrowRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -99,7 +100,7 @@ export default function ProjectsPage() {
                 <Card className="h-full card-hover group overflow-hidden">
                   <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', gradients[i % gradients.length])}>
                     {p.image_url ? (
-                      <img src={p.image_url} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                      <Image src={p.image_url} alt={`${p.title} project screenshot`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" unoptimized />
                     ) : (
                       <div className="absolute inset-4 rounded-lg bg-dark-900/20 border border-border-primary p-3">
                         <div className="h-2 w-16 bg-surface-tertiary/60 rounded mb-2" />

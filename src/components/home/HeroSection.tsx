@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ArrowDown, Github, Linkedin, Twitter, Instagram, Send, Briefcase, GraduationCap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -138,7 +139,7 @@ export function HeroSection() {
               className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-surface-card via-surface-tertiary to-surface-secondary glow-border overflow-hidden flex items-center justify-center shadow-2xl shadow-blue-500/10"
             >
               {settings.profile_photo ? (
-                <img src={settings.profile_photo} alt={settings.hero_name || 'Profile'} className="w-full h-full object-cover" />
+                <Image src={settings.profile_photo} alt={settings.hero_name || 'Profile'} fill sizes="384px" className="object-cover" unoptimized />
               ) : (
                 <div className="text-6xl font-bold text-blue-500/30">HH</div>
               )}
