@@ -34,7 +34,7 @@ export default function AdminContactPage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
 
   return (
     <div className="max-w-2xl space-y-6">

@@ -106,7 +106,7 @@ export default function EditLessonPage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
 
   return (
     <div className="max-w-3xl">

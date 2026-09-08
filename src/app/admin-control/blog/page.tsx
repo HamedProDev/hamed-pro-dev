@@ -35,7 +35,7 @@ export default function AdminBlogPage() {
         <Button asChild className="gradient-bg text-white"><Link href="/admin-control/blog/new"><Plus className="h-4 w-4 mr-2" /> New Post</Link></Button>
       </div>
       {loading ? (
-        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : (
         <div className="admin-card overflow-hidden">
           <table className="w-full text-sm">

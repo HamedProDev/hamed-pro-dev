@@ -33,7 +33,7 @@ interface Achievement {
 const typeConfig: Record<string, { color: string; bg: string; border: string; glow: string; icon: any }> = {
   award: { color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20', glow: 'rgba(251,191,36,0.15)', icon: Trophy },
   certification: { color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20', glow: 'rgba(52,211,153,0.15)', icon: Award },
-  milestone: { color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20', glow: 'rgba(96,165,250,0.15)', icon: Milestone },
+  milestone: { color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20', glow: 'rgba(167,139,250,0.15)', icon: Milestone },
   project: { color: 'text-purple-400', bg: 'bg-purple-400/10', border: 'border-purple-400/20', glow: 'rgba(192,132,252,0.15)', icon: Star },
   publication: { color: 'text-pink-400', bg: 'bg-pink-400/10', border: 'border-pink-400/20', glow: 'rgba(244,114,182,0.15)', icon: BookOpen },
 }
@@ -70,7 +70,7 @@ export default function AchievementsPage() {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          className="h-12 w-12 border-3 border-blue-500 border-t-transparent rounded-full"
+          className="h-12 w-12 border-3 border-violet-500 border-t-transparent rounded-full"
         />
       </div>
     )
@@ -85,12 +85,12 @@ export default function AchievementsPage() {
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
+            className="inline-block px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium mb-6"
           >
             Recognition & Milestones
           </motion.span>
           <h1 className="text-4xl md:text-6xl font-bold text-text-primary mb-4">
-            <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-violet-400 via-teal-400 to-violet-500 bg-clip-text text-transparent">
               Achievements
             </span>
           </h1>
@@ -105,7 +105,7 @@ export default function AchievementsPage() {
               initial={{ scaleY: 0 }}
               animate={{ scaleY: 1 }}
               transition={{ duration: 1, ease }}
-              className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/40 via-blue-500/10 to-transparent origin-top"
+              className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-violet-500/40 via-violet-500/10 to-transparent origin-top"
             />
 
             {achievements.map((achievement, i) => {
@@ -132,11 +132,11 @@ export default function AchievementsPage() {
                     className="absolute left-2.5 md:left-1/2 md:-translate-x-1/2 top-2 z-10"
                   >
                     <div className="relative">
-                      <div className="w-4 h-4 rounded-full bg-blue-500 border-4 border-surface-primary" />
+                      <div className="w-4 h-4 rounded-full bg-violet-500 border-4 border-surface-primary" />
                       <motion.div
                         animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                        className="absolute inset-0 rounded-full bg-blue-500"
+                        className="absolute inset-0 rounded-full bg-violet-500"
                       />
                     </div>
                   </motion.div>
@@ -157,7 +157,7 @@ export default function AchievementsPage() {
                           whileInView={{ scale: 1 }}
                           viewport={{ once: true }}
                           transition={{ delay: i * 0.08 + 0.3, type: 'spring', stiffness: 400 }}
-                          className="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-500/25"
+                          className="text-xs font-bold px-3 py-1 rounded-full bg-violet-600 text-white shadow-lg"
                         >
                           {achievement.year}
                         </motion.span>
@@ -166,7 +166,7 @@ export default function AchievementsPage() {
                           {achievement.type}
                         </span>
                       </div>
-                      <h3 className="text-text-primary font-semibold text-lg mb-2 group-hover:text-blue-300 transition-colors duration-300">
+                      <h3 className="text-text-primary font-semibold text-lg mb-2 group-hover:text-violet-300 transition-colors duration-300">
                         {achievement.title}
                       </h3>
                       <p className="text-text-secondary text-sm leading-relaxed">{achievement.description}</p>
@@ -176,7 +176,7 @@ export default function AchievementsPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           whileHover={{ x: 4 }}
-                          className="inline-flex items-center gap-1.5 mt-3 text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                          className="inline-flex items-center gap-1.5 mt-3 text-sm text-violet-400 hover:text-violet-300 transition-colors"
                         >
                           <ExternalLink className="h-3.5 w-3.5" />
                           View Details
@@ -237,14 +237,14 @@ export default function AchievementsPage() {
           <motion.div
             whileHover={{ y: -4 }}
             transition={{ duration: 0.2 }}
-            className="relative bg-surface-card/50 border border-border-primary rounded-2xl p-8 text-center overflow-hidden group hover:border-blue-500/20 transition-all duration-300"
+            className="relative bg-surface-card/50 border border-border-primary rounded-2xl p-8 text-center overflow-hidden group hover:border-violet-500/20 transition-all duration-300"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="relative z-10">
               <motion.div
                 animate={{ y: [0, -5, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/25"
+                className="h-16 w-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg"
               >
                 <Download className="h-7 w-7 text-white" />
               </motion.div>
@@ -256,7 +256,7 @@ export default function AchievementsPage() {
                 href="#"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl font-medium transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
+                className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-violet-600 to-violet-500 text-white rounded-xl font-medium transition-all shadow-lg hover:"
               >
                 <Download className="h-4 w-4" />
                 Download Resume

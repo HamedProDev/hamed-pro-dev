@@ -17,8 +17,8 @@ const HERO_IMAGE = 'https://i.ibb.co/3YP4yps3/hamedai.jpg'
 const techBadges = [
   { name: 'Next.js', icon: 'N', color: 'bg-white text-black', x: '10%', y: '15%', delay: 0.5 },
   { name: 'Python', icon: '🐍', color: 'bg-yellow-500/20 text-yellow-400', x: '75%', y: '10%', delay: 0.7 },
-  { name: 'TypeScript', icon: 'TS', color: 'bg-blue-500/20 text-blue-400', x: '5%', y: '65%', delay: 0.9 },
-  { name: 'Tailwind CSS', icon: '🌊', color: 'bg-cyan-500/20 text-cyan-400', x: '80%', y: '60%', delay: 1.1 },
+  { name: 'TypeScript', icon: 'TS', color: 'bg-violet-500/20 text-violet-400', x: '5%', y: '65%', delay: 0.9 },
+  { name: 'Tailwind CSS', icon: '🌊', color: 'bg-teal-500/20 text-teal-400', x: '80%', y: '60%', delay: 1.1 },
 ]
 
 interface Settings {
@@ -48,9 +48,9 @@ export function HeroSection() {
       <motion.div
         animate={{ opacity: [0.15, 0.25, 0.15] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(59,130,246,0.15),transparent_60%)]"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(139,92,246,0.12),transparent_60%)]"
       />
-      <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(rgba(59,130,246,0.03) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+      <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(rgba(139,92,246,0.03) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
 
       <div className="container-wide relative z-10 grid md:grid-cols-2 gap-8 items-center">
         <div>
@@ -119,7 +119,7 @@ export function HeroSection() {
                     transition={{ delay: 0.5 + i * 0.08, type: 'spring', stiffness: 300, damping: 15 }}
                     whileHover={{ scale: 1.15, y: -3 }}
                     whileTap={{ scale: 0.9 }}
-                    className="flex items-center justify-center h-10 w-10 rounded-full bg-white/5 text-text-secondary hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200 shadow-md shadow-transparent hover:shadow-blue-500/10"
+                    className="flex items-center justify-center h-10 w-10 rounded-full bg-white/5 text-text-secondary hover:bg-violet-500/20 hover:text-violet-400 transition-all duration-200 shadow-md shadow-transparent hover:"
                   >
                     <Icon className="h-4 w-4" />
                   </motion.a>
@@ -134,12 +134,12 @@ export function HeroSection() {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 bg-gradient-to-br from-blue-500/30 via-cyan-500/20 to-blue-600/30 rounded-full blur-3xl scale-75 opacity-60"
+              className="absolute inset-0 bg-gradient-to-br from-violet-500/30 via-teal-500/20 to-violet-600/30 rounded-full blur-3xl scale-75 opacity-60"
             />
             <motion.div
               animate={{ scale: [1, 1.02, 1] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-60 h-60 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-surface-card via-surface-tertiary to-surface-secondary glow-border overflow-hidden flex items-center justify-center shadow-2xl shadow-blue-500/10"
+              className="relative w-60 h-60 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-surface-card via-surface-tertiary to-surface-secondary glow-border overflow-hidden flex items-center justify-center shadow-md"
             >
               <Image src={settings.profile_photo || HERO_IMAGE} alt={settings.hero_name || 'Hamed Hussein'} fill sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 384px" className="object-cover" unoptimized priority />
             </motion.div>

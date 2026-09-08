@@ -79,7 +79,7 @@ export default function EditProjectPage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
 
   return (
     <div className="max-w-2xl">

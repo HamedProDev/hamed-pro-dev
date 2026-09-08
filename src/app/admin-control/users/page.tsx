@@ -10,7 +10,7 @@ interface User {
 }
 
 const roleStyles: Record<string, string> = {
-  admin: 'bg-blue-500/10 text-blue-500',
+  admin: 'bg-violet-500/10 text-violet-500',
   editor: 'bg-violet-500/10 text-violet-500',
   visitor: 'bg-gray-500/10 text-gray-400',
 }

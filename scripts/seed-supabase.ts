@@ -100,7 +100,15 @@ async function ensureAdmin() {
     user = created.data.user
     console.log(`• Admin user created: ${adminEmail}`)
   } else {
-    console.log(`• Admin user exists: ${adminEmail}`)
+    // Existing user: force the password to match ADMIN_PASSWORD and confirm email,
+    // so admin login always works after seeding.
+    const updated = await supabase.auth.admin.updateUserById(user.id, {
+      password: adminPassword,
+      email_confirm: true,
+      app_metadata: { role: 'admin' },
+    })
+    if (updated.error) throw updated.error
+    console.log(`• Admin user exists — password synced with ADMIN_PASSWORD: ${adminEmail}`)
   }
   // Ensure the profile row exists with admin role (trigger normally does this,
   // but be safe in case the trigger ran before this schema).

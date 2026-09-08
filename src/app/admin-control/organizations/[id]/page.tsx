@@ -59,7 +59,7 @@ export default function EditOrganizationPage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
 
   return (
     <div className="max-w-2xl">
@@ -83,7 +83,7 @@ export default function EditOrganizationPage() {
             <div><label htmlFor="org-tech" className="text-sm font-medium mb-1 block">Tech Stack (comma separated)</label><Input id="org-tech" name="tech" value={form.tech} onChange={e => update('tech', e.target.value)} /></div>
             <div><label htmlFor="org-website" className="text-sm font-medium mb-1 block">Website</label><Input id="org-website" name="website" value={form.website} onChange={e => update('website', e.target.value)} /></div>
             <div><label htmlFor="org-logo" className="text-sm font-medium mb-1 block">Logo</label><ImageUpload value={form.logo} onChange={v => update('logo', v)} folder="hamedpro/orgs" /></div>
-            <label htmlFor="org-hiring" className="flex items-center gap-2 cursor-pointer"><input id="org-hiring" name="hiring" type="checkbox" checked={form.hiring} onChange={e => update('hiring', e.target.checked)} className="accent-blue-500" /><span className="text-sm text-text-secondary">Currently hiring</span></label>
+            <label htmlFor="org-hiring" className="flex items-center gap-2 cursor-pointer"><input id="org-hiring" name="hiring" type="checkbox" checked={form.hiring} onChange={e => update('hiring', e.target.checked)} className="accent-violet-500" /><span className="text-sm text-text-secondary">Currently hiring</span></label>
           </CardContent>
         </Card>
         {error && <p className="text-red-400 text-sm">{error}</p>}

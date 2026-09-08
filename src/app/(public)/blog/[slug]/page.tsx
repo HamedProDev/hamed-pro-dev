@@ -26,7 +26,7 @@ export default function BlogPostPage() {
     }).catch(() => setLoading(false))
   }, [slug])
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
 
   if (!post) return (
     <div className="section-padding text-center">

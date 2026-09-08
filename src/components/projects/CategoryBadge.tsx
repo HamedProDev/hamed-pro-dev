@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge'
 
 const categoryColors: Record<string, string> = {
   finance: 'bg-green-500/20 text-green-400',
-  education: 'bg-blue-500/20 text-blue-400',
+  education: 'bg-violet-500/20 text-violet-400',
   sports: 'bg-orange-500/20 text-orange-400',
   banking: 'bg-purple-500/20 text-purple-400',
   healthcare: 'bg-red-500/20 text-red-400',

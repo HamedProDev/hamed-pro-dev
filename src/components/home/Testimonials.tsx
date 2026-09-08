@@ -36,7 +36,7 @@ export function Testimonials() {
               transition={{ delay: i * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ y: -6 }}
             >
-              <Card className="h-full text-left border-border-primary hover:border-blue-500/20 transition-all duration-300 group">
+              <Card className="h-full text-left border-border-primary hover:border-violet-500/20 transition-all duration-300 group">
                 <CardContent className="p-6">
                   <div className="flex gap-0.5 mb-4">
                     {Array.from({ length: t.rating }).map((_, j) => (
@@ -53,7 +53,7 @@ export function Testimonials() {
                   </div>
                   <p className="text-text-primary mb-6 text-sm leading-relaxed">&ldquo;{t.content}&rdquo;</p>
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-lg shadow-blue-500/20">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-lg">
                       {t.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>

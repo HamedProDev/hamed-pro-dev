@@ -70,20 +70,20 @@ export function CertificateDocument({
         <button
           onClick={downloadPng}
           disabled={downloading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg gradient-bg text-white text-sm font-medium shadow-lg shadow-blue-500/25 hover:brightness-110 transition-all disabled:opacity-60"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg gradient-bg text-white text-sm font-medium shadow-lg hover:brightness-110 transition-all disabled:opacity-60"
         >
           {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
           {downloading ? 'Generating…' : 'Download PNG'}
         </button>
         <button
           onClick={() => window.print()}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg glass text-text-primary text-sm font-medium hover:border-blue-500/40 transition-all"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg glass text-text-primary text-sm font-medium hover:border-violet-500/40 transition-all"
         >
           <Printer className="h-4 w-4" /> Print / PDF
         </button>
         <button
           onClick={copyLink}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg glass text-text-primary text-sm font-medium hover:border-blue-500/40 transition-all"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg glass text-text-primary text-sm font-medium hover:border-violet-500/40 transition-all"
         >
           {copied ? <Check className="h-4 w-4 text-green-500" /> : <Link2 className="h-4 w-4" />}
           {copied ? 'Link Copied!' : 'Copy Share Link'}
@@ -92,51 +92,51 @@ export function CertificateDocument({
         <a
           href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`I just earned my "${courseTitle}" certificate! 🎓`)}&url=${encodeURIComponent(shareUrl)}`}
           target="_blank" rel="noopener noreferrer"
-          className="h-9 w-9 flex items-center justify-center rounded-lg glass text-text-secondary hover:text-text-primary hover:border-blue-500/40 transition-all"
+          className="h-9 w-9 flex items-center justify-center rounded-lg glass text-text-secondary hover:text-text-primary hover:border-violet-500/40 transition-all"
           aria-label="Share on X"
           title="Share on X"
         ><ShareIcon path={X_LOGO} /></a>
         <a
           href={`https://wa.me/?text=${encodeURIComponent(`I just earned my "${courseTitle}" certificate! 🎓 ${shareUrl}`)}`}
           target="_blank" rel="noopener noreferrer"
-          className="h-9 w-9 flex items-center justify-center rounded-lg glass text-text-secondary hover:text-text-primary hover:border-blue-500/40 transition-all"
+          className="h-9 w-9 flex items-center justify-center rounded-lg glass text-text-secondary hover:text-text-primary hover:border-violet-500/40 transition-all"
           aria-label="Share on WhatsApp"
           title="Share on WhatsApp"
         ><ShareIcon path={WHATSAPP_LOGO} /></a>
         <a
           href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
           target="_blank" rel="noopener noreferrer"
-          className="h-9 w-9 flex items-center justify-center rounded-lg glass text-text-secondary hover:text-text-primary hover:border-blue-500/40 transition-all"
+          className="h-9 w-9 flex items-center justify-center rounded-lg glass text-text-secondary hover:text-text-primary hover:border-violet-500/40 transition-all"
           aria-label="Share on LinkedIn"
           title="Share on LinkedIn"
         ><ShareIcon path={LINKEDIN_LOGO} /></a>
       </div>
 
       {/* Certificate document */}
-      <div ref={docRef} className="relative rounded-3xl p-[3px] bg-gradient-to-br from-blue-500/40 via-indigo-500/40 to-cyan-400/40 shadow-2xl shadow-blue-500/20">
+      <div ref={docRef} className="relative rounded-3xl p-[3px] bg-gradient-to-br from-violet-500/40 via-fuchsia-500/40 to-purple-400/40 shadow-md">
         <div className="rounded-[22px] bg-white text-slate-900 overflow-hidden">
-          {/* inner gold/blue double border */}
-          <div className="m-2 rounded-2xl border-2 border-blue-200 p-2">
-            <div className="rounded-xl border border-blue-100 p-8 sm:p-12 relative">
+          {/* inner violet double border */}
+          <div className="m-2 rounded-2xl border-2 border-violet-200 p-2">
+            <div className="rounded-xl border border-violet-100 p-8 sm:p-12 relative">
               {/* subtle corner accents */}
-              <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-blue-500/30 rounded-tl-2xl" />
-              <div className="absolute top-0 right-0 w-20 h-20 border-t-4 border-r-4 border-blue-500/30 rounded-tr-2xl" />
-              <div className="absolute bottom-0 left-0 w-20 h-20 border-b-4 border-l-4 border-blue-500/30 rounded-bl-2xl" />
-              <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-blue-500/30 rounded-br-2xl" />
+              <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-violet-500/30 rounded-tl-2xl" />
+              <div className="absolute top-0 right-0 w-20 h-20 border-t-4 border-r-4 border-violet-500/30 rounded-tr-2xl" />
+              <div className="absolute bottom-0 left-0 w-20 h-20 border-b-4 border-l-4 border-violet-500/30 rounded-bl-2xl" />
+              <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-violet-500/30 rounded-br-2xl" />
 
               <div className="text-center relative">
                 <div className="flex justify-center mb-5">
-                  <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                  <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white shadow-sm">
                     <Award className="h-8 w-8" />
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm uppercase tracking-[0.35em] text-blue-600 font-semibold mb-2">
+                <p className="text-xs sm:text-sm uppercase tracking-[0.35em] text-violet-600 font-semibold mb-2">
                   Certificate of Completion
                 </p>
                 <p className="text-sm text-slate-500 mb-6">This is to certify that</p>
 
-                <h2 className="text-3xl sm:text-4xl font-bold text-indigo-700 mb-6">
+                <h2 className="text-3xl sm:text-4xl font-bold text-purple-700 mb-6">
                   {recipientName}
                 </h2>
 
@@ -150,14 +150,14 @@ export function CertificateDocument({
                       {new Date(issueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                     </p>
                   </div>
-                  <div className="hidden sm:block h-8 w-px bg-blue-100" />
+                  <div className="hidden sm:block h-8 w-px bg-violet-100" />
                   <div>
                     <p className="uppercase tracking-wider text-slate-400 mb-1">Certificate ID</p>
                     <p className="font-mono font-semibold text-slate-700">{certificateNumber}</p>
                   </div>
                   {score !== null && score !== undefined && (
                     <>
-                      <div className="hidden sm:block h-8 w-px bg-blue-100" />
+                      <div className="hidden sm:block h-8 w-px bg-violet-100" />
                       <div>
                         <p className="uppercase tracking-wider text-slate-400 mb-1">Score</p>
                         <p className="font-semibold text-slate-700">{score}%</p>
@@ -166,7 +166,7 @@ export function CertificateDocument({
                   )}
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-6 pt-6 border-t border-blue-100">
+                <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-6 pt-6 border-t border-violet-100">
                   <div className="text-center">
                     <div className="h-12 w-12 mx-auto mb-2 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center">
                       <BadgeCheck className="h-6 w-6 text-green-600" />
@@ -179,7 +179,7 @@ export function CertificateDocument({
 
                   {/* QR code for instant verification */}
                   <div className="text-center">
-                    <div className="mx-auto mb-1 w-20 h-20 p-1 bg-white rounded-lg border border-blue-100">
+                    <div className="mx-auto mb-1 w-20 h-20 p-1 bg-white rounded-lg border border-violet-100">
                       {shareUrl && <QRCode value={shareUrl} size={72} fgColor="#0f172a" bgColor="#ffffff" />}
                     </div>
                     <p className="text-[10px] uppercase tracking-wider text-slate-400">Scan to verify</p>

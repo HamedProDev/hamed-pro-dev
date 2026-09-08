@@ -34,20 +34,20 @@ export default async function OpenGraphImage({ params }: { params: { slug: strin
           flexDirection: 'column',
           justifyContent: 'space-between',
           padding: 60,
-          background: 'linear-gradient(135deg, #0b1220 0%, #12234a 60%, #1c3a8a 100%)',
+          background: 'linear-gradient(135deg, #0b1220 0%, #2e1065 60%, #4c1d95 100%)',
           color: '#ffffff',
           fontFamily: 'Inter, system-ui, sans-serif',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg, #4f6ef7, #22d3ee)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700 }}>HH</div>
+          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg, #7c3aed, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700 }}>HH</div>
           <div style={{ fontSize: 26, fontWeight: 600 }}>Hamed Hussein</div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div style={{ fontSize: 64, fontWeight: 800, lineHeight: 1.15 }}>{title}</div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <div style={{ fontSize: 22, color: '#a5b4fc', padding: '10px 20px', borderRadius: 999, background: 'rgba(255,255,255,0.08)' }}>{category}</div>
-            <div style={{ fontSize: 22, color: '#67e8f9', padding: '10px 20px', borderRadius: 999, background: 'rgba(255,255,255,0.08)' }}>Free course</div>
+            <div style={{ fontSize: 22, color: '#c4b5fd', padding: '10px 20px', borderRadius: 999, background: 'rgba(255,255,255,0.08)' }}>{category}</div>
+            <div style={{ fontSize: 22, color: '#e879f9', padding: '10px 20px', borderRadius: 999, background: 'rgba(255,255,255,0.08)' }}>Free course</div>
           </div>
         </div>
         <div style={{ fontSize: 20, color: '#94a3b8' }}>Enroll free · Track progress · Earn a certificate</div>

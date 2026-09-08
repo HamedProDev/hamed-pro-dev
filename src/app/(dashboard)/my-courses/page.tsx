@@ -107,7 +107,7 @@ export default function MyCoursesPage() {
                     </div>
 
                     <div className="h-2 rounded-full bg-surface-tertiary overflow-hidden mb-3">
-                      <div className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400" style={{ width: `${c.progress}%` }} />
+                      <div className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-400" style={{ width: `${c.progress}%` }} />
                     </div>
 
                     <div className="flex items-center justify-between text-xs text-text-muted mb-3">

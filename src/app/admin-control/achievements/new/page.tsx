@@ -31,7 +31,7 @@ export default function NewAchievementPage() {
     else setSaving(false)
   }
 
-  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-blue-500 focus:outline-none'
+  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none'
 
   return (
     <div>
@@ -71,7 +71,7 @@ export default function NewAchievementPage() {
           <input id="ach-order" name="order" type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
         <div className="flex items-center gap-2">
-          <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-blue-500" />
+          <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-violet-500" />
           <label htmlFor="featured" className="text-sm text-text-secondary">Featured achievement</label>
         </div>
         <Button type="submit" disabled={saving} className="gradient-bg text-white">

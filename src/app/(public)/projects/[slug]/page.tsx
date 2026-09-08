@@ -29,7 +29,7 @@ export default function ProjectDetailPage() {
       .catch(() => setLoading(false))
   }, [slug])
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
 
   if (!project) return (
     <div className="section-padding text-center">
@@ -63,7 +63,7 @@ export default function ProjectDetailPage() {
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{project.category}</Badge>
           {project.featured && <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Featured</Badge>}
-          {project.status && <Badge className="bg-cyan-500/10 text-cyan-500 border-cyan-500/20">{project.status}</Badge>}
+          {project.status && <Badge className="bg-teal-500/10 text-teal-500 border-teal-500/20">{project.status}</Badge>}
         </div>
 
         <h1 className="display text-4xl md:text-5xl mb-4">{project.title}</h1>

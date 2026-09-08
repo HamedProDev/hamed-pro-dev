@@ -39,7 +39,7 @@ export default function BlogPage() {
           <p className="text-text-secondary text-lg">Thoughts, tutorials, and insights on development.</p>
         </div>
         {loading ? (
-          <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+          <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
         ) : posts.length === 0 ? (
           <p className="text-center text-text-muted py-12">No blog posts yet.</p>
         ) : (

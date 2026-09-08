@@ -6,13 +6,13 @@ import { cn } from '@/lib/utils/cn'
 const skillCategories = [
   {
     name: 'Frontend',
-    color: 'text-blue-500',
-    border: 'hover:border-blue-500/30',
+    color: 'text-violet-500',
+    border: 'hover:border-violet-500/30',
     skills: [
       { name: 'Next.js', icon: 'N', iconBg: 'bg-white text-black' },
-      { name: 'React', icon: '⚛', iconBg: 'bg-cyan-500/20 text-cyan-400' },
-      { name: 'TypeScript', icon: 'TS', iconBg: 'bg-blue-500/20 text-blue-400' },
-      { name: 'Tailwind CSS', icon: '🌊', iconBg: 'bg-cyan-500/20 text-cyan-400' },
+      { name: 'React', icon: '⚛', iconBg: 'bg-teal-500/20 text-teal-400' },
+      { name: 'TypeScript', icon: 'TS', iconBg: 'bg-violet-500/20 text-violet-400' },
+      { name: 'Tailwind CSS', icon: '🌊', iconBg: 'bg-teal-500/20 text-teal-400' },
     ],
   },
   {
@@ -31,7 +31,7 @@ const skillCategories = [
     color: 'text-orange-500',
     border: 'hover:border-orange-500/30',
     skills: [
-      { name: 'PostgreSQL', icon: 'Pg', iconBg: 'bg-blue-600/20 text-blue-400' },
+      { name: 'PostgreSQL', icon: 'Pg', iconBg: 'bg-violet-600/20 text-violet-400' },
       { name: 'MongoDB', icon: 'M', iconBg: 'bg-green-600/20 text-green-400' },
       { name: 'Redis', icon: 'R', iconBg: 'bg-red-500/20 text-red-400' },
       { name: 'Supabase', icon: 'S', iconBg: 'bg-green-500/20 text-green-400' },
@@ -44,16 +44,16 @@ const skillCategories = [
     skills: [
       { name: 'TensorFlow', icon: 'TF', iconBg: 'bg-orange-500/20 text-orange-400' },
       { name: 'PyTorch', icon: 'PT', iconBg: 'bg-red-500/20 text-red-400' },
-      { name: 'Scikit-learn', icon: 'Sk', iconBg: 'bg-blue-500/20 text-blue-400' },
+      { name: 'Scikit-learn', icon: 'Sk', iconBg: 'bg-violet-500/20 text-violet-400' },
       { name: 'OpenAI', icon: 'OA', iconBg: 'bg-teal-500/20 text-teal-400' },
     ],
   },
   {
     name: 'DevOps',
-    color: 'text-cyan-500',
-    border: 'hover:border-cyan-500/30',
+    color: 'text-teal-500',
+    border: 'hover:border-teal-500/30',
     skills: [
-      { name: 'Docker', icon: 'D', iconBg: 'bg-blue-500/20 text-blue-400' },
+      { name: 'Docker', icon: 'D', iconBg: 'bg-violet-500/20 text-violet-400' },
       { name: 'AWS', icon: 'aws', iconBg: 'bg-orange-500/20 text-orange-400' },
       { name: 'GitHub Actions', icon: 'GA', iconBg: 'bg-gray-500/20 text-text-secondary' },
       { name: 'Vercel', icon: '▲', iconBg: 'bg-surface-tertiary text-text-primary' },

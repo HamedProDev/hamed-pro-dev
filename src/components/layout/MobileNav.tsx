@@ -40,7 +40,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         <SheetHeader className="border-b border-border-primary p-4">
           <SheetTitle className="text-text-primary flex items-center justify-between">
             <span className="flex items-center gap-2 font-bold">
-              <span className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">
+              <span className="h-7 w-7 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white text-xs font-bold">
                 HH
               </span>
               Hamed<span className="gradient-text"> Hussein</span>

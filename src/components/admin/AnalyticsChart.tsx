@@ -16,7 +16,7 @@ export function AnalyticsChart({ data, title }: AnalyticsChartProps) {
           <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
           <YAxis stroke="#64748b" fontSize={12} />
           <Tooltip contentStyle={{ backgroundColor: '#14142b', border: '1px solid #252550', borderRadius: '8px', color: '#f8fafc' }} />
-          <Bar dataKey="views" fill="#6366f1" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="views" fill="#a855f7" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

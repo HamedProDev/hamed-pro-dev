@@ -60,7 +60,7 @@ export default function InvitePage() {
         <Card className="card-hover glow-border">
           <CardContent className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white shadow-sm">
                 <Gift className="h-6 w-6" />
               </div>
               <div>

@@ -23,8 +23,8 @@ const statusColors: Record<string, string> = {
   completed: 'bg-green-500/20 text-green-400 border-green-500/30',
   'in-progress': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
   'in progress': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-  beta: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  maintained: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+  beta: 'bg-violet-500/20 text-violet-400 border-violet-500/30',
+  maintained: 'bg-teal-500/20 text-teal-400 border-teal-500/30',
   archived: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
 }
 
@@ -33,8 +33,8 @@ const statusDotColors: Record<string, string> = {
   completed: 'text-green-500',
   'in-progress': 'text-yellow-500',
   'in progress': 'text-yellow-500',
-  beta: 'text-blue-500',
-  maintained: 'text-cyan-500',
+  beta: 'text-violet-500',
+  maintained: 'text-teal-500',
   archived: 'text-gray-500',
 }
 

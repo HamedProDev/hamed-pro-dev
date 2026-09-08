@@ -11,9 +11,9 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: '#4f7cff',
-          secondary: '#8b5cf6',
-          accent: '#22d3ee',
+          primary: '#7c3aed',
+          secondary: '#d946ef',
+          accent: '#0d9488',
         },
         accent: {
           DEFAULT: 'var(--accent)',
@@ -40,10 +40,10 @@ const config: Config = {
         },
       },
       boxShadow: {
-        'glow-sm': '0 0 16px rgba(109, 141, 255, 0.28)',
-        glow: '0 0 28px rgba(109, 141, 255, 0.32)',
-        'glow-violet': '0 0 28px rgba(139, 92, 246, 0.32)',
-        glass: '0 8px 24px rgba(0, 0, 0, 0.35)',
+        'glow-sm': '0 1px 3px rgba(15, 23, 42, 0.08)',
+        glow: '0 10px 30px -12px rgba(15, 23, 42, 0.18)',
+        'glow-violet': '0 10px 30px -12px rgba(15, 23, 42, 0.18)',
+        glass: '0 8px 24px rgba(15, 23, 42, 0.1)',
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],

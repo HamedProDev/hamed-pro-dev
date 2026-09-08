@@ -51,9 +51,9 @@ export default function EditAchievementPage({ params }: { params: { id: string }
     router.push('/admin-control/achievements')
   }
 
-  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
 
-  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-blue-500 focus:outline-none'
+  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none'
 
   return (
     <div>
@@ -96,7 +96,7 @@ export default function EditAchievementPage({ params }: { params: { id: string }
           <input id="ach-order" name="order" type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
         <div className="flex items-center gap-2">
-          <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-blue-500" />
+          <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-violet-500" />
           <label htmlFor="featured" className="text-sm text-text-secondary">Featured achievement</label>
         </div>
         <Button type="submit" disabled={saving} className="gradient-bg text-white">

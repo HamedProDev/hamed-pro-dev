@@ -9,11 +9,11 @@ import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 const services = [
-  { icon: Globe, title: 'Web Development', description: 'Full-stack web apps with React, Next.js, Node.js, Supabase, and modern APIs.', price: 'From $500', gradient: 'from-blue-500/20 to-blue-600/10' },
+  { icon: Globe, title: 'Web Development', description: 'Full-stack web apps with React, Next.js, Node.js, Supabase, and modern APIs.', price: 'From $500', gradient: 'from-violet-500/20 to-violet-600/10' },
   { icon: Smartphone, title: 'Mobile Development', description: 'Cross-platform mobile apps with React Native, Kotlin, and Flutter.', price: 'From $800', gradient: 'from-green-500/20 to-green-600/10' },
   { icon: Brain, title: 'AI/ML Solutions', description: 'Custom AI models, data pipelines, NLP, computer vision, and ML integration.', price: 'From $1000', gradient: 'from-purple-500/20 to-purple-600/10' },
   { icon: Gamepad2, title: 'Game Development', description: 'Interactive games and simulations with Unity, Phaser, Three.js, and WebGL.', price: 'From $700', gradient: 'from-amber-500/20 to-orange-600/10' },
-  { icon: Code2, title: 'Technical Consultation', description: 'Architecture review, code audits, team mentoring, and technical strategy.', price: 'From $100/hr', gradient: 'from-cyan-500/20 to-cyan-600/10' },
+  { icon: Code2, title: 'Technical Consultation', description: 'Architecture review, code audits, team mentoring, and technical strategy.', price: 'From $100/hr', gradient: 'from-teal-500/20 to-teal-600/10' },
 ]
 
 const stats = [

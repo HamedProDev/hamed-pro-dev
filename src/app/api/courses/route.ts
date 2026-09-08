@@ -26,7 +26,9 @@ export async function GET(req: NextRequest) {
       }),
       countDocuments('courses', filters.length > 0 ? filters : undefined),
     ])
-    return apiPaginated(courses, total, page, limit)
+    // Every course is free — normalize price so legacy rows never show a cost.
+    const normalized = courses.map((c: any) => ({ ...c, price: 'Free' }))
+    return apiPaginated(normalized, total, page, limit)
   } catch (error: any) {
     return apiError(error.message, 500)
   }

@@ -15,7 +15,7 @@ import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 const tabs = ['All', 'Startup', 'Agency', 'Company', 'Open Source']
 
 const gradientMap: Record<string, string> = {
-  Agency: 'from-blue-600/30 via-indigo-700/20 to-surface-secondary',
+  Agency: 'from-violet-600/30 via-purple-700/20 to-surface-secondary',
   Startup: 'from-purple-600/30 via-pink-700/20 to-surface-secondary',
   Company: 'from-amber-600/30 via-orange-700/20 to-surface-secondary',
   'Open Source': 'from-teal-600/30 via-emerald-700/20 to-surface-secondary',
@@ -62,7 +62,7 @@ export default function StartupsPage() {
           </div>
         </div>
         {loading ? (
-          <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+          <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((o, i) => (

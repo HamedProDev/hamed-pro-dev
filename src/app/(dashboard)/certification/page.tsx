@@ -72,10 +72,10 @@ export default function CertificationPage() {
             <Card key={cert.id} className="card-hover overflow-hidden">
               <CardContent className="p-0">
                 <div className="p-6 sm:p-8 relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-cyan-400/10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-fuchsia-500/10 pointer-events-none" />
                   <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                     <div className="flex items-center gap-4">
-                      <div className="h-14 w-14 shrink-0 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                      <div className="h-14 w-14 shrink-0 rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white shadow-sm">
                         <Award className="h-7 w-7" />
                       </div>
                       <div>

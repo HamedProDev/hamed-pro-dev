@@ -69,10 +69,10 @@ export function ImageUpload({ value, onChange, className, folder }: ImageUploadP
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex gap-2">
-        <button type="button" onClick={() => setMode('upload')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'upload' ? 'bg-blue-500/10 text-blue-500' : 'text-text-muted hover:text-text-primary'}`}>
+        <button type="button" onClick={() => setMode('upload')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'upload' ? 'bg-violet-500/10 text-violet-500' : 'text-text-muted hover:text-text-primary'}`}>
           <Upload className="h-3 w-3 inline mr-1" /> Upload
         </button>
-        <button type="button" onClick={() => setMode('url')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'url' ? 'bg-blue-500/10 text-blue-500' : 'text-text-muted hover:text-text-primary'}`}>
+        <button type="button" onClick={() => setMode('url')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'url' ? 'bg-violet-500/10 text-violet-500' : 'text-text-muted hover:text-text-primary'}`}>
           <LinkIcon className="h-3 w-3 inline mr-1" /> URL
         </button>
       </div>
@@ -91,17 +91,17 @@ export function ImageUpload({ value, onChange, className, folder }: ImageUploadP
 
       {!value && mode === 'upload' && (
         <div
-          className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-blue-500 bg-blue-500/10' : 'border-border-primary hover:border-blue-500/50 bg-surface-secondary')}
+          className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-violet-500 bg-violet-500/10' : 'border-border-primary hover:border-violet-500/50 bg-surface-secondary')}
           onDragOver={e => { e.preventDefault(); setDragOver(true) }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
         >
           {uploading ? (
-            <div className="flex flex-col items-center gap-2"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /><p className="text-sm text-text-muted">Uploading...</p></div>
+            <div className="flex flex-col items-center gap-2"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /><p className="text-sm text-text-muted">Uploading...</p></div>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center"><Upload className="h-5 w-5 text-blue-400" /></div>
+              <div className="h-12 w-12 rounded-xl bg-violet-500/10 flex items-center justify-center"><Upload className="h-5 w-5 text-violet-400" /></div>
               <p className="text-sm text-text-secondary">Click or drag to upload image</p>
               <p className="text-xs text-text-muted">PNG, JPG up to 5MB</p>
               {error && <p className="text-xs text-red-400 mt-1">{error}</p>}

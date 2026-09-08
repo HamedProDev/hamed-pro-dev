@@ -43,10 +43,10 @@ export function Navbar() {
       <header className="fixed top-0 z-50 w-full">
         <div className="relative border-b border-border-primary bg-surface-primary/60 backdrop-blur-2xl">
           {/* glowing underline */}
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-violet-500/60 to-transparent" />
           <div className="container-wide flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
-              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/30">
+              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white text-sm font-bold shadow-sm">
                 HH
               </span>
               <span>
@@ -62,7 +62,7 @@ export function Navbar() {
                   className={cn(
                     'px-3.5 py-2 rounded-full text-sm font-medium transition-all',
                     pathname === link.href || pathname.startsWith(link.href + '/')
-                      ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/30 shadow-[0_0_20px_rgba(79,124,255,0.25)]'
+                      ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/30 shadow-sm'
                       : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary'
                   )}
                 >

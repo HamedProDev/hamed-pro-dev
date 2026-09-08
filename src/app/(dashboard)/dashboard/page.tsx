@@ -83,7 +83,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
-          <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-500/30">
+          <div className="h-16 w-16 rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white text-xl font-bold shadow-sm">
             {user.image ? <Image src={user.image} alt={user.name || ''} width={64} height={64} className="rounded-full object-cover" unoptimized /> : initials}
           </div>
           <div>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
                         : <PlayCircle className="h-5 w-5 text-brand-primary shrink-0" />}
                     </div>
                     <div className="h-2 rounded-full bg-surface-tertiary overflow-hidden mb-2">
-                      <div className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 transition-all duration-500" style={{ width: `${c.progress}%` }} />
+                      <div className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-400 transition-all duration-500" style={{ width: `${c.progress}%` }} />
                     </div>
                     <div className="flex items-center justify-between text-xs text-text-muted">
                       <span>{c.progress}% complete</span>

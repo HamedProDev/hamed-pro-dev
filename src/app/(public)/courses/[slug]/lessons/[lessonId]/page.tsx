@@ -199,7 +199,7 @@ export default function LessonPage() {
           </div>
         </div>
         <div className="h-1 bg-surface-tertiary">
-          <div className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 transition-all duration-500" style={{ width: `${progressBar}%` }} />
+          <div className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-400 transition-all duration-500" style={{ width: `${progressBar}%` }} />
         </div>
       </div>
 

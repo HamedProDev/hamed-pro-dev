@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 const colorPresets = [
   { name: 'Blue', value: '#3B82F6' },
-  { name: 'Cyan', value: '#06b6d4' },
+  { name: 'Cyan', value: '#14b8a6' },
   { name: 'Green', value: '#22c55e' },
   { name: 'Purple', value: '#a855f7' },
   { name: 'Pink', value: '#ec4899' },
@@ -25,7 +25,7 @@ export default function NewSkillPage() {
     name: '',
     category: 'Frontend',
     proficiency: 80,
-    color: '#3B82F6',
+    color: '#8b5cf6',
     order: 0,
     featured: false,
   })
@@ -42,7 +42,7 @@ export default function NewSkillPage() {
     else setSaving(false)
   }
 
-  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-blue-500 focus:outline-none'
+  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none'
 
   return (
     <div>
@@ -65,13 +65,13 @@ export default function NewSkillPage() {
         </div>
         <div>
           <label htmlFor="skill-proficiency" className="block text-sm font-medium text-text-secondary mb-1.5">Proficiency ({form.proficiency}%)</label>
-          <input id="skill-proficiency" name="proficiency" type="range" min={0} max={100} value={form.proficiency} onChange={e => setForm({ ...form, proficiency: Number(e.target.value) })} className="w-full accent-blue-500" />
+          <input id="skill-proficiency" name="proficiency" type="range" min={0} max={100} value={form.proficiency} onChange={e => setForm({ ...form, proficiency: Number(e.target.value) })} className="w-full accent-violet-500" />
         </div>
         <div>
           <label htmlFor="skill-color" className="block text-sm font-medium text-text-secondary mb-1.5">Color</label>
           <div className="flex flex-wrap gap-2 mb-2">
             {colorPresets.map(p => (
-              <button key={p.value} type="button" onClick={() => setForm({ ...form, color: p.value })} className={`h-8 w-8 rounded-full border-2 transition-all ${form.color === p.value ? 'border-blue-500 scale-110' : 'border-transparent hover:scale-105'}`} style={{ backgroundColor: p.value }} title={p.name} />
+              <button key={p.value} type="button" onClick={() => setForm({ ...form, color: p.value })} className={`h-8 w-8 rounded-full border-2 transition-all ${form.color === p.value ? 'border-violet-500 scale-110' : 'border-transparent hover:scale-105'}`} style={{ backgroundColor: p.value }} title={p.name} />
             ))}
           </div>
           <input id="skill-color" name="color" type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="h-10 w-20 rounded-lg bg-surface-card border border-border-primary cursor-pointer" />
@@ -81,7 +81,7 @@ export default function NewSkillPage() {
           <input id="skill-order" name="order" type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
         <div className="flex items-center gap-2">
-          <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-blue-500" />
+          <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-violet-500" />
           <label htmlFor="featured" className="text-sm text-text-secondary">Featured skill</label>
         </div>
         <Button type="submit" disabled={saving} className="gradient-bg text-white">

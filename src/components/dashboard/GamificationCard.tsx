@@ -77,7 +77,7 @@ export function GamificationCard() {
             <span className="text-xs text-text-muted">{d.level_progress}/{d.level_need} XP to level {d.level + 1}</span>
           </div>
           <div className="h-2 rounded-full bg-surface-tertiary overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500" style={{ width: `${levelPct}%` }} />
+            <div className="h-full bg-gradient-to-r from-violet-500 to-purple-500 transition-all duration-500" style={{ width: `${levelPct}%` }} />
           </div>
         </div>
 
@@ -101,8 +101,8 @@ export function GamificationCard() {
               <AreaChart data={d.weekly} margin={{ top: 5, right: 5, left: -28, bottom: 0 }}>
                 <defs>
                   <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#4f6ef7" stopOpacity={0.35} />
-                    <stop offset="100%" stopColor="#4f6ef7" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.35} />
+                    <stop offset="100%" stopColor="#7c3aed" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
@@ -111,7 +111,7 @@ export function GamificationCard() {
                   contentStyle={{ borderRadius: 12, border: '1px solid var(--border-primary)', background: 'var(--surface-card)', color: 'var(--text-primary)', fontSize: 12 }}
                   labelStyle={{ color: 'var(--text-muted)' }}
                 />
-                <Area type="monotone" dataKey="xp" stroke="#4f6ef7" strokeWidth={2} fill="url(#xpGradient)" />
+                <Area type="monotone" dataKey="xp" stroke="#7c3aed" strokeWidth={2} fill="url(#xpGradient)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

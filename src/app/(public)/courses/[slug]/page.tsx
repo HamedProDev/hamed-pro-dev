@@ -158,7 +158,7 @@ export default function CourseDetailPage() {
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20">{course.category}</Badge>
           <Badge variant="outline">{course.level}</Badge>
-          {course.price && course.price !== 'Free' && <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">Premium</Badge>}
+          <Badge variant="success">Free</Badge>
           {isCert && <Badge variant="success"><Award className="h-3 w-3 mr-1" /> Completed</Badge>}
         </div>
 
@@ -178,7 +178,7 @@ export default function CourseDetailPage() {
                 <span className="font-semibold text-brand-primary">{progress.enrollment?.progress ?? 0}%</span>
               </div>
               <div className="h-2.5 rounded-full bg-surface-tertiary overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 transition-all duration-500" style={{ width: `${progress.enrollment?.progress ?? 0}%` }} />
+                <div className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-400 transition-all duration-500" style={{ width: `${progress.enrollment?.progress ?? 0}%` }} />
               </div>
               <p className="text-xs text-text-muted mt-2">{progress.completedCount} of {progress.totalCount} lessons completed</p>
             </CardContent>

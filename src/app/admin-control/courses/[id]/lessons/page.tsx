@@ -96,7 +96,7 @@ export default function AdminLessonsPage() {
       )}
 
       {loading ? (
-        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : (
         <div className="admin-card overflow-hidden">
           <table className="w-full text-sm">
@@ -126,7 +126,7 @@ export default function AdminLessonsPage() {
                     </td>
                     <td className="px-4 py-3 text-text-muted">{l.order_index}</td>
                     <td className="px-4 py-3 font-medium text-text-primary">{l.title}</td>
-                    <td className="px-4 py-3"><span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500"><TypeIcon className="h-3 w-3" /> {typeLabels[l.type] || l.type}</span></td>
+                    <td className="px-4 py-3"><span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500"><TypeIcon className="h-3 w-3" /> {typeLabels[l.type] || l.type}</span></td>
                     <td className="px-4 py-3">{l.video_url ? <span className="text-xs text-green-500">✓</span> : <span className="text-xs text-text-muted">—</span>}</td>
                     <td className="px-4 py-3">{l.is_free ? <span className="text-xs text-green-500">Free</span> : <span className="text-xs text-text-muted">Premium</span>}</td>
                     <td className="px-4 py-3">{l.is_published ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-500">Published</span> : <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">Draft</span>}</td>

@@ -71,7 +71,7 @@ function JwtTool() {
 }
 
 function ColorTool() {
-  const [color, setColor] = useState('#6366f1')
+  const [color, setColor] = useState('#a855f7')
   return (
     <div className="space-y-4">
       <input type="color" value={color} onChange={e => setColor(e.target.value)} className="h-12 w-24 rounded cursor-pointer" />

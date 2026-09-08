@@ -14,7 +14,7 @@ const socialIconConfig: Record<string, { bg: string; hoverShadow: string; label:
   facebook: { bg: 'bg-[#1877F2]', hoverShadow: 'hover:shadow-[#1877F2]/40', label: 'Facebook' },
   instagram: { bg: 'bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]', hoverShadow: 'hover:shadow-[#DD2A7B]/40', label: 'Instagram' },
   whatsapp: { bg: 'bg-[#25D366]', hoverShadow: 'hover:shadow-[#25D366]/40', label: 'WhatsApp' },
-  phone: { bg: 'bg-[#3B82F6]', hoverShadow: 'hover:shadow-[#3B82F6]/40', label: 'Phone' },
+  phone: { bg: 'bg-[#7c3aed]', hoverShadow: 'hover:shadow-[#7c3aed]/40', label: 'Phone' },
   discord: { bg: 'bg-[#5865F2]', hoverShadow: 'hover:shadow-[#5865F2]/40', label: 'Discord' },
   twitter: { bg: 'bg-[#1DA1F2]', hoverShadow: 'hover:shadow-[#1DA1F2]/40', label: 'Twitter' },
   codepen: { bg: 'bg-[#1E1F1E]', hoverShadow: 'hover:shadow-[#1E1F1E]/40', label: 'CodePen' },
@@ -108,7 +108,7 @@ export function Footer() {
               href="/"
               className="flex items-center gap-2 font-bold text-xl text-text-primary mb-4"
             >
-              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/30">
+              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white text-sm font-bold shadow-sm">
                 HH
               </span>
               <span>
@@ -141,7 +141,7 @@ export function Footer() {
                       title={config.label}
                       whileHover={{ scale: 1.2, y: -3 }}
                       whileTap={{ scale: 0.9 }}
-                      className={`flex items-center justify-center h-10 w-10 rounded-full ${config.bg} text-white shadow-md shadow-transparent hover:shadow-lg ${config.hoverShadow}`}
+                      className={`flex items-center justify-center h-10 w-10 rounded-full ${config.bg} text-white shadow-md shadow-transparent hover:shadow-sm ${config.hoverShadow}`}
                     >
                       {svg ? (
                         <span dangerouslySetInnerHTML={{ __html: svg }} />
@@ -196,7 +196,7 @@ export function Footer() {
                 className="absolute inset-0"
                 style={{
                   backgroundImage:
-                    'radial-gradient(circle, rgba(59,130,246,0.1) 1px, transparent 1px)',
+                    'radial-gradient(circle, rgba(139,92,246,0.08) 1px, transparent 1px)',
                   backgroundSize: '12px 12px',
                 }}
               />

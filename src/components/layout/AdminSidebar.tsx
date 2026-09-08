@@ -46,7 +46,7 @@ export function AdminSidebar() {
               href={link.href}
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                active ? 'bg-blue-500/10 text-blue-500' : 'text-text-secondary hover:bg-surface-tertiary hover:text-text-primary',
+                active ? 'bg-violet-500/10 text-violet-500' : 'text-text-secondary hover:bg-surface-tertiary hover:text-text-primary',
                 collapsed && 'justify-center px-2'
               )}
               title={collapsed ? link.label : undefined}

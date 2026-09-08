@@ -61,12 +61,12 @@ export default function AdminDashboard() {
   }
 
   const cards = [
-    { label: 'Projects', value: stats.projects, icon: FolderOpen, href: '/admin-control/projects', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { label: 'Projects', value: stats.projects, icon: FolderOpen, href: '/admin-control/projects', color: 'text-violet-500', bg: 'bg-violet-500/10' },
     { label: 'Courses', value: stats.courses, icon: GraduationCap, href: '/admin-control/courses', color: 'text-green-500', bg: 'bg-green-500/10' },
-    { label: 'Skills', value: stats.skills, icon: Zap, href: '/admin-control/skills', color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
+    { label: 'Skills', value: stats.skills, icon: Zap, href: '/admin-control/skills', color: 'text-teal-500', bg: 'bg-teal-500/10' },
     { label: 'Achievements', value: stats.achievements, icon: Trophy, href: '/admin-control/achievements', color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { label: 'Blog Posts', value: stats.blog, icon: FileText, href: '/admin-control/blog', color: 'text-pink-500', bg: 'bg-pink-500/10' },
-    { label: 'Stats', value: stats.siteStats, icon: BarChart3, href: '/admin-control/stats', color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+    { label: 'Stats', value: stats.siteStats, icon: BarChart3, href: '/admin-control/stats', color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { label: 'Testimonials', value: stats.testimonials, icon: MessageSquare, href: '/admin-control/testimonials', color: 'text-teal-500', bg: 'bg-teal-500/10' },
     { label: 'Users', value: stats.users, icon: Users, href: '/admin-control/users', color: 'text-orange-500', bg: 'bg-orange-500/10' },
     { label: 'Settings', value: null, icon: Settings, href: '/admin-control/settings', color: 'text-gray-500', bg: 'bg-gray-500/10' },
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
           >
-            <Link href={s.href} className="block admin-card hover:shadow-lg transition-all duration-200 group">
+            <Link href={s.href} className="block admin-card hover:shadow-sm transition-all duration-200 group">
               <s.icon className={`h-5 w-5 mb-2 ${s.color} group-hover:scale-110 transition-transform`} />
               <p className="text-2xl font-bold text-text-primary">{loading ? '...' : s.value ?? '—'}</p>
               <p className="text-sm text-text-muted">{s.label}</p>
@@ -110,12 +110,12 @@ export default function AdminDashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="admin-card">
           <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-blue-500" />
+            <TrendingUp className="h-5 w-5 text-violet-500" />
             Quick Actions
           </h2>
           <div className="flex flex-wrap gap-2">
             {quickActions.map(a => (
-              <Link key={a.href} href={a.href} className="px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-sm hover:bg-blue-500/20 transition-colors">
+              <Link key={a.href} href={a.href} className="px-3 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-sm hover:bg-violet-500/20 transition-colors">
                 {a.label}
               </Link>
             ))}

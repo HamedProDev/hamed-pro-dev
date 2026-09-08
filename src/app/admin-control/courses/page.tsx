@@ -74,7 +74,7 @@ export default function AdminCoursesPage() {
       )}
 
       {loading ? (
-        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : (
         <div className="admin-card overflow-hidden">
           <table className="w-full text-sm">
@@ -102,7 +102,7 @@ export default function AdminCoursesPage() {
                   </td>
                   <td className="px-4 py-3 font-medium text-text-primary">{c.title}</td>
                   <td className="px-4 py-3 text-text-secondary">{c.category}</td>
-                  <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500">{c.level}</span></td>
+                  <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500">{c.level}</span></td>
                   <td className="px-4 py-3 text-text-muted">{c.enrolled}</td>
                   <td className="px-4 py-3 text-amber-500 flex items-center gap-1"><Star className="h-3 w-3 fill-current" /> {c.rating}</td>
                   <td className="px-4 py-3">{c.is_published ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-500">Published</span> : <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">Draft</span>}</td>

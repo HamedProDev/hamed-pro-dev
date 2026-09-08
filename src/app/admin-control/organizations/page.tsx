@@ -42,7 +42,7 @@ export default function AdminOrganizationsPage() {
         <Button asChild className="gradient-bg text-white"><Link href="/admin-control/organizations/new"><Plus className="h-4 w-4 mr-2" /> New Organization</Link></Button>
       </div>
       {loading ? (
-        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : (
         <div className="rounded-xl border border-border-primary bg-surface-card overflow-hidden">
           <table className="w-full text-sm">
@@ -60,7 +60,7 @@ export default function AdminOrganizationsPage() {
               {orgs.map(o => (
                 <tr key={o.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                   <td className="px-4 py-3 font-medium text-text-primary">{o.name}</td>
-                  <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500">{o.category}</span></td>
+                  <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500">{o.category}</span></td>
                   <td className="px-4 py-3 text-text-secondary">{o.location}</td>
                   <td className="px-4 py-3 text-text-muted">{o.team_size}</td>
                   <td className="px-4 py-3">{o.is_hiring ? <span className="text-green-500 text-xs">Yes ({o.team_roles})</span> : <span className="text-text-muted text-xs">No</span>}</td>

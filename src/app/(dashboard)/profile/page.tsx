@@ -110,7 +110,7 @@ export default function ProfilePage() {
           <CardContent className="space-y-4">
             <div>
               <label className="text-sm font-medium mb-1 block">Name</label>
-              <Input value={form.name} onChange={e => update('name', e.target.value)} />
+              <Input value={form.name} onChange={e => update('name', e.target.value)} placeholder="Your name" />
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">Bio</label>

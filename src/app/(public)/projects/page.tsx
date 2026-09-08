@@ -22,9 +22,9 @@ const categoryLabels: Record<string, string> = {
 
 const gradients = [
   'from-green-600/30 via-surface-card to-surface-secondary',
-  'from-blue-600/30 via-indigo-700/20 to-surface-secondary',
+  'from-violet-600/30 via-purple-700/20 to-surface-secondary',
   'from-purple-600/30 via-pink-700/20 to-surface-secondary',
-  'from-cyan-600/30 via-blue-700/20 to-surface-secondary',
+  'from-teal-600/30 via-violet-700/20 to-surface-secondary',
   'from-amber-600/30 via-orange-700/20 to-surface-secondary',
   'from-teal-600/30 via-emerald-700/20 to-surface-secondary',
 ]
