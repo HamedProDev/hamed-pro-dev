@@ -54,16 +54,6 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
   site_stats: {
     order: 'order_index',
   },
-  organizations: {
-    type: 'category',
-    team: 'team_size',
-    roles: 'team_roles',
-    tech: 'tech_stack',
-    hiring: 'is_hiring',
-    website: 'website_url',
-    logo: 'logo_url',
-    order: 'order_index',
-  },
   profiles: {
     avatarUrl: 'avatar_url',
     githubUrl: 'github_url',

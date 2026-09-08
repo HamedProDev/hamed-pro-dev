@@ -183,29 +183,6 @@ CREATE TABLE IF NOT EXISTS achievements (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Organizations
-CREATE TABLE IF NOT EXISTS organizations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  description TEXT,
-  logo_url TEXT,
-  website_url TEXT,
-  role TEXT,
-  start_date DATE,
-  end_date DATE,
-  is_current BOOLEAN DEFAULT false,
-  category TEXT,
-  is_hiring BOOLEAN DEFAULT false,
-  tech_stack TEXT[] DEFAULT '{}',
-  team_roles INT DEFAULT 0,
-  team_size TEXT,
-  location TEXT,
-  is_published BOOLEAN DEFAULT false,
-  order_index INT DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
 
 -- Testimonials
 CREATE TABLE IF NOT EXISTS testimonials (
@@ -322,8 +299,6 @@ DROP TRIGGER IF EXISTS update_blog_posts_updated_at ON blog_posts;
 CREATE TRIGGER update_blog_posts_updated_at BEFORE UPDATE ON blog_posts FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 DROP TRIGGER IF EXISTS update_jobs_updated_at ON jobs;
 CREATE TRIGGER update_jobs_updated_at BEFORE UPDATE ON jobs FOR EACH ROW EXECUTE FUNCTION update_updated_at();
-DROP TRIGGER IF EXISTS update_organizations_updated_at ON organizations;
-CREATE TRIGGER update_organizations_updated_at BEFORE UPDATE ON organizations FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 DROP TRIGGER IF EXISTS update_settings_updated_at ON settings;
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
@@ -336,7 +311,6 @@ ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
-ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
@@ -359,8 +333,6 @@ DROP POLICY IF EXISTS "Anyone can view published skills" ON skills;
 CREATE POLICY "Anyone can view published skills" ON skills FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published achievements" ON achievements;
 CREATE POLICY "Anyone can view published achievements" ON achievements FOR SELECT USING (is_published = true);
-DROP POLICY IF EXISTS "Anyone can view published organizations" ON organizations;
-CREATE POLICY "Anyone can view published organizations" ON organizations FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published testimonials" ON testimonials;
 CREATE POLICY "Anyone can view published testimonials" ON testimonials FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published stats" ON site_stats;
@@ -387,8 +359,6 @@ DROP POLICY IF EXISTS "Admins can do everything on skills" ON skills;
 CREATE POLICY "Admins can do everything on skills" ON skills FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on achievements" ON achievements;
 CREATE POLICY "Admins can do everything on achievements" ON achievements FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-DROP POLICY IF EXISTS "Admins can do everything on organizations" ON organizations;
-CREATE POLICY "Admins can do everything on organizations" ON organizations FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on testimonials" ON testimonials;
 CREATE POLICY "Admins can do everything on testimonials" ON testimonials FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on settings" ON settings;

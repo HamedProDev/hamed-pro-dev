@@ -142,7 +142,6 @@ const CONTENT_TABLES = [
   'courses',
   'blog_posts',
   'jobs',
-  'organizations',
   'testimonials',
   'contacts',
   'newsletter_subscribers',

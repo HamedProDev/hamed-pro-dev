@@ -92,7 +92,7 @@ export default function EditLessonPage() {
         quiz: form.quiz.filter(q => q.question && q.options.some(o => o)),
       }
       if (form.type === 'video' || form.youtubeUrl) body.youtubeUrl = form.youtubeUrl
-      if (form.videoDuration) body.videoDuration = Number(form.videoDuration)
+      if (form.videoDuration) body.videoDuration = String(form.videoDuration).trim()
 
       const res = await fetch(`/api/courses/${courseId}/lessons/${lessonId}`, {
         method: 'POST',

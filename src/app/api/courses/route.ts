@@ -26,8 +26,31 @@ export async function GET(req: NextRequest) {
       }),
       countDocuments('courses', filters.length > 0 ? filters : undefined),
     ])
+
+    // Real enrollment counts (the courses.enrolled column is legacy/stale).
+    let enrollCounts: Record<string, number> = {}
+    try {
+      if (courses.length > 0) {
+        const courseIds = courses.map((c: any) => c.id)
+        const enrollments = await getDocuments('enrollments', {
+          filters: [{ field: 'course_id', operator: 'in', value: courseIds }],
+          select: 'course_id',
+        })
+        enrollCounts = {}
+        for (const e of enrollments) {
+          enrollCounts[e.course_id] = (enrollCounts[e.course_id] || 0) + 1
+        }
+      }
+    } catch {
+      // enrollment counts are non-critical — fall back to the legacy column
+    }
+
     // Every course is free — normalize price so legacy rows never show a cost.
-    const normalized = courses.map((c: any) => ({ ...c, price: 'Free' }))
+    const normalized = courses.map((c: any) => ({
+      ...c,
+      price: 'Free',
+      enrolled: enrollCounts[c.id] ?? c.enrolled ?? 0,
+    }))
     return apiPaginated(normalized, total, page, limit)
   } catch (error: any) {
     return apiError(error.message, 500)

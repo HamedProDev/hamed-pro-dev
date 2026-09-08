@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
 
-const ALLOWED_TABLES = ['courses', 'lessons', 'projects', 'blog_posts', 'skills', 'achievements', 'testimonials', 'organizations']
+const ALLOWED_TABLES = ['courses', 'lessons', 'projects', 'blog_posts', 'skills', 'achievements', 'testimonials']
 
 // Bulk publish / unpublish / delete across content tables.
 // POST body: { table, ids: string[], action: 'publish'|'unpublish'|'delete' }

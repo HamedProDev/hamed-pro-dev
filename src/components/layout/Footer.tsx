@@ -89,7 +89,7 @@ export function Footer() {
         ],
         resources: [
           { label: 'Documentation', href: '/docs' },
-          { label: 'Open Source', href: '/open-source' },
+          { label: 'Open Source', href: 'https://github.com/HamedProDev' },
           { label: 'Community', href: '/community' },
           { label: 'Newsletter', href: '/newsletter' },
         ],
@@ -160,16 +160,21 @@ export function Footer() {
                 {title}
               </h3>
               <ul className="space-y-2.5">
-                {links.map((link: { label: string; href: string }) => (
+                {links.map((link: { label: string; href: string }) => {
+                  const external = /^https?:\/\//.test(link.href)
+                  return (
                   <li key={link.href}>
                     <Link
                       href={link.href}
+                      target={external ? '_blank' : undefined}
+                      rel={external ? 'noopener noreferrer' : undefined}
                       className="text-sm text-text-secondary hover:text-brand-primary transition-all duration-200 hover:translate-x-1 inline-block"
                     >
                       {link.label}
                     </Link>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             </div>
           ))}

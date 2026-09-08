@@ -74,7 +74,7 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'projects','courses','lessons','blog_posts','jobs','skills','achievements',
-    'organizations','testimonials','contacts','newsletter_subscribers',
+    'testimonials','contacts','newsletter_subscribers',
     'settings','site_stats','analytics'
   ] LOOP
     EXECUTE format('DROP POLICY IF EXISTS "Admins can do everything on %I" ON %I;', t, t);

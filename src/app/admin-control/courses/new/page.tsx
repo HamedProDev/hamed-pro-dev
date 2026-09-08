@@ -33,8 +33,8 @@ export default function NewCoursePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          price: Number(form.price),
-          duration: Number(form.duration) || 0,
+          price: String(form.price || '0').trim(),
+          duration: String(form.duration || '').trim(),
           rating: Number((form as any).rating) || 0,
           youtubePlaylistUrl: form.youtubePlaylistUrl || undefined,
           tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),

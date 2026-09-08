@@ -54,8 +54,8 @@ export default function EditCoursePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          price: Number(form.price),
-          duration: Number(form.duration) || 0,
+          price: String(form.price || '0').trim(),
+          duration: String(form.duration || '').trim(),
           rating: Number(form.rating) || 0,
           tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
           prerequisites: form.prerequisites.split(',').map(t => t.trim()).filter(Boolean),

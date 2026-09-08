@@ -18,7 +18,6 @@ const links = [
   { href: '/admin-control/skills', label: 'Skills', icon: Zap },
   { href: '/admin-control/achievements', label: 'Achievements', icon: Trophy },
   { href: '/admin-control/blog', label: 'Blog', icon: FileText },
-  { href: '/admin-control/organizations', label: 'Organizations', icon: Building2 },
   { href: '/admin-control/stats', label: 'Stats', icon: BarChart3 },
   { href: '/admin-control/testimonials', label: 'Testimonials', icon: MessageSquare },
   { href: '/admin-control/comments', label: 'Comments', icon: MessageSquare },
