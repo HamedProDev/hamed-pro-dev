@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "seed": "echo 'Use the /api/seed endpoint instead'"
+    "seed": "tsx scripts/seed-supabase.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
