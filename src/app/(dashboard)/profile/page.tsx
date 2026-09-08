@@ -96,33 +96,26 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-3xl">
-      <div className="flex items-center justify-between mb-6">
-        <div>
+    <div className="mx-auto max-w-4xl">
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="min-w-0">
           <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary mb-1"><ArrowLeft className="h-4 w-4" /> Back to Dashboard</Link>
           <h1 className="text-3xl font-bold">My Profile</h1>
         </div>
-        <Button onClick={handleSave} disabled={saving} className="gradient-bg text-white">
+        <Button onClick={handleSave} disabled={saving} className="gradient-bg text-white shrink-0">
           {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
           {saving ? 'Saving…' : 'Save Changes'}
         </Button>
       </div>
 
-      <div className="grid md:grid-cols-5 gap-6">
-        {/* Left: picture + name/bio */}
-        <div className="md:col-span-2 space-y-6">
-          <Card>
-            <CardContent className="p-5">
-              <h2 className="text-sm font-semibold mb-3">Profile Picture</h2>
-              <ImageUpload value={form.avatar_url} onChange={v => update('avatar_url', v)} folder="avatars" />
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right: personal info */}
-        <div className="md:col-span-3 space-y-6">
-          <Card>
-            <CardContent className="p-5 space-y-4">
+      <div className="space-y-5">
+        {/* Identity: avatar + name + bio, horizontally */}
+        <Card>
+          <CardContent className="p-5 flex flex-col sm:flex-row gap-6">
+            <div className="w-36 shrink-0 mx-auto sm:mx-0">
+              <ImageUpload value={form.avatar_url} onChange={v => update('avatar_url', v)} folder="avatars" square />
+            </div>
+            <div className="flex-1 space-y-4">
               <div>
                 <label htmlFor="profile-name" className="text-sm font-medium mb-1 block">Name</label>
                 <Input id="profile-name" value={form.name} onChange={e => update('name', e.target.value)} placeholder="Your name" />
@@ -131,12 +124,15 @@ export default function ProfilePage() {
                 <label htmlFor="profile-bio" className="text-sm font-medium mb-1 block">Bio</label>
                 <Textarea id="profile-bio" rows={3} value={form.bio} onChange={e => update('bio', e.target.value)} placeholder="Tell us about yourself..." />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardContent className="p-5 space-y-4">
-              <h2 className="text-sm font-semibold">Social Links</h2>
+        {/* Social links: 2-col grid */}
+        <Card>
+          <CardContent className="p-5">
+            <h2 className="text-sm font-semibold mb-4">Social Links</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium mb-1 flex items-center gap-1.5"><Github className="h-3.5 w-3.5" /> GitHub</label>
                 <Input value={form.github_url} onChange={e => update('github_url', e.target.value)} placeholder="https://github.com/username" />
@@ -153,37 +149,38 @@ export default function ProfilePage() {
                 <label className="text-sm font-medium mb-1 flex items-center gap-1.5"><Globe className="h-3.5 w-3.5" /> Website</label>
                 <Input value={form.website} onChange={e => update('website', e.target.value)} placeholder="https://your-site.com" />
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      <Card className="mt-6">
-        <CardContent className="p-5 space-y-3">
-          <h2 className="text-sm font-semibold">Interests</h2>
-          <div className="flex gap-2">
-            <Input
-              value={interestInput}
-              onChange={e => setInterestInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addInterest() } }}
-              placeholder="e.g. AI, React, Mobile"
-            />
-            <Button type="button" variant="outline" onClick={addInterest} className="shrink-0"><Plus className="h-4 w-4" /></Button>
-          </div>
-          {form.interests.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {form.interests.map(i => (
-                <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/30 text-sm text-brand-primary">
-                  <Heart className="h-3 w-3" /> {i}
-                  <button type="button" onClick={() => removeInterest(i)} className="text-text-muted hover:text-red-400" aria-label={`Remove ${i}`}><X className="h-3 w-3" /></button>
-                </span>
-              ))}
             </div>
-          ) : (
-            <p className="text-sm text-text-muted">No interests yet — add a few to personalize your dashboard.</p>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        {/* Interests */}
+        <Card>
+          <CardContent className="p-5">
+            <h2 className="text-sm font-semibold mb-3">Interests</h2>
+            <div className="flex gap-2">
+              <Input
+                value={interestInput}
+                onChange={e => setInterestInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addInterest() } }}
+                placeholder="e.g. AI, React, Mobile"
+              />
+              <Button type="button" variant="outline" onClick={addInterest} className="shrink-0"><Plus className="h-4 w-4" /></Button>
+            </div>
+            {form.interests.length > 0 ? (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {form.interests.map(i => (
+                  <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/30 text-sm text-brand-primary">
+                    <Heart className="h-3 w-3" /> {i}
+                    <button type="button" onClick={() => removeInterest(i)} className="text-text-muted hover:text-red-400" aria-label={`Remove ${i}`}><X className="h-3 w-3" /></button>
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-text-muted mt-3">No interests yet — add a few to personalize your dashboard.</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

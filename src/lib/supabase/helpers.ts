@@ -151,7 +151,7 @@ export async function getCurrentUser(req: NextRequest) {
     .from('profiles')
     .select('*')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   return {
     uid: user.id,

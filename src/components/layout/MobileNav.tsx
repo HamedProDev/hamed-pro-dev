@@ -37,7 +37,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-[300px] p-0 border-l border-border-primary bg-surface-primary/90 backdrop-blur-2xl">
+      <SheetContent side="right" className="w-[300px] p-0 border-l border-border-primary bg-surface-primary backdrop-blur-xl">
         <SheetHeader className="border-b border-border-primary p-4">
           <SheetTitle className="text-text-primary flex items-center justify-between">
             <span className="flex items-center gap-2 font-bold">

@@ -11,9 +11,10 @@ interface ImageUploadProps {
   onChange: (url: string) => void
   className?: string
   folder?: string
+  square?: boolean
 }
 
-export function ImageUpload({ value, onChange, className, folder }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, className, folder, square }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState('')
@@ -78,8 +79,8 @@ export function ImageUpload({ value, onChange, className, folder }: ImageUploadP
       </div>
 
       {value && (
-        <div className="relative group rounded-xl overflow-hidden border border-border-primary">
-          <Image src={value} alt="Uploaded" width={800} height={400} className="w-full h-48 object-cover" unoptimized />
+        <div className={cn('relative group overflow-hidden border border-border-primary', square ? 'aspect-square rounded-full' : 'rounded-xl')}>
+          <Image src={value} alt="Uploaded" width={800} height={400} className={cn('object-cover', square ? 'w-full h-full' : 'w-full h-48')} unoptimized />
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
             {mode === 'upload' && <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()}>Replace</Button>}
             <Button size="sm" variant="destructive" onClick={() => onChange('')}><X className="h-4 w-4" /></Button>
@@ -91,7 +92,7 @@ export function ImageUpload({ value, onChange, className, folder }: ImageUploadP
 
       {!value && mode === 'upload' && (
         <div
-          className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-violet-500 bg-violet-500/10' : 'border-border-primary hover:border-violet-500/50 bg-surface-secondary')}
+          className={cn('relative border-2 border-dashed p-8 text-center cursor-pointer transition-all', square ? 'aspect-square rounded-full flex flex-col items-center justify-center' : 'rounded-xl', dragOver ? 'border-violet-500 bg-violet-500/10' : 'border-border-primary hover:border-violet-500/50 bg-surface-secondary')}
           onDragOver={e => { e.preventDefault(); setDragOver(true) }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}

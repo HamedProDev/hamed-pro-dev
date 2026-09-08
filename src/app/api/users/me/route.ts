@@ -30,13 +30,15 @@ export async function PUT(req: NextRequest) {
       if (key in data) update[key] = data[key]
     }
 
+    // Upsert so a missing profile row (e.g. created before the trigger fix) is
+    // repaired instead of failing with "Cannot coerce the result to a single
+    // JSON object".
     const supabase = createServiceClient()
     const { data: updated, error } = await supabase
       .from('profiles')
-      .update(update)
-      .eq('id', user.uid)
+      .upsert({ id: user.uid, email: user.email, ...update }, { onConflict: 'id' })
       .select()
-      .single()
+      .maybeSingle()
 
     if (error) {
       return NextResponse.json({ success: false, error: error.message }, { status: 500 })

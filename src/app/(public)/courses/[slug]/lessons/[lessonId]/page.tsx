@@ -66,6 +66,32 @@ export default function LessonPage() {
     }).catch(() => {})
   }, [course, user, lessonId, lessons])
 
+  // Time tracking: heartbeat every 30s while the lesson is open, and flush
+  // the remainder on unmount (so time spent is recorded even on quick exits).
+  useEffect(() => {
+    if (!user || !lesson || !course) return
+    const start = Date.now()
+    let flushed = 0
+    const send = (seconds: number) => {
+      fetch(`/api/lessons/${lesson.id}/time`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ seconds, courseId: course.id }),
+        keepalive: true,
+      }).catch(() => {})
+    }
+    const interval = setInterval(() => {
+      send(30)
+      flushed += 30
+    }, 30000)
+    return () => {
+      clearInterval(interval)
+      const remaining = Math.round((Date.now() - start) / 1000) - flushed
+      if (remaining >= 5) send(Math.min(remaining, 60))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, lesson?.id, course?.id])
+
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-brand-primary" /></div>
   if (!course || !lesson) return (
     <main id="main-content" className="section-padding pt-24 text-center">

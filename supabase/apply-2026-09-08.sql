@@ -734,11 +734,15 @@ CREATE TABLE IF NOT EXISTS lesson_progress (
   completed BOOLEAN NOT NULL DEFAULT false,
   quiz_score INT CHECK (quiz_score >= 0 AND quiz_score <= 100),
   last_accessed_at TIMESTAMPTZ DEFAULT NOW(),
+  time_spent_seconds INT DEFAULT 0,
   completed_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE (user_id, lesson_id)
 );
+
+-- (idempotent) time-spent column for existing installs
+ALTER TABLE lesson_progress ADD COLUMN IF NOT EXISTS time_spent_seconds INT DEFAULT 0;
 
 -- 2.3 certificates
 CREATE TABLE IF NOT EXISTS certificates (

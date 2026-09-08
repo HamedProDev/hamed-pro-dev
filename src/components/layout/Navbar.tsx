@@ -42,7 +42,7 @@ export function Navbar() {
   return (
     <>
       <header className="fixed top-0 z-50 w-full">
-        <div className="relative border-b border-border-primary bg-surface-primary/60 backdrop-blur-2xl">
+        <div className="relative border-b border-border-primary bg-surface-primary/95 backdrop-blur-xl supports-[backdrop-filter]:bg-surface-primary/90">
           {/* glowing underline */}
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-violet-500/60 to-transparent" />
           <div className="container-wide flex h-16 items-center justify-between">

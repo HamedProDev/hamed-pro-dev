@@ -102,7 +102,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border-primary bg-surface-secondary">
-      <div className="container-wide py-12">
+      <div className="container-wide py-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link
@@ -174,7 +174,7 @@ export function Footer() {
             </div>
           ))}
 
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">
               Location
             </h3>
@@ -187,14 +187,25 @@ export function Footer() {
                 <p className="text-xs text-text-muted">UTC +2</p>
               </div>
             </div>
-            <div className="h-28 w-full rounded-lg overflow-hidden border border-border-primary">
-              <iframe
-                title="Remera, Kigali — map"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=30.0934%2C-1.9617%2C30.1334%2C-1.9217&layer=mapnik&marker=-1.9417%2C30.1134"
-                className="h-full w-full border-0"
-                loading="lazy"
-              />
-            </div>
+            <a
+              href="https://www.openstreetmap.org/?mlat=-1.9417&mlon=30.1134#map=15/-1.9417/30.1134"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+              aria-label="Open Remera, Kigali in OpenStreetMap"
+            >
+              <div className="h-32 w-full rounded-lg overflow-hidden border border-border-primary bg-surface-card">
+                <iframe
+                  title="Remera, Kigali — map"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=30.0984%2C-1.9567%2C30.1284%2C-1.9267&layer=mapnik&marker=-1.9417%2C30.1134"
+                  className="h-full w-full border-0 pointer-events-none"
+                  loading="lazy"
+                />
+              </div>
+              <span className="mt-1.5 inline-block text-[11px] text-text-muted hover:text-brand-primary transition-colors">
+                Open in OpenStreetMap ↗
+              </span>
+            </a>
           </div>
         </div>
 
