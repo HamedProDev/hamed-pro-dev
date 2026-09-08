@@ -2,19 +2,18 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Search as SearchIcon, Loader2, FolderGit2, GraduationCap, FileText, BookOpen, ArrowRight } from 'lucide-react'
+import { Search as SearchIcon, Loader2, FolderGit2, GraduationCap, BookOpen, ArrowRight } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 
 interface Results {
   projects: { slug: string; title: string; description: string }[]
-  posts: { slug: string; title: string; excerpt: string }[]
   courses: { slug: string; title: string; description: string }[]
   lessons: { id: string; title: string; type: string; courseTitle: string; courseSlug: string }[]
 }
 
-const empty: Results = { projects: [], posts: [], courses: [], lessons: [] }
+const empty: Results = { projects: [], courses: [], lessons: [] }
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
@@ -40,15 +39,15 @@ export default function SearchPage() {
     if (initial) runSearch(initial)
   }, [initial, runSearch])
 
-  const total = results.projects.length + results.posts.length + results.courses.length + results.lessons.length
+  const total = results.projects.length + results.courses.length + results.lessons.length
 
   return (
     <main id="main-content" className="section-padding pt-24">
       <div className="container-wide max-w-3xl">
-        <MetadataInjector title="Search" description="Search projects, courses, lessons, and articles by Hamed Hussein." />
+        <MetadataInjector title="Search" description="Search projects, courses, and lessons by Hamed Hussein." />
 
         <h1 className="text-3xl font-bold mb-2">Search</h1>
-        <p className="text-text-muted mb-6">Find projects, courses, lessons, and articles.</p>
+        <p className="text-text-muted mb-6">Find projects, courses, and lessons.</p>
 
         <form
           onSubmit={e => { e.preventDefault(); runSearch(query); const u = new URL(window.location.href); u.searchParams.set('q', query); window.history.replaceState({}, '', u.toString()) }}
@@ -90,13 +89,6 @@ export default function SearchPage() {
               <Section icon={FolderGit2} title="Projects">
                 {results.projects.map(p => (
                   <ResultLink key={p.slug} href={`/projects/${p.slug}`} title={p.title} desc={p.description} />
-                ))}
-              </Section>
-            )}
-            {results.posts.length > 0 && (
-              <Section icon={FileText} title="Articles">
-                {results.posts.map(p => (
-                  <ResultLink key={p.slug} href={`/blog/${p.slug}`} title={p.title} desc={p.excerpt} />
                 ))}
               </Section>
             )}

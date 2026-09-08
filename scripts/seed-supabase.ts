@@ -140,7 +140,6 @@ const CONTENT_TABLES = [
   'enrollments',
   'lessons',
   'courses',
-  'blog_posts',
   'jobs',
   'testimonials',
   'contacts',

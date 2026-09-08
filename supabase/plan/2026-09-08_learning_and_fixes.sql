@@ -13,27 +13,6 @@ BEGIN;
 -- PART 1 — SCHEMA FIXES
 -- ============================================================================
 
--- 1.1 Standardize blog_posts.tags as JSONB (schema.sql says TEXT[], the admin form
---     and fix-missing-columns.sql expect JSONB). Idempotent: converts only when the
---     column is still TEXT[]; if it is already JSONB it just (re)sets the default.
-DO $$
-DECLARE
-  col_udt text;
-BEGIN
-  SELECT udt_name INTO col_udt
-  FROM information_schema.columns
-  WHERE table_schema = 'public'
-    AND table_name  = 'blog_posts'
-    AND column_name = 'tags';
-
-  IF col_udt = '_text' THEN
-    EXECUTE 'ALTER TABLE blog_posts ALTER COLUMN tags DROP DEFAULT';
-    EXECUTE 'ALTER TABLE blog_posts ALTER COLUMN tags TYPE JSONB USING to_jsonb(COALESCE(tags, ARRAY[]::TEXT[]))';
-    EXECUTE 'ALTER TABLE blog_posts ALTER COLUMN tags SET DEFAULT ''[]''::jsonb';
-  ELSIF col_udt = 'jsonb' THEN
-    EXECUTE 'ALTER TABLE blog_posts ALTER COLUMN tags SET DEFAULT ''[]''::jsonb';
-  END IF;
-END $$;
 
 -- 1.2 Add missing updated_at column + trigger where the CMS edits rows.
 ALTER TABLE skills      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
@@ -73,7 +52,7 @@ DO $$
 DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
-    'projects','courses','lessons','blog_posts','jobs','skills','achievements',
+    'projects','courses','lessons','jobs','skills','achievements',
     'testimonials','contacts','newsletter_subscribers',
     'settings','site_stats','analytics'
   ] LOOP

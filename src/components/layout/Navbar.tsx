@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, Moon, Sun, LogIn, Search } from 'lucide-react'
+import { Menu, Moon, Sun, Search } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { MobileNav } from './MobileNav'
@@ -33,11 +33,14 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isAdmin } = useAuth()
 
   useEffect(() => setMounted(true), [])
 
-  const navLinks = isAuthenticated ? studentLinks : publicLinks
+  // Logged-out visitors and admins see the full public site links; students see
+  // their learning links. The admin is the owner — they always browse as
+  // "Hamed Hussein".
+  const navLinks = isAuthenticated && !isAdmin ? studentLinks : publicLinks
 
   return (
     <>
@@ -48,11 +51,7 @@ export function Navbar() {
           <div className="container-wide flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
               <Logo className="h-8 w-8 shrink-0" />
-              {isAuthenticated ? (
-                <span>Learn<span className="gradient-text"> With Hamed</span></span>
-              ) : (
-                <span>Hamed<span className="gradient-text"> Hussein</span></span>
-              )}
+              <span>Hamed<span className="gradient-text"> Hussein</span></span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1">
@@ -93,19 +92,14 @@ export function Navbar() {
                   <UserMenu />
                 </div>
               ) : (
-                <Button variant="ghost" size="sm" asChild className="hidden md:inline-flex">
-                  <Link href="/login"><LogIn className="h-4 w-4 mr-1.5" /> Sign in</Link>
-                </Button>
-              )}
-
-              <Button variant="outline" size="sm" asChild className="hidden md:inline-flex hover:shadow-glow-sm">
-                <Link href="/hire">Hire Me</Link>
-              </Button>
-
-              {!isAuthenticated && (
-                <Button size="sm" asChild className="hidden md:inline-flex gradient-bg">
-                  <Link href="/register">Start Learning</Link>
-                </Button>
+                <>
+                  <Button variant="outline" size="sm" asChild className="hidden md:inline-flex hover:shadow-glow-sm">
+                    <Link href="/hire">Hire Me</Link>
+                  </Button>
+                  <Button size="sm" asChild className="hidden md:inline-flex gradient-bg">
+                    <Link href="/register">Start Learning</Link>
+                  </Button>
+                </>
               )}
 
               <Button

@@ -20,6 +20,7 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
     isPublished: 'is_published',
     prerequisites: 'prerequisites',
     outcomes: 'outcomes',
+    finalQuiz: 'final_quiz',
     order: 'order_index',
   },
   lessons: {
@@ -27,11 +28,6 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
     videoDuration: 'duration',
     isFree: 'is_free',
     isPublished: 'is_published',
-    order: 'order_index',
-  },
-  blog_posts: {
-    coverImage: 'image_url',
-    published: 'is_published',
     order: 'order_index',
   },
   skills: {

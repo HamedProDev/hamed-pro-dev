@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils/cn'
 import {
   LayoutDashboard, GraduationCap,
   Users, Search, UserCircle, Settings, ChevronLeft, ChevronRight,
-  Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare, FileText, Image, Mail
+  Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare, Image, Mail
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAdminAuth } from '@/components/admin/AdminGate'
@@ -17,7 +17,6 @@ const links = [
   { href: '/admin-control/courses', label: 'Courses', icon: GraduationCap },
   { href: '/admin-control/skills', label: 'Skills', icon: Zap },
   { href: '/admin-control/achievements', label: 'Achievements', icon: Trophy },
-  { href: '/admin-control/blog', label: 'Blog', icon: FileText },
   { href: '/admin-control/stats', label: 'Stats', icon: BarChart3 },
   { href: '/admin-control/testimonials', label: 'Testimonials', icon: MessageSquare },
   { href: '/admin-control/comments', label: 'Comments', icon: MessageSquare },
@@ -35,7 +34,7 @@ export function AdminSidebar() {
   const { lock } = useAdminAuth()
 
   return (
-    <aside className={cn('sticky top-16 h-[calc(100vh-4rem)] border-r border-border-primary bg-surface-secondary transition-all flex flex-col', collapsed ? 'w-16' : 'w-60')}>
+    <aside className={cn('shrink-0 border-r border-border-primary bg-surface-secondary transition-all flex flex-col', collapsed ? 'w-16' : 'w-60')}>
       <nav className="flex flex-col p-2 gap-1 flex-1 overflow-y-auto">
         {links.map(link => {
           const active = pathname === link.href || (link.href !== '/admin-control' && pathname.startsWith(link.href))

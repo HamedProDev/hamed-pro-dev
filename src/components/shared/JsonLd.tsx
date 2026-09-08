@@ -81,22 +81,6 @@ export function PersonJsonLd({ name, jobTitle, url, image, sameAs }: {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
-export function BlogPostingJsonLd({ headline, description, author, datePublished, image, url }: {
-  headline: string; description: string; author: string; datePublished: string; image?: string; url?: string
-}) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline,
-    description,
-    author: { '@type': 'Person', name: author },
-    datePublished,
-    image,
-    url,
-  }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-}
-
 export function CourseJsonLd({ name, description, provider, url }: {
   name: string; description: string; provider: string; url: string
 }) {

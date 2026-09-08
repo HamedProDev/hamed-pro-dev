@@ -16,7 +16,7 @@ const sections = [
   },
   {
     title: 'Use of Content',
-    body: 'Courses, blog posts, and other content are provided for personal learning. You may not redistribute, resell, or republish course content without written permission.',
+    body: 'Courses and other content are provided for personal learning. You may not redistribute, resell, or republish course content without written permission.',
   },
   {
     title: 'Certificates',

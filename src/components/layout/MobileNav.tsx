@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { X, LogIn, GraduationCap, Briefcase } from 'lucide-react'
+import { X, GraduationCap, Briefcase } from 'lucide-react'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -32,8 +32,8 @@ interface MobileNavProps {
 
 export function MobileNav({ open, onClose }: MobileNavProps) {
   const pathname = usePathname()
-  const { user, isAuthenticated, signOut } = useAuth()
-  const navLinks = isAuthenticated ? studentLinks : publicLinks
+  const { user, isAuthenticated, isAdmin, signOut } = useAuth()
+  const navLinks = isAuthenticated && !isAdmin ? studentLinks : publicLinks
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
@@ -42,7 +42,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           <SheetTitle className="text-text-primary flex items-center justify-between">
             <span className="flex items-center gap-2 font-bold">
               <Logo className="h-7 w-7 shrink-0" />
-              {isAuthenticated ? <>Learn<span className="gradient-text"> With Hamed</span></> : <>Hamed<span className="gradient-text"> Hussein</span></>}
+              Hamed<span className="gradient-text"> Hussein</span>
             </span>
             <button onClick={onClose} className="text-text-muted hover:text-text-primary" aria-label="Close menu">
               <X className="h-5 w-5" />
@@ -93,9 +93,6 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               </Button>
               <Button asChild variant="outline" className="w-full">
                 <Link href="/hire" onClick={onClose}><Briefcase className="h-4 w-4 mr-2" /> Hire Me</Link>
-              </Button>
-              <Button asChild variant="ghost" className="w-full">
-                <Link href="/login" onClick={onClose}><LogIn className="h-4 w-4 mr-2" /> Sign in</Link>
               </Button>
             </>
           )}
