@@ -26,7 +26,7 @@ export default function AdminMediaPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Media Library</h1>
-        <p className="text-text-muted text-sm mt-1">Upload and manage images. All uploads go to Cloudinary.</p>
+        <p className="text-text-muted text-sm mt-1">Upload images for your projects, courses, certificates, and profile. Files are stored in Supabase Storage.</p>
       </div>
       <Card>
         <CardHeader><CardTitle>Upload Image</CardTitle><CardDescription>Drag and drop or click to upload</CardDescription></CardHeader>

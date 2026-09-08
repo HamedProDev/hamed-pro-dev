@@ -4,6 +4,7 @@ import { Providers } from '@/components/providers'
 import { Toaster } from 'sonner'
 import { ScrollToTop } from '@/components/shared/ScrollToTop'
 import { WebSiteJsonLd } from '@/components/shared/JsonLd'
+import { getDocuments } from '@/lib/supabase/db'
 import './globals.css'
 
 export const dynamic = 'force-dynamic'
@@ -19,10 +20,10 @@ const inter = localFont({
   fallback: ['system-ui', 'sans-serif'],
 })
 
-export const metadata: Metadata = {
+const defaultMetadata: Metadata = {
   title: { default: 'Hamed Hussein (AKA hamedprodev) — Full Stack Developer & AI/ML Engineer', template: '%s | Hamed Hussein' },
   description: 'Hamed Hussein, AKA hamedprodev, is a full stack developer and AI/ML engineer based in Kigali, Rwanda — building modern web apps, AI-powered solutions, free courses, and verifiable certificates.',
-  keywords: ['Hamed Hussein', 'hamedprodev', 'Full Stack Developer', 'AI/ML Engineer', 'Rwanda', 'Kigali', 'React', 'Next.js', 'Python', 'Machine Learning', 'Kwanda Facility'],
+  keywords: ['Hamed Hussein', 'hamedprodev', 'Full Stack Developer', 'AI/ML Engineer', 'Rwanda', 'Kigali', 'React', 'Next.js', 'Python', 'Machine Learning'],
   authors: [{ name: 'Hamed Hussein' }],
   creator: 'Hamed Hussein',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://hamedhussein.is-a.dev'),
@@ -44,6 +45,42 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   icons: { icon: '/logo.svg', shortcut: '/logo.svg', apple: '/logo.svg' },
+}
+
+// Override the static defaults with the admin's SEO settings when present
+// (safe: falls back to the defaults if Supabase or settings aren't available).
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const docs = await getDocuments('settings', { limit: 1 })
+    const seo = docs[0]?.seo_defaults
+    if (!seo) return defaultMetadata
+
+    const title = seo.metaTitle || (defaultMetadata.title as any)?.default
+    const description = seo.metaDescription || defaultMetadata.description
+    const keywords = Array.isArray(seo.keywords) && seo.keywords.length > 0 ? seo.keywords : defaultMetadata.keywords
+    const ogImage = seo.ogImage || '/og/default.png'
+
+    return {
+      ...defaultMetadata,
+      title: { default: title, template: '%s | Hamed Hussein' },
+      description,
+      keywords,
+      openGraph: {
+        ...defaultMetadata.openGraph,
+        title,
+        description,
+        images: [{ url: ogImage, width: 1200, height: 630 }],
+      },
+      twitter: {
+        ...defaultMetadata.twitter,
+        title,
+        description,
+        images: [ogImage],
+      },
+    }
+  } catch {
+    return defaultMetadata
+  }
 }
 
 export const viewport: Viewport = {
