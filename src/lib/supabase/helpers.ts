@@ -43,6 +43,7 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
     year: 'date',
     type: 'category',
     link: 'certificate_url',
+    image: 'image_url',
     order: 'order_index',
     featured: 'is_published',
   },

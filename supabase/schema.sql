@@ -264,6 +264,8 @@ CREATE TABLE IF NOT EXISTS settings (
   email_notifications JSONB DEFAULT '{}',
   seo_defaults JSONB DEFAULT '{}',
   integrations JSONB DEFAULT '{}',
+  resume_url TEXT,
+  hire_services JSONB DEFAULT '[]',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

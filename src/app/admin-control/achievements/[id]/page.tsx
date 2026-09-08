@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Save, ArrowLeft, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { ImageUpload } from '@/components/ui/image-upload'
 
 export default function EditAchievementPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -16,6 +17,8 @@ export default function EditAchievementPage({ params }: { params: { id: string }
     year: '',
     type: 'milestone',
     link: '',
+    issuer: '',
+    image: '',
     order: 0,
     featured: false,
   })
@@ -26,7 +29,7 @@ export default function EditAchievementPage({ params }: { params: { id: string }
       .then(d => {
         if (d.success) {
           const a = d.data
-          setForm({ title: a.title, description: a.description, year: a.date || '', type: a.category || 'milestone', link: a.certificate_url || '', order: a.order_index || 0, featured: a.is_published || false })
+          setForm({ title: a.title, description: a.description, year: a.date || '', type: a.category || 'milestone', link: a.certificate_url || '', issuer: a.issuer || '', image: a.image_url || '', order: a.order_index || 0, featured: a.is_published || false })
         }
         setLoading(false)
       })
@@ -90,6 +93,14 @@ export default function EditAchievementPage({ params }: { params: { id: string }
         <div>
           <label htmlFor="ach-link" className="block text-sm font-medium text-text-secondary mb-1.5">Link (optional)</label>
           <input id="ach-link" name="link" type="url" value={form.link} onChange={e => setForm({ ...form, link: e.target.value })} className={inputClass} />
+        </div>
+        <div>
+          <label htmlFor="ach-issuer" className="block text-sm font-medium text-text-secondary mb-1.5">Issuer (optional)</label>
+          <input id="ach-issuer" name="issuer" type="text" value={form.issuer} onChange={e => setForm({ ...form, issuer: e.target.value })} className={inputClass} placeholder="e.g. Amazon Web Services" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-secondary mb-1.5">Certificate image (optional)</label>
+          <ImageUpload value={form.image} onChange={url => setForm({ ...form, image: url })} folder="hamedpro/certificates" />
         </div>
         <div>
           <label htmlFor="ach-order" className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>

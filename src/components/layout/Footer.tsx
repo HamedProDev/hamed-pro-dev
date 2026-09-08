@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { MapPin } from 'lucide-react'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { Logo } from '@/components/shared/Logo'
 
 const socialIconConfig: Record<string, { bg: string; hoverShadow: string; label: string }> = {
   github: { bg: 'bg-[#24292e]', hoverShadow: 'hover:shadow-[#24292e]/40', label: 'GitHub' },
@@ -108,9 +109,7 @@ export function Footer() {
               href="/"
               className="flex items-center gap-2 font-bold text-xl text-text-primary mb-4"
             >
-              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white text-sm font-bold shadow-sm">
-                HH
-              </span>
+              <Logo className="h-8 w-8 shrink-0" />
               <span>
                 Hamed<span className="gradient-text"> Hussein</span>
               </span>
@@ -183,22 +182,17 @@ export function Footer() {
               <MapPin className="h-4 w-4 text-brand-primary mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm text-text-secondary">
-                  {settings.location || 'Kigali, Rwanda'}
+                  {settings.location || 'Remera, Kigali, Rwanda'}
                 </p>
                 <p className="text-xs text-text-muted">UTC +2</p>
               </div>
             </div>
-            <div className="h-20 rounded-lg bg-surface-tertiary border border-border-primary overflow-hidden relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-              </div>
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage:
-                    'radial-gradient(circle, rgba(139,92,246,0.08) 1px, transparent 1px)',
-                  backgroundSize: '12px 12px',
-                }}
+            <div className="h-28 w-full rounded-lg overflow-hidden border border-border-primary">
+              <iframe
+                title="Remera, Kigali — map"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=30.0934%2C-1.9617%2C30.1334%2C-1.9217&layer=mapnik&marker=-1.9417%2C30.1134"
+                className="h-full w-full border-0"
+                loading="lazy"
               />
             </div>
           </div>

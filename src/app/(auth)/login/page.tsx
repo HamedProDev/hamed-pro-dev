@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { Logo } from '@/components/shared/Logo'
 
 export default function LoginPage() {
   const [error, setError] = useState('')
@@ -61,10 +62,8 @@ export default function LoginPage() {
 
       <div className="rounded-2xl border border-border-primary bg-surface-card/80 p-8">
         <div className="text-center mb-6">
-          <Link href="/" className="inline-flex items-center justify-center gap-2 mb-3">
-            <span className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white font-bold shadow-sm">
-              HH
-            </span>
+          <Link href="/" className="mb-3 inline-flex justify-center">
+            <Logo className="h-10 w-10" />
           </Link>
           <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
           <p className="text-sm text-text-secondary mt-1">Sign in to continue learning</p>

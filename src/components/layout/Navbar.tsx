@@ -10,6 +10,7 @@ import { MobileNav } from './MobileNav'
 import { UserMenu } from './UserMenu'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { cn } from '@/lib/utils/cn'
+import { Logo } from '@/components/shared/Logo'
 
 const publicLinks = [
   { href: '/projects', label: 'Projects' },
@@ -46,9 +47,7 @@ export function Navbar() {
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-violet-500/60 to-transparent" />
           <div className="container-wide flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
-              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white text-sm font-bold shadow-sm">
-                HH
-              </span>
+              <Logo className="h-8 w-8 shrink-0" />
               <span>
                 Hamed<span className="gradient-text"> Hussein</span>
               </span>
@@ -103,7 +102,7 @@ export function Navbar() {
 
               {!isAuthenticated && (
                 <Button size="sm" asChild className="hidden md:inline-flex gradient-bg">
-                  <Link href="/courses">Start Learning</Link>
+                  <Link href="/register">Start Learning</Link>
                 </Button>
               )}
 

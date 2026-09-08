@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     images: ['/og/default.png'],
   },
   robots: { index: true, follow: true },
-  icons: { icon: '/favicon.ico', shortcut: '/favicon.png', apple: '/apple-touch-icon.png' },
+  icons: { icon: '/logo.svg', shortcut: '/logo.svg', apple: '/logo.svg' },
 }
 
 export const viewport: Viewport = {

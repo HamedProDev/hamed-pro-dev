@@ -15,12 +15,14 @@ export async function POST(req: NextRequest) {
       return apiError('No file provided', 400)
     }
 
-    if (!file.type.startsWith('image/')) {
-      return apiError('Only image files allowed', 400)
+    const allowed =
+      file.type.startsWith('image/') || file.type === 'application/pdf'
+    if (!allowed) {
+      return apiError('Only images and PDF files are allowed', 400)
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      return apiError('File too large. Max 5MB', 400)
+    if (file.size > 10 * 1024 * 1024) {
+      return apiError('File too large. Max 10MB', 400)
     }
 
     const ext = file.name.split('.').pop() || 'jpg'

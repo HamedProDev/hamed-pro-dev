@@ -52,18 +52,38 @@ export default function CourseDetailPage() {
   const [submittingFinal, setSubmittingFinal] = useState(false)
 
   useEffect(() => {
-    fetch('/api/courses?limit=100').then(r => r.json()).then(d => {
-      if (d.success) {
-        const found = d.data.find((c: any) => c.slug === slug)
-        if (found) {
-          setCourse(found)
-          fetch(`/api/courses/${found.id}/lessons`).then(r2 => r2.json()).then(d2 => {
-            if (d2.success) setLessons(d2.data || [])
-          }).catch(() => {})
-        }
-      }
-      setLoading(false)
-    }).catch(() => setLoading(false))
+    let cancelled = false
+    const done = () => { if (!cancelled) setLoading(false) }
+
+    const loadLessons = (id: string) => {
+      fetch(`/api/courses/${id}/lessons`)
+        .then(r => r.json())
+        .then(d => { if (!cancelled && d.success) setLessons(d.data || []) })
+        .catch(() => {})
+    }
+
+    const fromList = () => {
+      fetch('/api/courses?limit=200')
+        .then(r => r.json())
+        .then(d => {
+          if (!cancelled && d.success) {
+            const found = d.data.find((c: any) => c.slug === slug)
+            if (found) { setCourse(found); loadLessons(found.id) }
+          }
+          done()
+        })
+        .catch(done)
+    }
+
+    fetch(`/api/courses/slug/${encodeURIComponent(slug)}`)
+      .then(r => r.json())
+      .then(d => {
+        if (!cancelled && d.success && d.data) { setCourse(d.data); loadLessons(d.data.id); done() }
+        else fromList()
+      })
+      .catch(fromList)
+
+    return () => { cancelled = true }
   }, [slug])
 
   useEffect(() => {
@@ -253,10 +273,10 @@ export default function CourseDetailPage() {
         ) : (
           <div className="flex flex-col sm:flex-row gap-3">
             <Button asChild className="gradient-bg text-white">
-              <Link href={`/courses/${slug}/lessons/${lessons[0]?.id || ''}`}>Start Learning</Link>
+              <Link href={`/register?redirect=/courses/${slug}`}>Enroll Free — Start Learning</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/login">Sign in to track progress</Link>
+              <Link href={`/login?redirect=/courses/${slug}`}>I already have an account</Link>
             </Button>
           </div>
         )}

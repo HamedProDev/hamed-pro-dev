@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils/cn'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { PersonJsonLd } from '@/components/shared/JsonLd'
+import { Logo } from '@/components/shared/Logo'
 
 const iconMap: Record<string, any> = {
   github: Github, twitter: Twitter, linkedin: Linkedin, youtube: Youtube,
@@ -105,7 +106,7 @@ export default function AboutPage() {
                   <Image src={settings.profile_photo || 'https://i.ibb.co/3YP4yps3/hamedai.jpg'} alt="Profile photo of Hamed Hussein" fill sizes="288px" className="object-cover" unoptimized />
               ) : (
                 <div className="text-center">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">HH</div>
+                  <Logo className="h-24 w-24 mx-auto mb-4" />
                   <p className="text-sm text-text-muted">Senior Fullstack Developer</p>
                   <p className="text-xs text-text-muted">Kigali, Rwanda</p>
                 </div>

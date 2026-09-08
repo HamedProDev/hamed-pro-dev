@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Save, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { ImageUpload } from '@/components/ui/image-upload'
 
 export default function NewAchievementPage() {
   const router = useRouter()
@@ -15,6 +16,8 @@ export default function NewAchievementPage() {
     year: new Date().getFullYear().toString(),
     type: 'milestone' as string,
     link: '',
+    issuer: '',
+    image: '',
     order: 0,
     featured: false,
   })
@@ -65,6 +68,14 @@ export default function NewAchievementPage() {
         <div>
           <label htmlFor="ach-link" className="block text-sm font-medium text-text-secondary mb-1.5">Link (optional)</label>
           <input id="ach-link" name="link" type="url" value={form.link} onChange={e => setForm({ ...form, link: e.target.value })} className={inputClass} placeholder="https://..." />
+        </div>
+        <div>
+          <label htmlFor="ach-issuer" className="block text-sm font-medium text-text-secondary mb-1.5">Issuer (optional)</label>
+          <input id="ach-issuer" name="issuer" type="text" value={form.issuer} onChange={e => setForm({ ...form, issuer: e.target.value })} className={inputClass} placeholder="e.g. Amazon Web Services" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-secondary mb-1.5">Certificate image (optional)</label>
+          <ImageUpload value={form.image} onChange={url => setForm({ ...form, image: url })} folder="hamedpro/certificates" />
         </div>
         <div>
           <label htmlFor="ach-order" className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>

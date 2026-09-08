@@ -117,10 +117,63 @@ async function ensureAdmin() {
     .upsert({ id: user.id, email: adminEmail, name: 'Hamed Hussein', role: 'admin' }, { onConflict: 'id' })
 }
 
+// Content tables, in FK-safe delete order (children first). Profiles/auth are kept.
+const CONTENT_TABLES = [
+  'lesson_comments',
+  'user_xp_events',
+  'lesson_progress',
+  'saved_jobs',
+  'certificates',
+  'enrollments',
+  'lessons',
+  'courses',
+  'blog_posts',
+  'jobs',
+  'organizations',
+  'testimonials',
+  'contacts',
+  'newsletter_subscribers',
+  'analytics',
+  'achievements',
+  'skills',
+  'site_stats',
+  'projects',
+  'settings',
+]
+
+async function resetAll() {
+  console.log('\n⚠️  Deleting ALL content data (profiles and auth users are kept)…\n')
+  for (const table of CONTENT_TABLES) {
+    const { count, error } = await supabase
+      .from(table)
+      .delete({ count: 'exact' })
+      .gte('id', '00000000-0000-0000-0000-000000000000')
+    if (error) {
+      console.log(`• ${table}: skipped (${error.message})`)
+    } else {
+      console.log(`• ${table}: deleted ${count ?? 0}`)
+    }
+  }
+  console.log('\n✔ Content cleared. Add new content from /admin-control.\n')
+}
+
 async function main() {
+  const reset = process.argv.includes('--reset')
+  if (reset) {
+    await resetAll()
+    return
+  }
+
   console.log(`\nSeeding Supabase → ${url}\n`)
 
   await ensureAdmin()
+
+  const adminOnly = process.argv.includes('--admin-only')
+  if (adminOnly) {
+    console.log('\n✔ Admin account ensured. Skipped demo content (--admin-only).\n')
+    return
+  }
+
   await seedIfEmpty('settings', [seedSettings], 'Site settings')
   await seedIfEmpty('projects', seedProjects, 'Projects')
   await seedIfEmpty('courses', seedCourses, 'Courses')

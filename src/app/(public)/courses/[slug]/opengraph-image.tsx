@@ -8,6 +8,7 @@ export const alt = 'Course cover'
 export default async function OpenGraphImage({ params }: { params: { slug: string } }) {
   let title = 'Hamed Hussein — Free Courses'
   let category = 'Learn. Build. Get certified.'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
   try {
     const supabase = createServiceClient()
@@ -40,7 +41,8 @@ export default async function OpenGraphImage({ params }: { params: { slug: strin
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg, #7c3aed, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700 }}>HH</div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${baseUrl}/logo.svg`} width={52} height={52} style={{ borderRadius: 14 }} alt="Logo" />
           <div style={{ fontSize: 26, fontWeight: 600 }}>Hamed Hussein</div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

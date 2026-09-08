@@ -27,6 +27,9 @@
     --accent-3: #0d9488;
     --glass-bg: rgba(255, 255, 255, 0.62);
     --glass-border: rgba(255, 255, 255, 0.85);
+    --input-bg: #ffffff;
+    --input-border: rgba(15, 23, 42, 0.16);
+    --input-border-hover: rgba(15, 23, 42, 0.3);
     --shadow-color: rgba(15, 23, 42, 0.08);
     --scrollbar-track: #eef1f7;
     --scrollbar-thumb: #c7d0e4;
@@ -54,6 +57,9 @@
     --accent-3: #2dd4bf;
     --glass-bg: rgba(16, 19, 34, 0.55);
     --glass-border: rgba(255, 255, 255, 0.09);
+    --input-bg: #151a2e;
+    --input-border: rgba(255, 255, 255, 0.14);
+    --input-border-hover: rgba(255, 255, 255, 0.28);
     --shadow-color: rgba(0, 0, 0, 0.4);
     --scrollbar-track: #07080f;
     --scrollbar-thumb: #2b3050;
@@ -167,6 +173,7 @@
   select {
     appearance: none;
     -webkit-appearance: none;
+    background-color: var(--input-bg);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236a7391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;

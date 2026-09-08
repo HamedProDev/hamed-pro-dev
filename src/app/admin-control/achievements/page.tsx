@@ -25,7 +25,7 @@ export default function AdminAchievementsPage() {
   const [loading, setLoading] = useState(true)
 
   const fetchAchievements = () => {
-    fetch('/api/achievements')
+    fetch('/api/achievements?all=true')
       .then(r => r.json())
       .then(d => {
         if (d.success) setAchievements(d.data)

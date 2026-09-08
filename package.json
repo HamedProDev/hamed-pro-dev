@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "seed": "tsx scripts/seed-supabase.ts"
+    "seed": "tsx scripts/seed-supabase.ts",
+    "db:reset": "tsx scripts/seed-supabase.ts --reset",
+    "db:seed-admin": "tsx scripts/seed-supabase.ts --admin-only"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -47,6 +49,7 @@
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.0",
     "sharp": "^0.33.5",
+    "simple-icons": "^16.30.0",
     "slugify": "^1.6.6",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.4",

@@ -2,9 +2,14 @@ import { NextRequest } from 'next/server'
 import { getDocuments, createDocument } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const achievements = await getDocuments('achievements', { orderBy: { field: 'order_index', direction: 'asc' } })
+    const showAll = new URL(req.url).searchParams.get('all') === 'true'
+    const filters = showAll ? [] : [{ field: 'is_published', operator: 'eq' as const, value: true }]
+    const achievements = await getDocuments('achievements', {
+      filters,
+      orderBy: { field: 'order_index', direction: 'asc' },
+    })
     return apiSuccess(achievements)
   } catch (error: any) {
     return apiError(error.message, 500)

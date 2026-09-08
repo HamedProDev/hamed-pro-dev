@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/hooks/useAuth'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
+import { Logo } from '@/components/shared/Logo'
 
 const publicLinks = [
   { href: '/projects', label: 'Projects' },
@@ -40,9 +41,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         <SheetHeader className="border-b border-border-primary p-4">
           <SheetTitle className="text-text-primary flex items-center justify-between">
             <span className="flex items-center gap-2 font-bold">
-              <span className="h-7 w-7 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white text-xs font-bold">
-                HH
-              </span>
+              <Logo className="h-7 w-7 shrink-0" />
               Hamed<span className="gradient-text"> Hussein</span>
             </span>
             <button onClick={onClose} className="text-text-muted hover:text-text-primary" aria-label="Close menu">
@@ -90,7 +89,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           ) : (
             <>
               <Button asChild className="w-full gradient-bg">
-                <Link href="/courses" onClick={onClose}><GraduationCap className="h-4 w-4 mr-2" /> Start Learning</Link>
+                <Link href="/register" onClick={onClose}><GraduationCap className="h-4 w-4 mr-2" /> Start Learning</Link>
               </Button>
               <Button asChild variant="outline" className="w-full">
                 <Link href="/hire" onClick={onClose}><Briefcase className="h-4 w-4 mr-2" /> Hire Me</Link>

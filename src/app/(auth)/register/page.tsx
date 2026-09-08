@@ -1,11 +1,13 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Code2, Loader2, Eye, EyeOff } from 'lucide-react'
+import { ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createClient } from '@/lib/supabase/client'
+import { Logo } from '@/components/shared/Logo'
+import { toast } from 'sonner'
 
 export default function RegisterPage() {
   const [error, setError] = useState('')
@@ -40,25 +42,30 @@ export default function RegisterPage() {
 
       if (signUpError) {
         const msg = signUpError.message.toLowerCase()
+        let friendly = signUpError.message
         if (msg.includes('already registered') || msg.includes('already been registered')) {
-          setError('This email is already registered — try signing in instead.')
+          friendly = 'This email is already registered — try signing in instead.'
         } else if (msg.includes('password')) {
-          setError('Password must be at least 8 characters long.')
-        } else {
-          setError(signUpError.message)
+          friendly = 'Password must be at least 8 characters long.'
+        } else if (msg.includes('rate limit')) {
+          friendly = 'Too many attempts — wait a minute and try again.'
         }
+        setError(friendly)
+        toast.error(friendly)
         setLoading(false)
         return
       }
 
       // No session yet → email confirmation is required.
       if (!res?.session) {
-        setNotice(
-          'Account created! Check your inbox for a confirmation email, then sign in.'
-        )
+        const message = 'Account created! Check your inbox for a confirmation email, then sign in.'
+        setNotice(message)
+        toast.success('Account created! Please check your email to confirm it.')
         setLoading(false)
         return
       }
+
+      toast.success('Account created! Welcome aboard.')
 
       // Fire-and-forget welcome email (no-op if Resend isn't configured).
       fetch('/api/email/welcome', {
@@ -82,10 +89,8 @@ export default function RegisterPage() {
 
       <div className="rounded-2xl border border-border-primary bg-surface-card/80 p-8">
         <div className="text-center mb-6">
-          <Link href="/" className="inline-flex items-center justify-center gap-2 mb-3">
-            <span className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-400 flex items-center justify-center text-white font-bold shadow-sm">
-              HH
-            </span>
+          <Link href="/" className="mb-3 inline-flex justify-center">
+            <Logo className="h-10 w-10" />
           </Link>
           <h1 className="text-2xl font-bold tracking-tight">Create your account</h1>
           <p className="text-sm text-text-secondary mt-1">Join free and start learning today</p>
