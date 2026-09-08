@@ -24,8 +24,9 @@ import {
   seedTestimonials,
 } from '../src/lib/seed-data'
 
-// ---- minimal .env loader (inline env vars take precedence) -----------------
+// ---- minimal .env loader (inline env vars take precedence; last value wins) --
 function loadDotEnv(path: string) {
+  const preExisting = new Set(Object.keys(process.env))
   try {
     for (const line of readFileSync(path, 'utf8').split('\n')) {
       const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/)
@@ -35,7 +36,7 @@ function loadDotEnv(path: string) {
       if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
         value = value.slice(1, -1)
       }
-      if (!(key in process.env)) process.env[key] = value
+      if (!preExisting.has(key)) process.env[key] = value
     }
   } catch {
     /* no .env file */
