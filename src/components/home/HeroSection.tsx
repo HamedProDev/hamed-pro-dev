@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowDown, Download, Github, Linkedin, Twitter, Instagram, ExternalLink, Send } from 'lucide-react'
+import { ArrowDown, Github, Linkedin, Twitter, Instagram, Send, Briefcase, GraduationCap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const iconMap: Record<string, any> = {
@@ -75,17 +75,27 @@ export function HeroSection() {
             {settings.hero_subtitle || 'Building scalable solutions that make an impact.'}
           </motion.p>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="flex flex-wrap items-center gap-4 mb-8">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button size="lg" asChild className="gradient-bg text-white hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
-                <Link href="/projects">View My Work <ExternalLink className="ml-2 h-4 w-4" /></Link>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="flex flex-wrap items-center gap-4 mb-4">
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+              <Button size="lg" asChild className="gradient-bg text-white">
+                <Link href="/hire">Hire Me <Briefcase className="ml-2 h-4 w-4" /></Link>
               </Button>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button size="lg" variant="outline" asChild className="hover:border-blue-500/40 hover:text-blue-400 transition-all duration-300">
-                <Link href="/cv">Download CV <Download className="ml-2 h-4 w-4" /></Link>
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/courses">Learn Free & Get Certified <GraduationCap className="ml-2 h-4 w-4" /></Link>
               </Button>
             </motion.div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-8 text-sm">
+            <Link href="/projects" className="text-text-secondary hover:text-brand-primary transition-colors inline-flex items-center gap-1.5">
+              View My Work <span aria-hidden>→</span>
+            </Link>
+            <span className="text-text-muted">·</span>
+            <Link href="/cv" className="text-text-secondary hover:text-brand-primary transition-colors inline-flex items-center gap-1.5">
+              Download CV <span aria-hidden>→</span>
+            </Link>
           </motion.div>
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.4 }}>
@@ -130,7 +140,7 @@ export function HeroSection() {
               {settings.profile_photo ? (
                 <img src={settings.profile_photo} alt={settings.hero_name || 'Profile'} className="w-full h-full object-cover" />
               ) : (
-                <div className="text-6xl font-bold text-blue-500/30">HP</div>
+                <div className="text-6xl font-bold text-blue-500/30">HH</div>
               )}
             </motion.div>
 

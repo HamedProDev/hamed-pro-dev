@@ -57,7 +57,7 @@ export default function MyCoursesPage() {
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses.map((c: any) => (
-            <Link key={c.id} href={`/courses/${c.id}`}>
+            <Link key={c.id} href={`/courses/${c.slug || c.id}`}>
               <Card className="card-hover h-full">
                 <CardContent className="p-5">
                   <h3 className="font-semibold mb-1">{c.title}</h3>

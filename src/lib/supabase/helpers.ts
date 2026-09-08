@@ -158,6 +158,7 @@ export async function getCurrentUser(req: NextRequest) {
     name: profile?.name || user.email?.split('@')[0] || '',
     image: profile?.avatar_url || null,
     role: profile?.role || 'visitor',
+    bio: profile?.bio || '',
   }
 }
 

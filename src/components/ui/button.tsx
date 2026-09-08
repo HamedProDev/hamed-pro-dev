@@ -8,10 +8,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-brand-primary text-white hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/25',
+        default: 'bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-400 text-white hover:brightness-110 shadow-lg shadow-blue-500/30',
         destructive: 'bg-red-600 text-white hover:bg-red-700',
-        outline: 'border border-brand-primary text-brand-primary hover:bg-brand-primary/10',
-        secondary: 'bg-surface-tertiary text-text-primary hover:bg-surface-secondary border border-border-primary',
+        outline: 'border border-brand-primary/40 bg-brand-primary/5 backdrop-blur-md text-brand-primary hover:bg-brand-primary/10',
+        secondary: 'bg-surface-tertiary/70 backdrop-blur-md text-text-primary hover:bg-surface-secondary border border-border-primary',
         ghost: 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary',
         link: 'text-brand-primary underline-offset-4 hover:underline',
       },

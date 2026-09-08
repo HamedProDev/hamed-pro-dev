@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getDocuments, createDocument } from '@/lib/supabase/db'
+import { getDocuments, createDocument, updateDocument } from '@/lib/supabase/db'
 import { apiSuccess, apiError } from '@/lib/supabase/helpers'
 import crypto from 'crypto'
 
@@ -25,12 +25,12 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const token = searchParams.get('token')
-    if (!token) return apiError('Token required')
-    const subs = await getDocuments('newsletter_subscribers', { filters: [{ field: 'email', operator: 'eq', value: token }] })
+    const email = searchParams.get('email')
+    if (!email) return apiError('Email is required')
+    const subs = await getDocuments('newsletter_subscribers', { filters: [{ field: 'email', operator: 'eq', value: email }] })
     const sub = subs[0]
-    if (!sub) return apiError('Invalid token', 404)
-    await createDocument('newsletter_subscribers', { email: sub.email, is_active: true })
+    if (!sub) return apiError('Subscriber not found', 404)
+    await updateDocument('newsletter_subscribers', sub.id, { is_active: false })
     return apiSuccess(null, 'Unsubscribed successfully')
   } catch (error: any) {
     return apiError(error.message, 500)

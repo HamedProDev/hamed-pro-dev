@@ -33,11 +33,11 @@ export function Navbar() {
       <header className="fixed top-0 z-50 w-full border-b border-border-primary bg-surface-primary/80 backdrop-blur-xl">
         <div className="container-wide flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
-            <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
-              HP
+            <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/30">
+              HH
             </span>
             <span>
-              Hamed<span className="text-blue-500">Pro</span>
+              Hamed<span className="gradient-text"> Hussein</span>
             </span>
           </Link>
 

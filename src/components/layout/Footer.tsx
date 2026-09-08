@@ -90,11 +90,11 @@ export function Footer() {
               href="/"
               className="flex items-center gap-2 font-bold text-xl text-text-primary mb-4"
             >
-              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
-                HP
+              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/30">
+                HH
               </span>
               <span>
-                Hamed<span className="text-blue-500">Pro</span>
+                Hamed<span className="gradient-text"> Hussein</span>
               </span>
             </Link>
             <p className="text-sm text-text-secondary mb-3">
@@ -188,7 +188,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-border-primary flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-text-muted">
-            &copy; {new Date().getFullYear()} {settings.site_name || 'HamedProDev'}. All rights
+            &copy; {new Date().getFullYear()} {settings.site_name || 'Hamed Hussein'}. All rights
             reserved.
           </p>
           <div className="flex items-center gap-4 text-xs text-text-muted">

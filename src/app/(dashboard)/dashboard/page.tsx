@@ -15,13 +15,14 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (user) {
-      fetch('/api/users/me').then(r => r.json()).then(d => {
-        if (d.data) {
-          setStats({
-            courses: d.data.enrolledCourses?.length || 0,
-            certs: 0,
-          })
-        }
+      Promise.all([
+        fetch('/api/enrollments').then(r => r.json()),
+        fetch('/api/certificates/me').then(r => r.json()),
+      ]).then(([enr, certs]) => {
+        setStats({
+          courses: enr.data?.length || 0,
+          certs: certs.data?.length || 0,
+        })
       }).catch(() => {})
     }
   }, [user])
@@ -61,19 +62,22 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid md:grid-cols-1 gap-6 mb-8">
+      <div className="grid md:grid-cols-2 gap-6 mb-8">
         {[
           { icon: BookMarked, label: 'My Courses', value: stats.courses, color: 'text-brand-primary', bg: 'bg-brand-primary/10', href: '/my-courses' },
+          { icon: Award, label: 'Certificates', value: stats.certs, color: 'text-green-500', bg: 'bg-green-500/10', href: '/certificates' },
         ].map((s, i) => (
           <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-            <Card className="card-hover"><CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className={cn('h-10 w-10 rounded-lg flex items-center justify-center', s.bg)}><s.icon className={cn('h-5 w-5', s.color)} /></div>
-                <ArrowRight className="h-4 w-4 text-text-muted" />
-              </div>
-              <h3 className="text-2xl font-bold mb-1">{s.value}</h3>
-              <p className="text-sm text-text-muted">{s.label}</p>
-            </CardContent></Card>
+            <Link href={s.href}>
+              <Card className="card-hover"><CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={cn('h-10 w-10 rounded-lg flex items-center justify-center', s.bg)}><s.icon className={cn('h-5 w-5', s.color)} /></div>
+                  <ArrowRight className="h-4 w-4 text-text-muted" />
+                </div>
+                <h3 className="text-2xl font-bold mb-1">{s.value}</h3>
+                <p className="text-sm text-text-muted">{s.label}</p>
+              </CardContent></Card>
+            </Link>
           </motion.div>
         ))}
       </div>

@@ -76,7 +76,7 @@ export default function AboutPage() {
             <Badge className="mb-4 bg-brand-primary/10 text-brand-primary border-brand-primary/20">👋 About Me</Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Hi, I&apos;m <span className="gradient-text">{settings.hero_name || 'Hamed Hussein'}</span></h1>
             <p className="text-lg text-text-secondary mb-4">{settings.hero_title || 'Senior Fullstack Developer from Kigali, Rwanda'}</p>
-            <p className="text-text-secondary mb-6">{settings.description || 'I build modern web applications, mobile apps, and AI-powered solutions. Passionate about creating technology that makes a difference in Africa and beyond.'}</p>
+            <p className="text-text-secondary mb-6">{settings.description || 'I build modern web applications, mobile apps, and AI-powered solutions. Passionate about creating technology that makes a difference in Africa and beyond. You can find me online as @hamedprodev.'}</p>
             <div className="flex flex-wrap items-center gap-4 text-sm text-text-muted mb-6">
               <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {settings.location || 'Kigali, Rwanda'}</span>
               <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" /> Available for work</span>
@@ -94,7 +94,7 @@ export default function AboutPage() {
             </div>
             <div className="flex gap-3">
               <Button asChild className="gradient-bg text-white"><Link href="/contact">Contact Me <ArrowRight className="h-4 w-4 ml-1" /></Link></Button>
-              <Button asChild variant="outline"><a href="#"><Download className="h-4 w-4 mr-1" /> Download CV</a></Button>
+              <Button asChild variant="outline"><Link href="/cv"><Download className="h-4 w-4 mr-1" /> Download CV</Link></Button>
             </div>
           </div>
           <div className="relative flex justify-center">
@@ -136,7 +136,7 @@ export default function AboutPage() {
             <div>
               <h2 className="text-xl font-semibold mb-4">My Journey</h2>
               <div className="space-y-4 text-text-secondary">
-                <p>{settings.description || 'I started my programming journey in university, building simple websites and falling in love with the power of code. Over the past 5+ years, I\'ve evolved into a fullstack developer with expertise spanning frontend frameworks, backend systems, cloud infrastructure, and AI/ML.'}</p>
+                <p>{settings.description || 'I started my programming journey in university, building simple websites and falling in love with the power of code. Over the past 5+ years, I\'ve evolved into a fullstack developer with expertise spanning frontend frameworks, backend systems, cloud infrastructure, and AI/ML. You can find me online as @hamedprodev.'}</p>
                 <p>Based in {settings.location || 'Kigali, Rwanda'}, I&apos;m passionate about building technology that solves real problems in Africa. From agricultural marketplaces to enterprise management systems, I focus on creating solutions that are both technically excellent and impactful.</p>
               </div>
             </div>

@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    await requireAdmin(req)
     const body = await req.json()
     const supabase = createServiceClient()
 
@@ -46,6 +47,6 @@ export async function POST(req: NextRequest) {
       email: body.email,
     }, 'User created')
   } catch (error: any) {
-    return apiError(error.message, 500)
+    return apiError(error.message, error.message === 'Unauthorized' ? 401 : 500)
   }
 }

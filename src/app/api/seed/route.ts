@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { createDocument, countDocuments } from '@/lib/supabase/db'
+import { requireAdmin } from '@/lib/supabase/helpers'
 
 const AUTH_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1`
 
@@ -18,15 +20,32 @@ async function authFetch(path: string, options: RequestInit = {}) {
   return data
 }
 
-export async function POST() {
+export async function POST(req: NextRequest) {
   try {
+    // Gate seeding: require a shared secret header (SEED_SECRET) or an authenticated admin.
+    const seedSecret = process.env.SEED_SECRET
+    const provided = req.headers.get('x-seed-secret')
+    if (seedSecret && provided === seedSecret) {
+      // authorized via secret
+    } else {
+      try {
+        await requireAdmin(req)
+      } catch {
+        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+      }
+    }
+
     const results: string[] = []
 
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return NextResponse.json({ success: false, error: 'Missing Supabase env vars.' }, { status: 500 })
     }
 
-    const adminEmail = 'hamussein01@gmail.com'
+    const adminEmail = process.env.ADMIN_EMAIL || 'hamussein01@gmail.com'
+    const adminPassword = process.env.ADMIN_PASSWORD || ''
+    if (!adminPassword) {
+      return NextResponse.json({ success: false, error: 'ADMIN_PASSWORD env var is required to seed.' }, { status: 500 })
+    }
     let adminUser: any = null
 
     const usersData = await authFetch('/admin/users')
@@ -45,7 +64,7 @@ export async function POST() {
         method: 'POST',
         body: JSON.stringify({
           email: adminEmail,
-          password: '@He00Ri#Ga4Da',
+          password: adminPassword,
           email_confirm: true,
           user_metadata: { display_name: 'Hamed Hussein' },
           app_metadata: { role: 'admin' },
@@ -98,9 +117,9 @@ export async function POST() {
     const settingsCount = await countDocuments('settings')
     if (settingsCount === 0) {
       await createDocument('settings', {
-        site_name: 'HamedProDev',
+        site_name: 'Hamed Hussein',
         tagline: 'Fullstack & AI/ML Developer',
-        description: 'I build modern web applications, mobile apps, and AI-powered solutions. Passionate about creating technology that makes a difference in Africa and beyond.',
+        description: 'I build modern web applications, mobile apps, and AI-powered solutions. Passionate about creating technology that makes a difference in Africa and beyond. You can find me online as @hamedprodev.',
         hero_name: 'Hamed Hussein',
         hero_title: 'Full Stack Developer & AI Engineer',
         hero_subtitle: 'Building scalable solutions that make an impact.',
@@ -203,7 +222,7 @@ export async function POST() {
       results.push(`${testimonialCount} testimonials exist`)
     }
 
-    return NextResponse.json({ success: true, data: { results, loginUrl: '/login', credentials: { email: adminEmail, password: '@He00Ri#Ga4Da' } } })
+    return NextResponse.json({ success: true, data: { results, loginUrl: '/login' } })
   } catch (error: any) {
     const message = typeof error?.message === 'string' ? error.message : JSON.stringify(error)
     return NextResponse.json({ success: false, error: message }, { status: 500 })

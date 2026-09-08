@@ -1,9 +1,17 @@
 const { MongoClient } = require('mongodb')
 const bcrypt = require('bcryptjs')
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://hamedprodev:@He00Ri%23Ga4Da@hamedprodev.aiwnhac.mongodb.net/hamedpro_dev?appName=HamedProDev'
+// NOTE: This is a legacy MongoDB seeder. The app now uses Supabase.
+// Credentials were previously hardcoded here (leaked). They have been removed —
+// this script now requires explicit env vars and will not run otherwise.
+const MONGODB_URI = process.env.MONGODB_URI
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
 async function seed() {
+  if (!MONGODB_URI || !ADMIN_PASSWORD) {
+    console.error('MONGODB_URI and ADMIN_PASSWORD env vars are required.')
+    process.exit(1)
+  }
   const client = new MongoClient(MONGODB_URI)
   try {
     await client.connect()
@@ -11,7 +19,7 @@ async function seed() {
     console.log('Connected to MongoDB')
 
     // 1. Create admin user
-    const hashedPassword = await bcrypt.hash('@He00Ri#Ga4Da', 12)
+    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD || '', 12)
     const adminEmail = 'hamedpro.work@gmail.com'
 
     let adminUser = await db.collection('users').findOne({ email: adminEmail })
@@ -97,7 +105,7 @@ async function seed() {
     console.log('\n🎉 Seeding complete!')
     console.log('Login credentials:')
     console.log('  Email: hamedpro.work@gmail.com')
-    console.log('  Password: @He00Ri#Ga4Da')
+    console.log('  Password: (set via ADMIN_PASSWORD env var)')
   } catch (error) {
     console.error('❌ Seeding error:', error)
   } finally {

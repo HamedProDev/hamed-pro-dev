@@ -3,7 +3,7 @@ export function WebSiteJsonLd() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'HamedProDev',
+    name: 'Hamed Hussein',
     url: baseUrl,
     description: 'Personal developer ecosystem of Hamed Hussein — Fullstack & AI/ML Engineer',
     author: { '@type': 'Person', name: 'Hamed Hussein' },

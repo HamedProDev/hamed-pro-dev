@@ -20,7 +20,7 @@ const inter = localFont({
 })
 
 export const metadata: Metadata = {
-  title: { default: 'HamedProDev — Fullstack & AI/ML Engineer', template: '%s | HamedProDev' },
+  title: { default: 'Hamed Hussein — Fullstack & AI/ML Engineer', template: '%s | Hamed Hussein' },
   description: 'Personal developer ecosystem of Hamed Hussein — Fullstack & AI/ML Engineer based in Kigali, Rwanda. Building innovative solutions for Africa and beyond.',
   keywords: ['Hamed Hussein', 'Fullstack Developer', 'AI/ML Engineer', 'Rwanda', 'Kigali', 'React', 'Next.js', 'Python', 'Kwanda Facility'],
   authors: [{ name: 'Hamed Hussein' }],
@@ -30,14 +30,14 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: '/',
-    siteName: 'HamedProDev',
-    title: 'HamedProDev — Fullstack & AI/ML Engineer',
+    siteName: 'Hamed Hussein',
+    title: 'Hamed Hussein — Fullstack & AI/ML Engineer',
     description: 'Personal developer ecosystem of Hamed Hussein — building innovative solutions from Kigali, Rwanda.',
     images: [{ url: '/og/default.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'HamedProDev — Fullstack & AI/ML Engineer',
+    title: 'Hamed Hussein — Fullstack & AI/ML Engineer',
     description: 'Personal developer ecosystem of Hamed Hussein — building innovative solutions from Kigali, Rwanda.',
     creator: '@hamedProDev',
     images: ['/og/default.png'],
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#6366f1',
+  themeColor: '#4f7cff',
   width: 'device-width',
   initialScale: 1,
 }

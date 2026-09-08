@@ -3,12 +3,13 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
-import { Loader2, ArrowLeft, ArrowRight, CheckCircle, XCircle, ChevronLeft, ChevronRight, Youtube, FileText, BookOpen, HelpCircle, Check, X } from 'lucide-react'
+import { Loader2, ArrowLeft, ArrowRight, CheckCircle, XCircle, ChevronLeft, ChevronRight, Youtube, FileText, BookOpen, HelpCircle, Check, X, Award, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 const typeIcons: Record<string, any> = { video: Youtube, text: FileText, quiz: HelpCircle, mixed: BookOpen }
 const typeLabels: Record<string, string> = { video: 'Video', text: 'Text', quiz: 'Quiz', mixed: 'Mixed' }
@@ -18,6 +19,7 @@ export default function LessonPage() {
   const router = useRouter()
   const slug = params?.slug as string
   const lessonId = params?.lessonId as string
+  const { user } = useAuth()
   const [course, setCourse] = useState<any>(null)
   const [lessons, setLessons] = useState<any[]>([])
   const [lesson, setLesson] = useState<any>(null)
@@ -25,6 +27,9 @@ export default function LessonPage() {
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [submitted, setSubmitted] = useState<Record<number, boolean>>({})
   const [showResources, setShowResources] = useState(false)
+  const [marking, setMarking] = useState(false)
+  const [done, setDone] = useState(false)
+  const [certificate, setCertificate] = useState<string | null>(null)
 
   useEffect(() => {
     if (!slug) return
@@ -77,6 +82,48 @@ export default function LessonPage() {
       delete n[qIdx]
       return n
     })
+  }
+
+  const getEnrollment = async () => {
+    const res = await fetch('/api/enrollments').then(r => r.json())
+    const list = res.data || []
+    let enrollment = list.find((e: any) => e.course_id === course?.id)
+    if (!enrollment && course) {
+      const created = await fetch('/api/enrollments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId: course.id }),
+      }).then(r => r.json())
+      enrollment = created.data
+    }
+    return enrollment
+  }
+
+  const completeCurrentLesson = async () => {
+    if (!user || !course) return
+    setMarking(true)
+    try {
+      const enrollment = await getEnrollment()
+      if (!enrollment) return
+      const res = await fetch(`/api/enrollments/${enrollment.id}/progress`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lessonId: lesson.id, completed: true }),
+      }).then(r => r.json())
+      const enrollmentState = res.data?.enrollment
+      if (enrollmentState?.status === 'completed') {
+        const certs = await fetch('/api/certificates/me').then(r => r.json())
+        setCertificate(certs.data?.[0]?.certificate_number || null)
+      }
+      setDone(true)
+    } catch {}
+    setMarking(false)
+  }
+
+  const handleNext = async () => {
+    await completeCurrentLesson()
+    if (nextLesson) router.push(`/courses/${slug}/lessons/${nextLesson.id}`)
+    else router.push('/certificates')
   }
 
   return (
@@ -207,6 +254,42 @@ export default function LessonPage() {
           </Card>
         )}
 
+        {user && (
+          <div className="flex items-center justify-between gap-4 mb-6 p-4 rounded-xl border border-border-primary bg-surface-secondary/60 backdrop-blur-md">
+            <div className="flex items-center gap-3 text-sm">
+              {done || certificate ? (
+                <span className="flex items-center gap-2 text-green-500"><CheckCircle className="h-4 w-4" /> Lesson completed</span>
+              ) : (
+                <span className="text-text-secondary">Mark this lesson as complete to track your progress.</span>
+              )}
+            </div>
+            {!done && !certificate && (
+              <Button size="sm" variant="outline" onClick={completeCurrentLesson} disabled={marking}>
+                {marking ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Check className="h-3.5 w-3.5 mr-1" />} Mark Complete
+              </Button>
+            )}
+          </div>
+        )}
+
+        {certificate && (
+          <Card className="mb-8 border-green-500/30 bg-green-500/5">
+            <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 rounded-full bg-green-500/20 flex items-center justify-center">
+                  <Award className="h-6 w-6 text-green-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-text-primary">🎉 Course completed!</h3>
+                  <p className="text-sm text-text-secondary">Your certificate is ready.</p>
+                </div>
+              </div>
+              <Button asChild className="gradient-bg text-white">
+                <Link href="/certificates"><Download className="h-4 w-4 mr-2" /> View Certificate</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="flex items-center justify-between pt-6 border-t border-border-primary">
           <div>
             {prevLesson ? (
@@ -221,12 +304,12 @@ export default function LessonPage() {
           </div>
           <div>
             {nextLesson ? (
-              <Button className="gradient-bg text-white" asChild>
-                <Link href={`/courses/${slug}/lessons/${nextLesson.id}`}>Next: {nextLesson.title} <ChevronRight className="h-4 w-4 ml-1" /></Link>
+              <Button className="gradient-bg text-white" onClick={handleNext} disabled={marking}>
+                {marking ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null} Next: {nextLesson.title} <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             ) : (
-              <Button className="gradient-bg text-white" asChild>
-                <Link href={`/courses/${slug}`}>Complete Course <Check className="h-4 w-4 ml-1" /></Link>
+              <Button className="gradient-bg text-white" onClick={handleNext} disabled={marking}>
+                {marking ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null} {user ? 'Finish Course & Get Certificate' : 'Complete Course'} <Check className="h-4 w-4 ml-1" />
               </Button>
             )}
           </div>

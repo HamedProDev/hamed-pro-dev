@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
-const SITE_NAME = 'HamedProDev'
-const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedpro.rw'
+const SITE_NAME = 'Hamed Hussein'
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedprodev.vercel.app'
 
 interface SeoParams {
   title?: string
