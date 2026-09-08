@@ -1,9 +1,17 @@
 # Database Plan — Hamed Hussein
 
-> **Status: PROPOSAL. Nothing has been applied to any live database and nothing
-> will be pushed.** This documents the intended schema changes to support (1) the
-> hiring/portfolio audience and (2) the students-learn-and-get-free-certificates
-> audience, plus fixes for the inconsistencies found in `ANALYSIS.md`.
+> **Status: push authorized (2026-09-08); SQL prepared but NOT yet applied to the
+> live database.** The code and one combined migration are now committed and
+> pushed. Applying the schema still requires (1) the real `SUPABASE_SERVICE_ROLE_KEY`
+> (currently a placeholder — it was rotated out of the repo) and (2) network egress
+> to `*.supabase.co`, which the sandbox blocks. This doc documents the intended
+> schema changes to support (1) the hiring/portfolio audience and (2) the
+> students-learn-and-get-free-certificates audience, plus fixes for the
+> inconsistencies found in `ANALYSIS.md`.
+>
+> **One-file setup:** `supabase/apply-2026-09-08.sql` is the full, idempotent
+> migration (base schema + learning/certificate tables). Paste it in Supabase
+> Dashboard → SQL Editor → Run.
 
 ---
 
