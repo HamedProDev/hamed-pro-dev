@@ -47,11 +47,15 @@ npm run dev               # http://localhost:3000
 ## Database Setup
 
 1. Open **Supabase Dashboard → SQL Editor**.
-2. Run `supabase/schema.sql` to create the base tables and RLS policies.
+2. Run **`supabase/apply-2026-09-08.sql`** — the full, idempotent migration
+   (base tables + RLS + enrollments/lesson_progress/certificates/saved_jobs +
+   gamification + referrals + project detail fields). One paste, safe to re-run.
 3. Run `supabase/storage-policies.sql` to set up the `uploads` bucket.
-4. Run `supabase/plan/2026-09-08_learning_and_fixes.sql` to add the
-   **enrollments / lesson_progress / certificates / saved_jobs** tables and
-   schema fixes (tags type, `is_admin()`, public policies, self-edit profile).
+4. (Optional, if you prefer the step-by-step originals instead of the combined
+   file: `supabase/schema.sql` then
+   `supabase/plan/2026-09-08_learning_and_fixes.sql`.)
+5. Set `SUPABASE_SERVICE_ROLE_KEY` in your environment (Vercel env var + local
+   `.env`). The placeholder in the repo was intentionally rotated out.
 
 ## Seeding
 
