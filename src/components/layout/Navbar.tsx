@@ -3,17 +3,17 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, Moon, Sun } from 'lucide-react'
+import { Menu, Moon, Sun, LogIn } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { MobileNav } from './MobileNav'
 import { UserMenu } from './UserMenu'
+import { useAuth } from '@/lib/hooks/useAuth'
 import { cn } from '@/lib/utils/cn'
 
 const navLinks = [
   { href: '/projects', label: 'Projects' },
   { href: '/courses', label: 'Courses' },
-  { href: '/startups', label: 'Startups / Orgs' },
   { href: '/skills', label: 'Skills' },
   { href: '/achievements', label: 'Achievements' },
   { href: '/about', label: 'About' },
@@ -25,60 +25,79 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => setMounted(true), [])
 
   return (
     <>
-      <header className="fixed top-0 z-50 w-full border-b border-border-primary bg-surface-primary/80 backdrop-blur-xl">
-        <div className="container-wide flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
-            <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/30">
-              HH
-            </span>
-            <span>
-              Hamed<span className="gradient-text"> Hussein</span>
-            </span>
-          </Link>
+      <header className="fixed top-0 z-50 w-full">
+        <div className="border-b border-white/10 bg-[rgba(9,11,28,0.55)] backdrop-blur-2xl">
+          {/* glowing underline */}
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
+          <div className="container-wide flex h-16 items-center justify-between">
+            <Link href="/" className="flex items-center gap-2 font-bold text-xl text-text-primary">
+              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/30">
+                HH
+              </span>
+              <span>
+                Hamed<span className="gradient-text"> Hussein</span>
+              </span>
+            </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                  pathname === link.href || pathname.startsWith(link.href + '/')
-                    ? 'text-blue-500 bg-blue-500/10'
-                    : 'text-text-secondary hover:text-text-primary'
-                )}
+            <nav className="hidden md:flex items-center gap-1">
+              {navLinks.map(link => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    'px-3.5 py-2 rounded-full text-sm font-medium transition-all',
+                    pathname === link.href || pathname.startsWith(link.href + '/')
+                      ? 'text-white bg-blue-500/15 border border-blue-500/30 shadow-[0_0_20px_rgba(79,124,255,0.25)]'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="h-8 w-8 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
+                aria-label="Toggle theme"
               >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+                {mounted ? (theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />) : <div className="h-4 w-4" />}
+              </button>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="h-8 w-8 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-tertiary transition-all"
-            >
-              {mounted ? (theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />) : <div className="h-4 w-4" />}
-            </button>
-            <Button asChild className="hidden md:flex gradient-bg text-white hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200">
-              <Link href="/hire">Hire Me</Link>
-            </Button>
-            <div className="hidden md:block ml-1">
-              <UserMenu />
+              {isAuthenticated ? (
+                <div className="hidden md:block ml-1">
+                  <UserMenu />
+                </div>
+              ) : (
+                <Button variant="ghost" size="sm" asChild className="hidden md:inline-flex">
+                  <Link href="/login"><LogIn className="h-4 w-4 mr-1.5" /> Sign in</Link>
+                </Button>
+              )}
+
+              <Button variant="outline" size="sm" asChild className="hidden md:inline-flex hover:shadow-glow-sm">
+                <Link href="/hire">Hire Me</Link>
+              </Button>
+
+              <Button size="sm" asChild className="hidden md:inline-flex gradient-bg">
+                <Link href="/courses">Start Learning</Link>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden"
+                onClick={() => setMobileOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setMobileOpen(true)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
           </div>
         </div>
       </header>

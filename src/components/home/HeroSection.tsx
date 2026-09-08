@@ -115,7 +115,7 @@ export function HeroSection() {
                     transition={{ delay: 0.5 + i * 0.08, type: 'spring', stiffness: 300, damping: 15 }}
                     whileHover={{ scale: 1.15, y: -3 }}
                     whileTap={{ scale: 0.9 }}
-                    className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/5 text-text-secondary hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200 shadow-md shadow-transparent hover:shadow-blue-500/10"
+                    className="flex items-center justify-center h-10 w-10 rounded-full bg-white/5 text-text-secondary hover:bg-blue-500/20 hover:text-blue-400 transition-all duration-200 shadow-md shadow-transparent hover:shadow-blue-500/10"
                   >
                     <Icon className="h-4 w-4" />
                   </motion.a>
@@ -135,7 +135,7 @@ export function HeroSection() {
             <motion.div
               animate={{ scale: [1, 1.02, 1] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-surface-card via-surface-tertiary to-surface-secondary border-2 border-blue-500/20 overflow-hidden flex items-center justify-center shadow-2xl shadow-blue-500/10"
+              className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-surface-card via-surface-tertiary to-surface-secondary glow-border overflow-hidden flex items-center justify-center shadow-2xl shadow-blue-500/10"
             >
               {settings.profile_photo ? (
                 <img src={settings.profile_photo} alt={settings.hero_name || 'Profile'} className="w-full h-full object-cover" />
@@ -149,7 +149,7 @@ export function HeroSection() {
                 <div className="animate-float" style={{ animationDelay: `${i * 0.5}s` }}>
                   <motion.div
                     whileHover={{ scale: 1.1, y: -3 }}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border-primary bg-surface-card/90 backdrop-blur-sm shadow-lg cursor-default"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-full glass glow-border shadow-lg cursor-default"
                   >
                     <span className={`h-7 w-7 rounded-lg ${badge.color} flex items-center justify-center text-xs font-bold`}>{badge.icon}</span>
                     <span className="text-sm font-medium text-text-primary whitespace-nowrap">{badge.name}</span>

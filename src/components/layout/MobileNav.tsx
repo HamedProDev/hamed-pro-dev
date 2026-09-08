@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { X, LogIn, UserPlus } from 'lucide-react'
+import { X, LogIn, GraduationCap, Briefcase } from 'lucide-react'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -11,7 +11,6 @@ import { cn } from '@/lib/utils/cn'
 const navLinks = [
   { href: '/projects', label: 'Projects' },
   { href: '/courses', label: 'Courses' },
-  { href: '/startups', label: 'Startups / Orgs' },
   { href: '/skills', label: 'Skills' },
   { href: '/achievements', label: 'Achievements' },
   { href: '/about', label: 'About' },
@@ -29,10 +28,21 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-[280px] p-0 bg-surface-primary">
-        <SheetHeader className="border-b border-border-primary p-4">
-          <SheetTitle className="text-text-primary">Navigation</SheetTitle>
+      <SheetContent side="right" className="w-[300px] p-0 border-l border-white/10 bg-[rgba(9,11,28,0.9)] backdrop-blur-2xl">
+        <SheetHeader className="border-b border-white/10 p-4">
+          <SheetTitle className="text-text-primary flex items-center justify-between">
+            <span className="flex items-center gap-2 font-bold">
+              <span className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">
+                HH
+              </span>
+              Hamed<span className="gradient-text"> Hussein</span>
+            </span>
+            <button onClick={onClose} className="text-text-muted hover:text-text-primary" aria-label="Close menu">
+              <X className="h-5 w-5" />
+            </button>
+          </SheetTitle>
         </SheetHeader>
+
         <nav className="flex flex-col p-4 gap-1">
           {navLinks.map(link => (
             <Link
@@ -40,43 +50,50 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               href={link.href}
               onClick={onClose}
               className={cn(
-                'px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                'px-4 py-3 rounded-full text-sm font-medium transition-colors',
                 pathname === link.href
-                  ? 'text-blue-500 bg-blue-500/10'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary'
+                  ? 'text-white bg-blue-500/15 border border-blue-500/30'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
               )}
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <div className="border-t border-border-primary p-4 mt-auto">
+
+        <div className="border-t border-white/10 p-4 mt-auto space-y-2">
           {isAuthenticated ? (
-            <div className="space-y-2">
-              <Link href="/dashboard" onClick={onClose} className="block px-4 py-3 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-tertiary">
+            <>
+              <Link href="/dashboard" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5">
                 Dashboard
               </Link>
-              <Link href="/my-courses" onClick={onClose} className="block px-4 py-3 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-tertiary">
+              <Link href="/my-courses" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5">
                 My Courses
               </Link>
+              <Link href="/certificates" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5">
+                Certificates
+              </Link>
               {user?.role === 'admin' && (
-                <Link href="/admin-control" onClick={onClose} className="block px-4 py-3 rounded-lg text-sm font-medium text-blue-500 hover:bg-blue-500/10">
+                <Link href="/admin-control" onClick={onClose} className="block px-4 py-3 rounded-full text-sm font-medium text-blue-400 hover:bg-blue-500/10">
                   Admin Panel
                 </Link>
               )}
               <Button variant="ghost" className="w-full justify-start" onClick={() => { signOut(); onClose() }}>
                 Sign Out
               </Button>
-            </div>
+            </>
           ) : (
-            <div className="space-y-2">
-              <Button asChild className="w-full gradient-bg text-white">
-                <Link href="/register" onClick={onClose}><UserPlus className="h-4 w-4 mr-2" /> Sign Up</Link>
+            <>
+              <Button asChild className="w-full gradient-bg">
+                <Link href="/courses" onClick={onClose}><GraduationCap className="h-4 w-4 mr-2" /> Start Learning</Link>
               </Button>
               <Button asChild variant="outline" className="w-full">
-                <Link href="/login" onClick={onClose}><LogIn className="h-4 w-4 mr-2" /> Sign In</Link>
+                <Link href="/hire" onClick={onClose}><Briefcase className="h-4 w-4 mr-2" /> Hire Me</Link>
               </Button>
-            </div>
+              <Button asChild variant="ghost" className="w-full">
+                <Link href="/login" onClick={onClose}><LogIn className="h-4 w-4 mr-2" /> Sign in</Link>
+              </Button>
+            </>
           )}
         </div>
       </SheetContent>

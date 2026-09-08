@@ -11,16 +11,7 @@ export function UserMenu() {
   const { user, isAuthenticated, isAdmin, signOut } = useAuth()
 
   if (!isAuthenticated) {
-    return (
-      <div className="hidden md:flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/login">Sign In</Link>
-        </Button>
-        <Button size="sm" className="gradient-bg text-white" asChild>
-          <Link href="/register">Sign Up</Link>
-        </Button>
-      </div>
-    )
+    return null
   }
 
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'

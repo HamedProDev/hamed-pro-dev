@@ -11,16 +11,16 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: '#3B82F6',
-          secondary: '#2563EB',
-          accent: '#60A5FA',
+          primary: '#4f7cff',
+          secondary: '#8b5cf6',
+          accent: '#22d3ee',
         },
         dark: {
-          900: '#0a0a1a',
-          800: '#0f0f2a',
-          700: '#151535',
-          600: '#1a1a40',
-          500: '#252560',
+          900: '#05060f',
+          800: '#090b1c',
+          700: '#10132e',
+          600: '#161a3a',
+          500: '#1e2350',
         },
         text: {
           primary: 'var(--text-heading)',
@@ -34,6 +34,12 @@ const config: Config = {
           card: 'var(--bg-card)',
         },
       },
+      boxShadow: {
+        'glow-sm': '0 0 24px rgba(79, 124, 255, 0.35)',
+        glow: '0 0 44px rgba(79, 124, 255, 0.45)',
+        'glow-violet': '0 0 44px rgba(139, 92, 246, 0.45)',
+        glass: '0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.09)',
+      },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-jetbrains)', 'Fira Code', 'monospace'],
@@ -44,6 +50,8 @@ const config: Config = {
         'slide-up': 'slideUp 0.5s ease-out',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         blink: 'blink 1s step-end infinite',
+        'spin-slow': 'spin 6s linear infinite',
+        aurora: 'aurora 26s ease-in-out infinite alternate',
       },
       keyframes: {
         fadeIn: {
@@ -57,6 +65,11 @@ const config: Config = {
         blink: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' },
+        },
+        aurora: {
+          '0%': { transform: 'translate(-3%, -2%) rotate(0deg) scale(1)' },
+          '50%': { transform: 'translate(3%, 2%) rotate(6deg) scale(1.08)' },
+          '100%': { transform: 'translate(-2%, 3%) rotate(-4deg) scale(1.04)' },
         },
       },
     },
