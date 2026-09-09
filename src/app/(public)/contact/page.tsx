@@ -45,11 +45,15 @@ export default function ContactPage() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [form, setForm] = useState({ name: '', email: '', subject: '', reason: '', message: '' })
   const [contactInfo, setContactInfo] = useState(() => buildContactInfo())
+  const [successMessage, setSuccessMessage] = useState("Message sent successfully! I'll get back to you soon.")
 
   // Load admin-configured contact details (falls back to defaults on failure).
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(d => {
-      if (d.success && d.data) setContactInfo(buildContactInfo(d.data))
+      if (d.success && d.data) {
+        setContactInfo(buildContactInfo(d.data))
+        if (d.data.contact_success_message) setSuccessMessage(d.data.contact_success_message)
+      }
     }).catch(() => {})
   }, [])
 
@@ -136,6 +140,7 @@ export default function ContactPage() {
                   <Button type="submit" disabled={formState === 'submitting'} className="w-full gradient-bg text-white py-6 text-base">
                     {formState === 'submitting' ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</> : formState === 'success' ? <><CheckCircle2 className="h-4 w-4 mr-2" /> Message Sent!</> : <><Send className="h-4 w-4 mr-2" /> Send Message</>}
                   </Button>
+                  {formState === 'success' && <p className="text-green-400 text-sm text-center">{successMessage}</p>}
                   {formState === 'error' && <p className="text-red-400 text-sm text-center">Something went wrong. Please try again.</p>}
                 </form>
               </CardContent>

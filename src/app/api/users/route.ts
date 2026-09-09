@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
   try {
     await requireAdmin(req)
     const body = await req.json()
+    if (!body.email || !body.password) return apiError('Email and password are required', 400)
     const supabase = createServiceClient()
 
     const { data, error } = await supabase.auth.admin.createUser({
@@ -48,6 +49,19 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       return apiError(error.message === 'User already registered' ? 'Email already registered' : error.message, 409)
+    }
+
+    // Ensure the profile row exists even if the handle_new_user trigger is
+    // missing/broken — the whole app keys off profiles.role.
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .upsert(
+        { id: data.user.id, email: body.email, name: body.name || body.email.split('@')[0], role: 'visitor' },
+        { onConflict: 'id' }
+      )
+    if (profileError) {
+      console.error('[users] profile row could not be created for', body.email, profileError)
+      return apiSuccess({ id: data.user.id, name: body.name, email: body.email }, 'User created (profile row missing — check handle_new_user trigger)')
     }
 
     return apiSuccess({

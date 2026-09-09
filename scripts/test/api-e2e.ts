@@ -12,7 +12,7 @@ process.env.NEXT_PUBLIC_SERVICE_ROLE_KEY = 'test-service-key'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-key'
 process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
 
-import { createMockServer, seedProfiles, rows, ADMIN_ID, STUDENT_ID } from './mock-supabase'
+import { createMockServer, seedProfiles, rows, authUsers, storageFiles, ADMIN_ID, STUDENT_ID } from './mock-supabase'
 
 let passed = 0
 let failed = 0
@@ -63,6 +63,14 @@ async function main() {
   await testContact()
   console.log('\n========== OTHER ADMIN ENTITIES ==========')
   await testOtherEntities()
+  console.log('\n========== USERS (admin full control) ==========')
+  await testUsersAdmin()
+  console.log('\n========== NEWSLETTER (admin) ==========')
+  await testNewsletterAdmin()
+  console.log('\n========== COMMENTS (post → moderate) ==========')
+  await testCommentsModeration()
+  console.log('\n========== CERTIFICATE VERIFY + MEDIA + MISC ==========')
+  await testMisc()
   server.close()
 
   console.log(`\n========== RESULTS: ${passed} passed, ${failed} failed ==========`)
@@ -385,6 +393,160 @@ async function testOtherEntities() {
   check('newsletter subscribe', (await jsonOf(n1))?.success)
   const n2 = await newsPost(req('/api/newsletter', { method: 'POST', body: { email: 'sub@x.y' } }))
   check('newsletter duplicate rejected (409)', n2.status === 409)
+}
+
+
+// ---------------------------------------------------------------------------
+async function testUsersAdmin() {
+  const { GET: listUsers, POST: createUser } = await import('@/app/api/users/route')
+  const { GET: getUser, POST: userAction } = await import('@/app/api/users/[id]/route')
+
+  // 1. CREATE
+  const created = jsonOf(await createUser(req('/api/users', { method: 'POST', as: 'admin', body: { email: 'newbie@demo.dev', name: 'Newbie Nta', password: 'Passw0rd!' } })))
+  check('user create (invite) succeeds', (await created)?.success === true, await created)
+  const newbie = authUsers.find(u => u.email === 'newbie@demo.dev')
+  check('user create also creates the profile row', !!newbie && rows.profiles.some(p => p.id === newbie?.id))
+  const dup = createUser(req('/api/users', { method: 'POST', as: 'admin', body: { email: 'newbie@demo.dev', name: 'x', password: 'y' } }))
+  check('duplicate email rejected (409)', (await dup).status === 409)
+  const missing = createUser(req('/api/users', { method: 'POST', as: 'admin', body: { email: 'nopass@demo.dev' } }))
+  check('user create validates email+password (400)', (await missing).status === 400)
+
+  // 2. LIST
+  const list = jsonOf(await listUsers(req('/api/users', { as: 'admin' })))
+  const listd = await list
+  check('users list merges auth + profiles', listd?.success && listd.data.some((u: any) => u.email === 'newbie@demo.dev' && u.role === 'visitor'), listd?.data?.map((u: any) => u.email))
+
+  // 3. UPDATE ROLE
+  const promote = jsonOf(await userAction(req(`/api/users/${newbie.id}`, { method: 'POST', as: 'admin', body: { action: 'updateRole', role: 'editor' } }), { params: { id: newbie.id } }))
+  check('role update → profiles.role', (await promote)?.success && rows.profiles.find(p => p.id === newbie.id)?.role === 'editor')
+  const badRole = userAction(req(`/api/users/${newbie.id}`, { method: 'POST', as: 'admin', body: { action: 'updateRole', role: 'emperor' } }), { params: { id: newbie.id } })
+  check('invalid role rejected (400)', (await badRole).status === 400)
+
+  // 4. SUSPEND / UNSUSPEND
+  const susp = jsonOf(await userAction(req(`/api/users/${newbie.id}`, { method: 'POST', as: 'admin', body: { action: 'suspend' } }), { params: { id: newbie.id } }))
+  check('suspend bans the user', (await susp)?.success && !!newbie.banned_until)
+  const unsusp = jsonOf(await userAction(req(`/api/users/${newbie.id}`, { method: 'POST', as: 'admin', body: { action: 'unsuspend' } }), { params: { id: newbie.id } }))
+  check('unsuspend clears the ban', (await unsusp)?.success && newbie.banned_until === null)
+
+  // 5. DETAIL
+  const detail = jsonOf(await getUser(req(`/api/users/${newbie.id}`, { as: 'admin' }), { params: { id: newbie.id } }))
+  const detaild = await detail
+  check('user detail returns profile + enrollments + xp', detaild?.success && detaild.data.email === 'newbie@demo.dev' && Array.isArray(detaild.data.enrollments) && 'total_xp' in detaild.data, detaild)
+
+  // 6. DELETE (auth + profile cleanup)
+  const del = jsonOf(await userAction(req(`/api/users/${newbie.id}`, { method: 'POST', as: 'admin', body: { action: 'deleteUser' } }), { params: { id: newbie.id } }))
+  check('user delete succeeds', (await del)?.success)
+  check('user delete removes auth user AND profile row', !authUsers.some(u => u.email === 'newbie@demo.dev') && !rows.profiles.some(p => p.email === 'newbie@demo.dev'))
+
+  const anon = await listUsers(req('/api/users'))
+  check('users list requires admin', anon.status === 401)
+}
+
+// ---------------------------------------------------------------------------
+async function testNewsletterAdmin() {
+  const { GET, POST, DELETE } = await import('@/app/api/newsletter/admin/route')
+
+  const add = jsonOf(await POST(req('/api/newsletter/admin', { method: 'POST', as: 'admin', body: { email: 'reader@demo.dev' } })))
+  const addd = await add
+  check('newsletter admin add subscriber', addd?.success && addd.data.is_active === true, addd)
+  const dupAdd = POST(req('/api/newsletter/admin', { method: 'POST', as: 'admin', body: { email: 'reader@demo.dev' } }))
+  check('newsletter duplicate add rejected (409)', (await dupAdd).status === 409)
+  const badEmail = POST(req('/api/newsletter/admin', { method: 'POST', as: 'admin', body: { email: 'not-an-email' } }))
+  check('newsletter invalid email rejected (400)', (await badEmail).status === 400)
+
+  const list = jsonOf(await GET(req('/api/newsletter/admin', { as: 'admin' })))
+  const listd = await list
+  check('newsletter list returns subscribers + counts', listd?.success && listd.data.total >= 1 && listd.data.active >= 1, listd)
+
+  // public subscribe of the same email must conflict
+  const { POST: publicSub } = await import('@/app/api/newsletter/route')
+  const pub = publicSub(req('/api/newsletter', { method: 'POST', body: { email: 'reader@demo.dev' } }))
+  check('public subscribe of existing email → 409', (await pub).status === 409)
+
+  const del = jsonOf(await DELETE(req(`/api/newsletter/admin?id=${addd.data.id}`, { method: 'DELETE', as: 'admin' })))
+  check('newsletter remove subscriber', (await del)?.success && !rows.newsletter_subscribers.some(x => x.email === 'reader@demo.dev'))
+
+  const anon = await GET(req('/api/newsletter/admin'))
+  check('newsletter admin requires admin', anon.status === 401)
+}
+
+// ---------------------------------------------------------------------------
+async function testCommentsModeration() {
+  const { POST: postComment } = await import('@/app/api/lessons/[lessonId]/comments/route')
+  const { GET: adminList, POST: moderate } = await import('@/app/api/admin/comments/route')
+
+  const lessonId = rows.lessons[0].id
+  const posted = jsonOf(await postComment(req(`/api/lessons/${lessonId}/comments`, { method: 'POST', as: 'student', body: { content: 'Great explanation of DNS!' } }), { params: { lessonId } }))
+  const postedd = await posted
+  check('student posts a lesson comment', postedd?.success && postedd.data.status === 'visible', postedd)
+  const empty = postComment(req(`/api/lessons/${lessonId}/comments`, { method: 'POST', as: 'student', body: { content: '   ' } }), { params: { lessonId } })
+  check('empty comment rejected (400)', (await empty).status === 400)
+
+  const list = jsonOf(await adminList(req('/api/admin/comments', { as: 'admin' })))
+  const listd = await list
+  check('admin lists comments with author + lesson info', listd?.success && listd.data.some((c: any) => c.content.includes('DNS') && c.author?.name), listd?.data?.[0])
+
+  const target = listd.data.find((c: any) => c.content.includes('DNS'))
+  const hidden = jsonOf(await moderate(req('/api/admin/comments', { method: 'POST', as: 'admin', body: { id: target.id, action: 'hide' } })))
+  check('admin hides comment', (await hidden)?.success && rows.lesson_comments.find(c => c.id === target.id).status === 'hidden')
+  const approved = jsonOf(await moderate(req('/api/admin/comments', { method: 'POST', as: 'admin', body: { id: target.id, action: 'approve' } })))
+  check('admin approves (unhides) comment', (await approved)?.success && rows.lesson_comments.find(c => c.id === target.id).status === 'visible')
+  const deleted = jsonOf(await moderate(req('/api/admin/comments', { method: 'POST', as: 'admin', body: { id: target.id, action: 'delete' } })))
+  check('admin deletes comment', (await deleted)?.success && !rows.lesson_comments.some(c => c.id === target.id))
+
+  const badAction = moderate(req('/api/admin/comments', { method: 'POST', as: 'admin', body: { id: target.id, action: 'nuke' } }))
+  check('invalid moderation action rejected (400)', (await badAction).status === 400)
+  const anon = await adminList(req('/api/admin/comments'))
+  check('comments admin requires admin', anon.status === 401)
+}
+
+// ---------------------------------------------------------------------------
+async function testMisc() {
+  // certificate public verification (uses cert created in the learning flow)
+  const cert = rows.certificates[0]
+  const { GET: verify } = await import('@/app/api/certificates/[number]/route')
+  const v = jsonOf(await verify(req(`/api/certificates/${cert.certificate_number}`), { params: { number: cert.certificate_number } }))
+  const vd = await v
+  check('certificate verify by number (public)', vd?.data?.verified === true && vd.data.course_title === 'React Basics Updated' && !('user_id' in vd.data), vd)
+  const bad = verify(req('/api/certificates/HH-2026-NOPE'), { params: { number: 'HH-2026-NOPE' } })
+  check('unknown certificate → 404', (await bad).status === 404)
+
+  // media: upload (admin) → list → delete
+  const mediaRoutes = await import('@/app/api/media/route')
+  const uploadRoutes = await import('@/app/api/media/upload/route')
+  const uploadMedia = uploadRoutes.POST
+  const listMedia = mediaRoutes.GET
+  const deleteMedia = mediaRoutes.DELETE
+  const fd = new FormData()
+  fd.append('file', new File([new Uint8Array(2048)], 'cover.png', { type: 'image/png' }), 'cover.png')
+  fd.append('folder', 'hamedpro/test')
+  const up = jsonOf(await uploadMedia(new NextRequest('http://localhost:3000/api/media/upload', { method: 'POST', headers: { cookie: sessionCookie('admin-token') }, body: fd })))
+  const upd = await up
+  check('media upload stores file + returns public URL', upd?.success && String(upd.data.url).includes('uploads/hamedpro/test/'), upd)
+
+  const list = jsonOf(await listMedia(req('/api/media', { as: 'admin' })))
+  const listd = await list
+  check('media list shows the uploaded file (uuid name, right folder/size)', listd?.success && listd.data.some((f: any) => f.folder === 'hamedpro/test' && f.path.startsWith('hamedpro/test/') && f.size === 2048), listd)
+
+  const del = jsonOf(await deleteMedia(req('/api/media', { method: 'DELETE', as: 'admin', body: { paths: ['uploads/hamedpro/test/cover.png'] } })))
+  check('media delete removes file', (await del)?.success && !storageFiles['uploads/hamedpro/test/cover.png'])
+  const anonMedia = await listMedia(req('/api/media'))
+  check('media list requires admin', anonMedia.status === 401)
+
+  // analytics
+  const { POST: track, GET: analyticsGet } = await import('@/app/api/analytics/route')
+  const t = jsonOf(await track(req('/api/analytics', { method: 'POST', body: { page: '/courses', event: 'pageview', referrer: 'https://google.com' } })))
+  check('analytics public track', (await t)?.success)
+  const agg = jsonOf(await analyticsGet(req('/api/analytics', { as: 'admin' })))
+  check('analytics admin view', (await agg)?.success && (await agg).data.length >= 1)
+  const anonAgg = await analyticsGet(req('/api/analytics'))
+  check('analytics view requires admin', anonAgg.status === 401)
+
+  // invites (user-scoped referral stats)
+  const { GET: invites } = await import('@/app/api/invites/route')
+  const inv = jsonOf(await invites(req('/api/invites', { as: 'student' })))
+  const invd = await inv
+  check('invites returns referral code + url', invd?.success && String(invd.data.inviteUrl).includes('/register?ref='), invd)
 }
 
 main().catch(e => {

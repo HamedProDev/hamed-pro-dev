@@ -28,6 +28,7 @@ const snakeFields = [
   'profile_photo', 'hero_name', 'hero_title', 'hero_subtitle',
   'contact_email', 'contact_phone', 'address', 'location',
   'maintenance_mode', 'allow_registration',
+  'contact_success_message',
   'resume_url', 'about_image',
 ]
 

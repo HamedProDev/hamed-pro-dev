@@ -14,7 +14,7 @@ export const TABLE_COLUMNS: Record<string, string[]> = {
   enrollments: ['id', 'user_id', 'course_id', 'status', 'progress', 'enrolled_at', 'completed_at'],
   lesson_progress: ['id', 'user_id', 'course_id', 'lesson_id', 'completed', 'quiz_score', 'time_spent_seconds', 'last_accessed_at', 'completed_at', 'created_at'],
   certificates: ['id', 'certificate_number', 'user_id', 'course_id', 'enrollment_id', 'recipient_name', 'course_title', 'score', 'issue_date', 'is_verified', 'created_at'],
-  settings: ['id', 'site_name', 'tagline', 'description', 'keywords', 'logo', 'favicon', 'og_image', 'profile_photo', 'hero_name', 'hero_title', 'hero_subtitle', 'contact_email', 'contact_phone', 'address', 'location', 'maintenance_mode', 'allow_registration', 'social_links', 'email_notifications', 'seo_defaults', 'integrations', 'created_at', 'updated_at'],
+  settings: ['id', 'site_name', 'tagline', 'description', 'keywords', 'logo', 'favicon', 'og_image', 'profile_photo', 'hero_name', 'hero_title', 'hero_subtitle', 'contact_email', 'contact_phone', 'address', 'location', 'maintenance_mode', 'allow_registration', 'contact_success_message', 'social_links', 'email_notifications', 'seo_defaults', 'integrations', 'created_at', 'updated_at'],
   contacts: ['id', 'name', 'email', 'subject', 'message', 'is_read', 'created_at'],
   newsletter_subscribers: ['id', 'email', 'is_active', 'created_at'],
   skills: ['id', 'name', 'category', 'proficiency', 'color', 'is_published', 'order_index', 'created_at'],
@@ -23,6 +23,7 @@ export const TABLE_COLUMNS: Record<string, string[]> = {
   site_stats: ['id', 'label', 'value', 'suffix', 'icon', 'is_published', 'order_index', 'created_at'],
   user_xp_events: ['id', 'user_id', 'event', 'points', 'meta', 'created_at'],
   lesson_comments: ['id', 'lesson_id', 'user_id', 'content', 'status', 'created_at'],
+  analytics: ['id', 'page', 'event', 'referrer', 'user_agent', 'ip_address', 'created_at'],
 }
 
 export const DEFAULTS: Record<string, Record<string, any>> = {
@@ -40,6 +41,21 @@ export const DEFAULTS: Record<string, Record<string, any>> = {
   site_stats: { is_published: false, order_index: 0 },
 }
 
+// Mock auth users + storage buckets (GoTrue / Storage APIs)
+export const authUsers: any[] = []
+export const storageFiles: Record<string, { size: number; updated_at: string }> = {}
+
+function mockAuthUser(u: { email: string; password?: string; email_confirm?: boolean; user_metadata?: any; id?: string }) {
+  return {
+    id: u.id || crypto.randomUUID(),
+    email: u.email,
+    email_confirmed_at: u.email_confirm !== false ? new Date().toISOString() : null,
+    user_metadata: u.user_metadata || {},
+    banned_until: null,
+    created_at: new Date().toISOString(),
+  }
+}
+
 // rows[table] = Row[] — exported so the test file can inspect/seed state.
 export const rows: Record<string, any[]> = {}
 for (const t of Object.keys(TABLE_COLUMNS)) rows[t] = []
@@ -55,6 +71,14 @@ function userForToken(token: string | null) {
   if (token === 'admin-token') return { id: ADMIN_ID, email: 'admin@test.dev', user_metadata: { name: 'Admin' }, created_at: new Date().toISOString() }
   if (token === 'student-token') return { id: STUDENT_ID, email: 'student@test.dev', user_metadata: { name: 'Student' }, created_at: new Date().toISOString() }
   return null
+}
+
+// The fixed seed profiles are known auth users too (they have session tokens).
+function seededAuthUsers() {
+  return [
+    { id: ADMIN_ID, email: 'admin@test.dev', email_confirmed_at: new Date().toISOString(), user_metadata: { name: 'Admin' }, banned_until: null, created_at: new Date().toISOString() },
+    { id: STUDENT_ID, email: 'student@test.dev', email_confirmed_at: new Date().toISOString(), user_metadata: { name: 'Student' }, banned_until: null, created_at: new Date().toISOString() },
+  ]
 }
 
 function bearer(req: http.IncomingMessage): string | null {
@@ -129,7 +153,19 @@ export function createMockServer(port = 5990) {
     const chunks: Buffer[] = []
     req.on('data', c => chunks.push(c))
     req.on('end', () => {
-      const body = chunks.length ? JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}') : {}
+      const contentType = String(req.headers['content-type'] || '')
+      const isJson = contentType.includes('json')
+      let raw = Buffer.concat(chunks)
+      let body: any = {}
+      if (raw.length > 0) {
+        if (isJson) {
+          body = JSON.parse(raw.toString('utf8') || '{}')
+        } else if (contentType.includes('text/plain') || contentType.includes('csv')) {
+          body = raw.toString('utf8')
+        } else {
+          body = raw // binary upload (storage) — keep as Buffer
+        }
+      }
       const url = new URL(req.url || '/', `http://127.0.0.1:${port}`)
       const json = (status: number, payload: any, headers: Record<string, string> = {}) => {
         res.writeHead(status, { 'Content-Type': 'application/json', ...headers })
@@ -141,6 +177,78 @@ export function createMockServer(port = 5990) {
         const user = userForToken(bearer(req))
         if (!user) return json(401, { message: 'No session found', code: 400 })
         return json(200, user)
+      }
+
+      // ---- GoTrue admin ----
+      if (url.pathname === '/auth/v1/admin/users') {
+        if (req.method === 'GET') {
+          return json(200, { users: [...authUsers, ...seededAuthUsers()], total: authUsers.length })
+        }
+        if (req.method === 'POST') {
+          if (authUsers.some(u => u.email === body.email)) return json(422, { message: 'User already registered' })
+          const user = mockAuthUser(body)
+          authUsers.push(user)
+          return json(201, { id: user.id, email: user.email, user_metadata: user.user_metadata })
+        }
+      }
+      const adminUserMatch = url.pathname.match(/^\/auth\/v1\/admin\/users\/(.+)$/)
+      if (adminUserMatch) {
+        const uid = adminUserMatch[1]
+        const idx = authUsers.findIndex(u => u.id === uid)
+        if (req.method === 'PUT') {
+          if (idx === -1) return json(404, { message: 'User not found' })
+          if (body.ban_duration !== undefined) authUsers[idx].banned_until = body.ban_duration === 'none' ? null : new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString()
+          if (body.user_metadata) authUsers[idx].user_metadata = { ...authUsers[idx].user_metadata, ...body.user_metadata }
+          if (body.password) authUsers[idx].password = body.password
+          return json(200, { id: authUsers[idx].id })
+        }
+        if (req.method === 'DELETE') {
+          if (idx === -1) return json(404, { message: 'User not found' })
+          authUsers.splice(idx, 1)
+          return json(200, { id: uid })
+        }
+        if (req.method === 'GET') {
+          const u = authUsers.find(x => x.id === uid)
+          if (!u) return json(404, { message: 'User not found' })
+          return json(200, u)
+        }
+      }
+
+      // ---- Storage ----
+      const storageList = url.pathname.match(/^\/storage\/v1\/object\/list\/(.+)$/)
+      if (storageList && req.method === 'POST') {
+        const bucket = storageList[1]
+        const prefix = (body.prefix || '').replace(/\/$/, '')
+        const entries = Object.entries(storageFiles)
+          .filter(([path]) => path.startsWith(bucket + '/' + (prefix ? prefix + '/' : '')))
+        const seenFolders = new Set<string>()
+        const items = entries.map(([path, meta]) => {
+          const rest = path.slice((bucket + '/' + (prefix ? prefix + '/' : '')).length)
+          const isFolder = rest.includes('/')
+          const name = isFolder ? rest.split('/')[0] : rest
+          if (isFolder && seenFolders.has(name)) return null
+          if (isFolder) seenFolders.add(name)
+          return { name, id: isFolder ? null : path, metadata: isFolder ? null : { size: meta.size }, updated_at: meta.updated_at, created_at: meta.updated_at }
+        }).filter(Boolean)
+        return json(200, items)
+      }
+      const storageObject = url.pathname.match(/^\/storage\/v1\/object\/(.+)$/)
+      if (storageObject) {
+        const objectPath = storageObject[1] // e.g. "uploads/hamedpro/x.png" or "uploads" (remove)
+        if (req.method === 'POST' && objectPath !== 'uploads') {
+          const size = Buffer.isBuffer(body) ? body.length : JSON.stringify(body ?? {}).length
+          storageFiles[objectPath] = { size, updated_at: new Date().toISOString() }
+          return json(200, { Key: objectPath })
+        }
+        if (req.method === 'DELETE' || (req.method === 'POST' && objectPath === 'uploads')) {
+          const prefixes: string[] = objectPath === 'uploads' ? (body.prefixes || []) : [objectPath]
+          for (const pfx of prefixes) {
+            for (const path of Object.keys(storageFiles)) {
+              if (path === pfx || path.startsWith(pfx + '/')) delete storageFiles[path]
+            }
+          }
+          return json(200, { message: 'Removed' })
+        }
       }
 
       // ---- RPC ----
@@ -178,9 +286,23 @@ export function createMockServer(port = 5990) {
           res.writeHead(200, { 'Content-Range': `0-${Math.max(0, total - 1)}/${total}`, 'Content-Type': 'application/json' })
           return res.end()
         }
-        if (select.split(',').map(s => s.trim()).length === 1 && select !== '*') {
+        // Embedded resources: profiles(...), lessons(...), courses(...) — resolve
+        // the obvious FK and attach a single related row (or null).
+        const embedMatches = select.match(/[a-z_]+\([^)]*\)/g) || []
+        if (embedMatches.length > 0) {
+          for (const e of embedMatches) {
+            const m = e.match(/([a-z_]+)\(([^)]*)\)/)!
+            const relTable = m[1]
+            const cols = m[2].split(',').map(c => c.trim()).filter(Boolean)
+            const fk = relTable === 'profiles' ? 'user_id' : relTable === 'lessons' ? 'lesson_id' : relTable === 'courses' ? 'course_id' : relTable.replace(/s$/, '') + '_id'
+            out = out.map((r: any) => {
+              const rel = (rows[relTable] || []).find(x => x.id === r[fk]) || null
+              return { ...r, [relTable]: rel ? Object.fromEntries(cols.map(c => [c, rel[c]])) : null }
+            })
+          }
+        } else if (select.split(',').map(s => s.trim()).length === 1 && select !== '*') {
           out = out.map(r => ({ [select.trim()]: r[select.trim()] }))
-        } else if (select !== '*' && !select.includes('(')) {
+        } else if (select !== '*') {
           const cols = select.split(',').map(s => s.trim())
           out = out.map(r => Object.fromEntries(cols.map(c => [c, r[c]])))
         }

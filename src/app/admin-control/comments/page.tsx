@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Loader2, MessageSquare, Check, EyeOff, Trash2, RefreshCw } from 'lucide-react'
+import { saveJson } from '@/lib/utils/admin-save'
 
 interface Comment {
   id: string
@@ -25,6 +26,7 @@ export default function AdminCommentsPage() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
   const [busy, setBusy] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchData = useCallback(() => {
     setLoading(true)
@@ -39,11 +41,9 @@ export default function AdminCommentsPage() {
 
   const handleAction = async (id: string, action: string) => {
     setBusy(id)
-    await fetch('/api/admin/comments', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, action }),
-    })
+    setError(null)
+    const result = await saveJson('/api/admin/comments', { id, action })
+    if (!result.ok) setError(result.error || `Failed to ${action} comment`)
     setBusy(null)
     fetchData()
   }
@@ -57,6 +57,12 @@ export default function AdminCommentsPage() {
 
   return (
     <div>
+
+      {error && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 mb-4" role="alert">
+          ❌ {error}
+        </div>
+      )}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-text-primary">Comment Moderation</h1>

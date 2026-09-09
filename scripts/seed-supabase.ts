@@ -2,11 +2,15 @@
  * Supabase admin toolkit — run from your own machine (no app deploy needed).
  *
  *   npx tsx scripts/seed-supabase.ts --admin-only   # create/verify the admin login
+ *   npx tsx scripts/seed-supabase.ts --demo         # seed realistic demo/test data
  *   npx tsx scripts/seed-supabase.ts --reset        # delete ALL content data
  *
- * All site content is created by the admin via /admin-control — nothing is
- * seeded. `--reset` wipes every content table (profiles and auth users are
- * kept) so you can start from a clean database.
+ * By default this only ensures the admin login exists. All site content is
+ * created by the admin via /admin-control — nothing else is seeded unless you
+ * pass `--demo`, which fills every table with realistic test data (demo
+ * students, a full course with lessons/quizzes, enrollments with progress,
+ * certificates, projects, skills, achievements, testimonials, stats, contact
+ * messages, newsletter subscribers, comments and settings).
  *
  * Required env vars (in .env or exported):
  *   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_PASSWORD
@@ -56,7 +60,7 @@ function fail(msg: string): never {
   process.exit(1)
 }
 
-async function ensureAdmin() {
+async function ensureAdmin(): Promise<string> {
   const { data, error } = await supabase.auth.admin.listUsers()
   if (error) throw error
   const users = (data?.users ?? []) as any[]
@@ -101,6 +105,7 @@ async function ensureAdmin() {
       console.log(`✔ Admin login verified OK: ${adminEmail}`)
     }
   }
+  return user.id
 }
 
 // Content tables, in FK-safe delete order (children first). Profiles/auth are kept.
@@ -148,7 +153,13 @@ async function main() {
   }
 
   console.log(`\nEnsuring admin account → ${url}\n`)
-  await ensureAdmin()
+  const admin = await ensureAdmin()
+
+  if (process.argv.includes('--demo')) {
+    const { seedDemoData } = await import('./seed-demo-data')
+    await seedDemoData(supabase, admin)
+  }
+
   console.log(`\n✔ Done. Admin login: ${adminEmail} (password is exactly ADMIN_PASSWORD from .env, trimmed)`)
   console.log('  Sign in at /login or /admin-control.\n')
 }

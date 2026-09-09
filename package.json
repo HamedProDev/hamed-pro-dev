@@ -11,7 +11,8 @@
     "seed": "tsx scripts/seed-supabase.ts",
     "db:reset": "tsx scripts/seed-supabase.ts --reset",
     "db:seed-admin": "tsx scripts/seed-supabase.ts --admin-only",
-    "test:api": "tsx scripts/test/api-e2e.ts"
+    "test:api": "tsx scripts/test/api-e2e.ts",
+    "db:demo": "tsx scripts/seed-supabase.ts --demo"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

@@ -40,6 +40,9 @@ ALTER TABLE settings ADD COLUMN IF NOT EXISTS contact_phone TEXT;
 ALTER TABLE settings ADD COLUMN IF NOT EXISTS address TEXT;
 ALTER TABLE settings ADD COLUMN IF NOT EXISTS location TEXT;
 
+-- Contact form
+ALTER TABLE settings ADD COLUMN IF NOT EXISTS contact_success_message TEXT;
+
 -- Site options
 ALTER TABLE settings ADD COLUMN IF NOT EXISTS maintenance_mode BOOLEAN DEFAULT false;
 ALTER TABLE settings ADD COLUMN IF NOT EXISTS allow_registration BOOLEAN DEFAULT true;

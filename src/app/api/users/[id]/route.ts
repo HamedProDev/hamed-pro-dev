@@ -58,6 +58,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     if (action === 'deleteUser') {
       const { error } = await supabase.auth.admin.deleteUser(params.id)
       if (error) return apiError(error.message, 500)
+      // Clean up the profile row too (auth deletion doesn't cascade to it) —
+      // otherwise the users list keeps showing a ghost.
+      await supabase.from('profiles').delete().eq('id', params.id)
       return apiSuccess(null, 'User deleted')
     }
 
