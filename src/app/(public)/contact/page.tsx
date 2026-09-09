@@ -11,11 +11,20 @@ import { cn } from '@/lib/utils/cn'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
-const contactInfo = [
-  { icon: Mail, label: 'Email', value: 'hamed@novasoft.rw', href: 'mailto:hamed@novasoft.rw', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
-  { icon: Phone, label: 'Phone', value: '+250 788 123 456', href: 'tel:+250788123456', color: 'text-green-500', bg: 'bg-green-500/10' },
-  { icon: Globe, label: 'Website', value: 'hamedhussein.is-a.dev', href: 'https://hamedhussein.is-a.dev', color: 'text-purple-500', bg: 'bg-purple-500/10' },
-]
+// Fallbacks used when /api/settings hasn't been configured yet.
+const DEFAULT_CONTACT_EMAIL = 'hamed@novasoft.rw'
+const DEFAULT_CONTACT_PHONE = '+250 788 123 456'
+const DEFAULT_WEBSITE = 'hamedhussein.is-a.dev'
+
+function buildContactInfo(settings?: { contact_email?: string; contact_phone?: string } | null) {
+  const email = settings?.contact_email || DEFAULT_CONTACT_EMAIL
+  const phone = settings?.contact_phone || DEFAULT_CONTACT_PHONE
+  return [
+    { icon: Mail, label: 'Email', value: email, href: `mailto:${email}`, color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
+    { icon: Phone, label: 'Phone', value: phone, href: `tel:${phone.replace(/[^\d+]/g, '')}`, color: 'text-green-500', bg: 'bg-green-500/10' },
+    { icon: Globe, label: 'Website', value: DEFAULT_WEBSITE, href: `https://${DEFAULT_WEBSITE}`, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+  ]
+}
 
 const availability = [
   { day: 'Monday - Friday', time: '8:00 AM - 6:00 PM' },
@@ -35,6 +44,18 @@ const reasons = [
 export default function ContactPage() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [form, setForm] = useState({ name: '', email: '', subject: '', reason: '', message: '' })
+  const [contactInfo, setContactInfo] = useState(() => buildContactInfo())
+  const [successMessage, setSuccessMessage] = useState("Message sent successfully! I'll get back to you soon.")
+
+  // Load admin-configured contact details (falls back to defaults on failure).
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => {
+      if (d.success && d.data) {
+        setContactInfo(buildContactInfo(d.data))
+        if (d.data.contact_success_message) setSuccessMessage(d.data.contact_success_message)
+      }
+    }).catch(() => {})
+  }, [])
 
   // Pre-fill from query params after hydration (avoids a hydration mismatch).
   useEffect(() => {
@@ -119,6 +140,7 @@ export default function ContactPage() {
                   <Button type="submit" disabled={formState === 'submitting'} className="w-full gradient-bg text-white py-6 text-base">
                     {formState === 'submitting' ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</> : formState === 'success' ? <><CheckCircle2 className="h-4 w-4 mr-2" /> Message Sent!</> : <><Send className="h-4 w-4 mr-2" /> Send Message</>}
                   </Button>
+                  {formState === 'success' && <p className="text-green-400 text-sm text-center">{successMessage}</p>}
                   {formState === 'error' && <p className="text-red-400 text-sm text-center">Something went wrong. Please try again.</p>}
                 </form>
               </CardContent>

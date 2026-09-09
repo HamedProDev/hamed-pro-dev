@@ -6,8 +6,22 @@ import { sendEmail } from '@/lib/email'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    if (!body.name || !body.email || !body.message) return apiError('Name, email, and message are required')
-    await createDocument('contacts', body)
+    if (!body.name || !body.email || !body.message) return apiError('Name, email, and message are required', 400)
+
+    // Whitelist the fields that actually exist as columns on the contacts
+    // table — passing through arbitrary body keys (e.g. `reason` from the
+    // contact form) would make the insert fail with a "column not found" error.
+    // The reason selection is folded into the message instead.
+    const reason = typeof body.reason === 'string' ? body.reason.trim() : ''
+    const message = typeof body.message === 'string' ? body.message : ''
+    const fullMessage = reason ? `Reason: ${reason}\n\n${message}` : message
+
+    await createDocument('contacts', {
+      name: body.name,
+      email: body.email,
+      subject: body.subject ?? null,
+      message: fullMessage,
+    })
 
     // Notify the site owner (no-op when Resend isn't configured).
     const notify = process.env.CONTACT_NOTIFY_EMAIL || process.env.RESEND_FROM_EMAIL
@@ -19,7 +33,8 @@ export async function POST(req: NextRequest) {
           <h2 style="margin:0 0 8px">New contact message</h2>
           <p style="color:#475569;line-height:1.6"><strong>From:</strong> ${body.name} &lt;${body.email}&gt;</p>
           ${body.subject ? `<p style="color:#475569"><strong>Subject:</strong> ${body.subject}</p>` : ''}
-          <p style="color:#475569;white-space:pre-wrap;line-height:1.6">${body.message}</p>
+          ${reason ? `<p style="color:#475569"><strong>Reason:</strong> ${reason}</p>` : ''}
+          <p style="color:#475569;white-space:pre-wrap;line-height:1.6">${message}</p>
         </div>`,
       }).catch(() => {})
     }

@@ -4,19 +4,25 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Save, ArrowLeft } from 'lucide-react'
+import { saveJson } from '@/lib/utils/admin-save'
 import Link from 'next/link'
 
 export default function NewTestimonialPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({ name: '', role: '', company: '', content: '', rating: 5, order: 0, featured: false })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    const res = await fetch('/api/testimonials', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
-    if (res.ok) router.push('/admin-control/testimonials')
-    else setSaving(false)
+    setError('')
+    const result = await saveJson('/api/testimonials', form)
+    if (result.ok) router.push('/admin-control/testimonials')
+    else {
+      setError(result.error || 'Failed to save')
+      setSaving(false)
+    }
   }
 
   const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none'
@@ -60,6 +66,7 @@ export default function NewTestimonialPage() {
           <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-violet-500" />
           <label htmlFor="featured" className="text-sm text-text-secondary">Featured</label>
         </div>
+        {error && <p className="text-red-400 text-sm" role="alert">{error}</p>}
         <Button type="submit" disabled={saving} className="gradient-bg text-white"><Save className="h-4 w-4 mr-2" />{saving ? 'Saving...' : 'Create Testimonial'}</Button>
       </form>
     </div>

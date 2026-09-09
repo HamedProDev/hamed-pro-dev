@@ -65,8 +65,15 @@ export function mapFormToDb(table: string, data: Record<string, any>): Record<st
   const result: Record<string, any> = {}
   for (const [key, value] of Object.entries(data)) {
     if (key === '_method') continue
-    const dbKey = tableMap[key] || key
-    result[dbKey] = value
+    const dbKey = tableMap[key]
+    if (dbKey) {
+      // Mapped key: write ONLY the database column. Keeping the original
+      // camelCase key too would insert unknown columns (e.g. `finalQuiz`,
+      // `isFree`) and make PostgREST reject the whole write.
+      result[dbKey] = value
+    } else {
+      result[key] = value
+    }
   }
   return result
 }

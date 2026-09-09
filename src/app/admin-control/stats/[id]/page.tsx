@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Save, ArrowLeft } from 'lucide-react'
+import { saveJson } from '@/lib/utils/admin-save'
 import Link from 'next/link'
 
 const iconOptions = ['FolderOpen', 'Star', 'BookOpen', 'Calendar', 'ThumbsUp', 'Users', 'Code', 'Rocket', 'Award', 'Globe']
@@ -12,6 +13,7 @@ export default function EditStatPage() {
   const router = useRouter()
   const params = useParams()
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState({ label: '', value: 0, suffix: '', icon: 'FolderOpen', order: 0 })
 
@@ -25,9 +27,13 @@ export default function EditStatPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    const res = await fetch(`/api/stats/${params.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, value: String(form.value) }) })
-    if (res.ok) router.push('/admin-control/stats')
-    else setSaving(false)
+    setError('')
+    const result = await saveJson(`/api/stats/${params.id}`, { ...form, value: String(form.value) })
+    if (result.ok) router.push('/admin-control/stats')
+    else {
+      setError(result.error || 'Failed to save')
+      setSaving(false)
+    }
   }
 
   const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none'
@@ -63,6 +69,7 @@ export default function EditStatPage() {
           <label htmlFor="stat-order" className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
           <input id="stat-order" name="order" type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
+        {error && <p className="text-red-400 text-sm" role="alert">{error}</p>}
         <Button type="submit" disabled={saving} className="gradient-bg text-white"><Save className="h-4 w-4 mr-2" />{saving ? 'Saving...' : 'Save Changes'}</Button>
       </form>
     </div>

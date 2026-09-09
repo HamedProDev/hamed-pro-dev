@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, Ban, CircleCheck, Trash2, UserPlus, Eye, X, Award, Clock, Zap, BookOpen } from 'lucide-react'
+import { saveJson } from '@/lib/utils/admin-save'
 
 interface User {
   id: string; name: string; email: string; role: string; disabled: boolean; xp_points: number; current_streak: number; created_at: string
@@ -29,6 +30,7 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [busyId, setBusyId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [inviting, setInviting] = useState(false)
   const [invite, setInvite] = useState({ email: '', name: '', password: '' })
   const [inviteMsg, setInviteMsg] = useState('')
@@ -46,11 +48,9 @@ export default function AdminUsersPage() {
 
   const handleAction = async (id: string, action: string, role?: string) => {
     setBusyId(id)
-    await fetch(`/api/users/${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(role ? { action, role } : { action }),
-    })
+    setError(null)
+    const result = await saveJson(`/api/users/${id}`, role ? { action, role } : { action })
+    if (!result.ok) setError(result.error || `Failed to ${action.replace(/([A-Z])/g, ' $1').toLowerCase()}`)
     setBusyId(null)
     fetchData()
   }
@@ -96,6 +96,12 @@ export default function AdminUsersPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-text-primary">Users</h1>
       </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 mb-4" role="alert">
+          ❌ {error}
+        </div>
+      )}
 
       {/* Invite / create user */}
       <form onSubmit={handleInvite} className="admin-card p-4 mb-6 flex flex-col md:flex-row gap-3 items-end">

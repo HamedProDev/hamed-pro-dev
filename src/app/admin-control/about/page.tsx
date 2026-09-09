@@ -11,6 +11,7 @@ export default function AdminAboutPage() {
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [form, setForm] = useState({
     fullName: 'Hamed Hussein',
     tagline: 'Fullstack & AI/ML Engineer',
@@ -36,8 +37,9 @@ export default function AdminAboutPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setError(null)
     try {
-      await fetch('/api/settings', {
+      const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,9 +49,18 @@ export default function AdminAboutPage() {
           profile_photo: form.avatar,
         }),
       })
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2500)
-    } catch {}
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setSaved(true)
+        setTimeout(() => setSaved(false), 2500)
+        const msg: string = data.message || ''
+        if (msg && msg !== 'Settings updated') setError(msg)
+      } else {
+        setError(data.error || `Failed to save About page (HTTP ${res.status})`)
+      }
+    } catch {
+      setError('Network error — failed to save changes. Check your connection and try again.')
+    }
     setSaving(false)
   }
 
@@ -64,6 +75,11 @@ export default function AdminAboutPage() {
           {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}{saved ? 'Saved!' : 'Save Changes'}
         </Button>
       </div>
+      {error && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400" role="alert">
+          ❌ {error}
+        </div>
+      )}
       <Card>
         <CardHeader><CardTitle>Personal Info</CardTitle><CardDescription>Your name and tagline</CardDescription></CardHeader>
         <CardContent className="space-y-4">
