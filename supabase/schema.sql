@@ -119,27 +119,6 @@ CREATE TABLE IF NOT EXISTS user_xp_events (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Blog Posts
-
--- Jobs
-CREATE TABLE IF NOT EXISTS jobs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  title TEXT NOT NULL,
-  company TEXT,
-  location TEXT,
-  description TEXT,
-  requirements TEXT,
-  salary_range TEXT,
-  job_type TEXT CHECK (job_type IN ('full-time', 'part-time', 'contract', 'freelance', 'internship')),
-  category TEXT,
-  application_url TEXT,
-  featured BOOLEAN DEFAULT false,
-  is_published BOOLEAN DEFAULT false,
-  order_index INT DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
 -- Skills
 CREATE TABLE IF NOT EXISTS skills (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -259,7 +238,6 @@ CREATE TABLE IF NOT EXISTS analytics (
 -- Full-text search indexes
 CREATE INDEX IF NOT EXISTS idx_projects_search ON projects USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
 CREATE INDEX IF NOT EXISTS idx_courses_search ON courses USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
-CREATE INDEX IF NOT EXISTS idx_jobs_search ON jobs USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
 
 -- Updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -279,8 +257,6 @@ DROP TRIGGER IF EXISTS update_courses_updated_at ON courses;
 CREATE TRIGGER update_courses_updated_at BEFORE UPDATE ON courses FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 DROP TRIGGER IF EXISTS update_lessons_updated_at ON lessons;
 CREATE TRIGGER update_lessons_updated_at BEFORE UPDATE ON lessons FOR EACH ROW EXECUTE FUNCTION update_updated_at();
-DROP TRIGGER IF EXISTS update_jobs_updated_at ON jobs;
-CREATE TRIGGER update_jobs_updated_at BEFORE UPDATE ON jobs FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 DROP TRIGGER IF EXISTS update_settings_updated_at ON settings;
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
@@ -289,7 +265,6 @@ ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lessons ENABLE ROW LEVEL SECURITY;
-ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
@@ -306,8 +281,6 @@ DROP POLICY IF EXISTS "Anyone can view published courses" ON courses;
 CREATE POLICY "Anyone can view published courses" ON courses FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published lessons" ON lessons;
 CREATE POLICY "Anyone can view published lessons" ON lessons FOR SELECT USING (is_published = true);
-DROP POLICY IF EXISTS "Anyone can view published jobs" ON jobs;
-CREATE POLICY "Anyone can view published jobs" ON jobs FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published skills" ON skills;
 CREATE POLICY "Anyone can view published skills" ON skills FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published achievements" ON achievements;
@@ -330,8 +303,6 @@ DROP POLICY IF EXISTS "Admins can do everything on courses" ON courses;
 CREATE POLICY "Admins can do everything on courses" ON courses FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on lessons" ON lessons;
 CREATE POLICY "Admins can do everything on lessons" ON lessons FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-DROP POLICY IF EXISTS "Admins can do everything on jobs" ON jobs;
-CREATE POLICY "Admins can do everything on jobs" ON jobs FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on skills" ON skills;
 CREATE POLICY "Admins can do everything on skills" ON skills FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on achievements" ON achievements;
