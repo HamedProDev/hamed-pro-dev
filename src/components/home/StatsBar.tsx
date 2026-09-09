@@ -19,14 +19,6 @@ const iconColors = [
   { color: 'text-orange-500', bg: 'bg-orange-500/10' },
 ]
 
-const fallbackStats = [
-  { icon: 'FolderOpen', value: 30, label: 'Projects Completed', suffix: '+' },
-  { icon: 'Star', value: 150, label: 'GitHub Stars', suffix: '+' },
-  { icon: 'BookOpen', value: 10, label: 'Courses Created', suffix: '' },
-  { icon: 'Calendar', value: 5, label: 'Years Experience', suffix: '' },
-  { icon: 'ThumbsUp', value: 100, label: 'Client Satisfaction', suffix: '%' },
-]
-
 function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
   const [count, setCount] = useState(0)
   const ref = useRef<HTMLSpanElement>(null)
@@ -45,13 +37,15 @@ function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string
 }
 
 export function StatsBar() {
-  const [stats, setStats] = useState(fallbackStats)
+  const [stats, setStats] = useState<{ icon: string; value: number | string; label: string; suffix?: string }[]>([])
   useEffect(() => {
     fetch('/api/stats')
       .then(r => r.json())
-      .then(d => { if (d.success && d.data.length > 0) setStats(d.data) })
+      .then(d => { if (d.success) setStats(d.data || []) })
       .catch(() => {})
   }, [])
+
+  if (stats.length === 0) return null
 
   return (
     <section className="py-12 border-y border-border-primary bg-surface-secondary/30">

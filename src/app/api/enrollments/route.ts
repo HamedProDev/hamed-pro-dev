@@ -1,8 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument } from '@/lib/supabase/db'
-import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { getCurrentUser, apiSuccess, apiError, resolveCourseId } from '@/lib/supabase/helpers'
 import { awardXp, XP } from '@/lib/gamification'
-import { resolveCourseId } from '@/lib/supabase/content-sync'
 import { createServiceClient } from '@/lib/supabase/server'
 
 // Enrollments FK to profiles — repair a missing profile row instead of 500-ing.

@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, getDocument } from '@/lib/supabase/db'
-import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
-import { resolveCourseId } from '@/lib/supabase/content-sync'
+import { getCurrentUser, apiSuccess, apiError, resolveCourseId } from '@/lib/supabase/helpers'
 
 // Get the current user's progress + lesson unlock state for a course.
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
