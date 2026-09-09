@@ -43,7 +43,7 @@ const whyMe = [
 ]
 
 export default function HirePage() {
-  const [whatsappNumber, setWhatsappNumber] = useState('+250788123456')
+  const [whatsappNumber, setWhatsappNumber] = useState('+250793553492')
   const [resumeUrl, setResumeUrl] = useState('')
   const [services, setServices] = useState<HireService[]>(defaultServices)
   const [loading, setLoading] = useState(true)

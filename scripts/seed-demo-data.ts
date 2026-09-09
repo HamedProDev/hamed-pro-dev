@@ -357,7 +357,7 @@ export async function seedDemoData(supabase: SB, adminId: string) {
       hero_title: 'Full Stack Developer & AI/ML Engineer',
       hero_subtitle: 'I build products and teach what I learn.',
       contact_email: 'hello@hamedpro.dev',
-      contact_phone: '+250 788 123 456',
+      contact_phone: '+250 793 553 492',
       address: 'Kigali, Rwanda',
       location: 'Kigali, Rwanda',
       contact_success_message: "Message sent successfully! I'll get back to you within 24 hours.",

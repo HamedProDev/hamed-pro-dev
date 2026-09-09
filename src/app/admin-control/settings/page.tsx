@@ -16,7 +16,7 @@ const socialPlatforms = [
   { key: 'instagram', label: 'Instagram', placeholder: 'https://instagram.com/username' },
   { key: 'facebook', label: 'Facebook', placeholder: 'https://facebook.com/username' },
   { key: 'discord', label: 'Discord', placeholder: 'https://discord.gg/invite' },
-  { key: 'whatsapp', label: 'WhatsApp', placeholder: 'https://wa.me/250788123456' },
+  { key: 'whatsapp', label: 'WhatsApp', placeholder: 'https://wa.me/250793553492' },
   { key: 'telegram', label: 'Telegram', placeholder: 'https://t.me/username' },
   { key: 'tiktok', label: 'TikTok', placeholder: 'https://tiktok.com/@username' },
 ]
@@ -228,7 +228,7 @@ export default function AdminSettingsPage() {
       <Card>
         <CardHeader><CardTitle>Integrations</CardTitle><CardDescription>Third-party service configuration</CardDescription></CardHeader>
         <CardContent className="space-y-4">
-          <div><label htmlFor="whatsappNumber" className="text-sm font-medium mb-1 block">WhatsApp Number</label><Input id="whatsappNumber" name="whatsappNumber" value={settings.integrations?.whatsappNumber || ''} onChange={e => update('integrations', { ...settings.integrations, whatsappNumber: e.target.value })} placeholder="+250788123456" /></div>
+          <div><label htmlFor="whatsappNumber" className="text-sm font-medium mb-1 block">WhatsApp Number</label><Input id="whatsappNumber" name="whatsappNumber" value={settings.integrations?.whatsappNumber || ''} onChange={e => update('integrations', { ...settings.integrations, whatsappNumber: e.target.value })} placeholder="+250793553492" /></div>
           <div><label htmlFor="discordUrl" className="text-sm font-medium mb-1 block">Discord Invite URL</label><Input id="discordUrl" name="discordUrl" value={settings.integrations?.discordInvite || ''} onChange={e => update('integrations', { ...settings.integrations, discordInvite: e.target.value })} placeholder="https://discord.gg/invite" /></div>
           <div><label htmlFor="calUrl" className="text-sm font-medium mb-1 block">Cal.com URL</label><Input id="calUrl" name="calUrl" value={settings.integrations?.calComUrl || ''} onChange={e => update('integrations', { ...settings.integrations, calComUrl: e.target.value })} placeholder="https://cal.com/username" /></div>
         </CardContent>

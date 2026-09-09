@@ -12,8 +12,8 @@ import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
 // Fallbacks used when /api/settings hasn't been configured yet.
-const DEFAULT_CONTACT_EMAIL = 'hamed@novasoft.rw'
-const DEFAULT_CONTACT_PHONE = '+250 788 123 456'
+const DEFAULT_CONTACT_EMAIL = 'hamussein01@gmail.com'
+const DEFAULT_CONTACT_PHONE = '+250 793 553 492'
 const DEFAULT_WEBSITE = 'hamedhussein.is-a.dev'
 
 function buildContactInfo(settings?: { contact_email?: string; contact_phone?: string } | null) {
