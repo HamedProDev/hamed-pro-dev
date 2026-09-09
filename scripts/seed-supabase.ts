@@ -1,16 +1,12 @@
 /**
- * Standalone Supabase seeder — run from your own machine (no app deploy needed).
+ * Supabase admin toolkit — run from your own machine (no app deploy needed).
  *
- *   npx tsx scripts/seed-supabase.ts            # seed only empty tables + admin
- *   npx tsx scripts/seed-supabase.ts --content  # upsert projects & courses (add/update live content)
- *   npx tsx scripts/seed-supabase.ts --reset    # delete ALL content data
- *   npx tsx scripts/seed-supabase.ts --admin-only
+ *   npx tsx scripts/seed-supabase.ts --admin-only   # create/verify the admin login
+ *   npx tsx scripts/seed-supabase.ts --reset        # delete ALL content data
  *
- * Reads the same seed content as `/api/seed` (src/lib/seed-data.ts) and writes
- * it directly to Supabase using the service-role key, then creates the admin
- * user. Idempotent: it skips tables that already have rows. `--content` upserts
- * the project/course catalog by slug so you can add or refresh content without
- * touching anything else.
+ * All site content is created by the admin via /admin-control — nothing is
+ * seeded. `--reset` wipes every content table (profiles and auth users are
+ * kept) so you can start from a clean database.
  *
  * Required env vars (in .env or exported):
  *   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_PASSWORD
@@ -19,15 +15,6 @@
  */
 import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
-import {
-  seedProjects,
-  seedCourses,
-  seedSettings,
-  seedSkills,
-  seedAchievements,
-  seedSiteStats,
-  seedTestimonials,
-} from '../src/lib/seed-data'
 
 // ---- minimal .env loader (inline env vars take precedence; last value wins) --
 function loadDotEnv(path: string) {
@@ -69,25 +56,6 @@ function fail(msg: string): never {
   process.exit(1)
 }
 
-async function count(table: string): Promise<number> {
-  const { count, error } = await supabase
-    .from(table)
-    .select('id', { count: 'exact', head: true })
-  if (error) throw error
-  return count ?? 0
-}
-
-async function seedIfEmpty(table: string, rows: Record<string, any>[], label: string) {
-  const existing = await count(table)
-  if (existing > 0) {
-    console.log(`• ${label}: ${existing} already present — skipping`)
-    return
-  }
-  const { error } = await supabase.from(table).insert(rows)
-  if (error) throw error
-  console.log(`• ${label}: seeded ${rows.length}`)
-}
-
 async function ensureAdmin() {
   const { data, error } = await supabase.auth.admin.listUsers()
   if (error) throw error
@@ -106,7 +74,7 @@ async function ensureAdmin() {
     console.log(`• Admin user created: ${adminEmail}`)
   } else {
     // Existing user: force the password to match ADMIN_PASSWORD and confirm email,
-    // so admin login always works after seeding.
+    // so admin login always works.
     const updated = await supabase.auth.admin.updateUserById(user.id, {
       password: adminPassword,
       email_confirm: true,
@@ -173,81 +141,20 @@ async function resetAll() {
   console.log('\n✔ Content cleared. Add new content from /admin-control.\n')
 }
 
-// Retired placeholder projects from an earlier seed — removed by --content so the
-// portfolio only shows real, admin-approved work. Custom projects added via the
-// admin panel are never touched.
-const RETIRED_PROJECT_SLUGS = [
-  'farmconnect',
-  'kwanda-ems',
-  'ai-health-assistant',
-  'educonnect',
-  'paysmart-mobile',
-  'opendev-cli',
-]
-
-async function seedContentUpsert() {
-  console.log(`\nSyncing projects & courses → ${url} (upsert by slug)\n`)
-
-  // Remove retired placeholders (only these exact slugs).
-  const { data: removed } = await supabase
-    .from('projects')
-    .delete({ count: 'exact' })
-    .in('slug', RETIRED_PROJECT_SLUGS)
-    .select('slug')
-  const removedSlugs = (removed ?? []).map((r: any) => r.slug)
-  if (removedSlugs.length) console.log(`• Removed ${removedSlugs.length} retired placeholder projects`)
-
-  const { error: projectsError } = await supabase
-    .from('projects')
-    .upsert(seedProjects, { onConflict: 'slug' })
-  if (projectsError) throw projectsError
-  console.log(`• Projects: ${seedProjects.length} upserted`)
-
-  const { error: coursesError } = await supabase
-    .from('courses')
-    .upsert(seedCourses, { onConflict: 'slug' })
-  if (coursesError) throw coursesError
-  console.log(`• Courses: ${seedCourses.length} upserted (all free)`)
-
-  console.log('\n✔ Done. Projects & courses are live. Manage/edit them from /admin-control.\n')
-}
-
 async function main() {
-  const reset = process.argv.includes('--reset')
-  if (reset) {
+  if (process.argv.includes('--reset')) {
     await resetAll()
     return
   }
 
-  if (process.argv.includes('--content')) {
-    await seedContentUpsert()
-    return
-  }
-
-  console.log(`\nSeeding Supabase → ${url}\n`)
-
+  console.log(`\nEnsuring admin account → ${url}\n`)
   await ensureAdmin()
-
-  const adminOnly = process.argv.includes('--admin-only')
-  if (adminOnly) {
-    console.log('\n✔ Admin account ensured. Skipped demo content (--admin-only).\n')
-    return
-  }
-
-  await seedIfEmpty('settings', [seedSettings], 'Site settings')
-  await seedIfEmpty('projects', seedProjects, 'Projects')
-  await seedIfEmpty('courses', seedCourses, 'Courses')
-  await seedIfEmpty('skills', seedSkills, 'Skills')
-  await seedIfEmpty('achievements', seedAchievements, 'Achievements')
-  await seedIfEmpty('site_stats', seedSiteStats, 'Site stats')
-  await seedIfEmpty('testimonials', seedTestimonials, 'Testimonials')
-
   console.log(`\n✔ Done. Admin login: ${adminEmail} (password is exactly ADMIN_PASSWORD from .env, trimmed)`)
   console.log('  Sign in at /login or /admin-control.\n')
 }
 
 main().catch((err) => {
-  console.error('✖ Seeding failed:')
+  console.error('✖ Failed:')
   console.error(err?.message ?? err)
   process.exit(1)
 })

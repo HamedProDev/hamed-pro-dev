@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
-import { fallbackAchievements } from '@/lib/fallback-data'
 
+// All content is admin-managed: an empty database returns an empty list.
 export async function GET(req: NextRequest) {
   const showAll = new URL(req.url).searchParams.get('all') === 'true'
   try {
@@ -11,12 +11,10 @@ export async function GET(req: NextRequest) {
       filters,
       orderBy: { field: 'order_index', direction: 'asc' },
     })
-    if (achievements.length > 0) return apiSuccess(achievements)
+    return apiSuccess(achievements)
   } catch {
-    // fall through to the hard-coded catalog
+    return apiSuccess([])
   }
-  const list = fallbackAchievements().filter(a => showAll || a.is_published !== false)
-  return apiSuccess(list)
 }
 
 export async function POST(request: NextRequest) {

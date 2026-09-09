@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, updateDocument } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
-import { fallbackSettings } from '@/lib/fallback-data'
 
 async function getSettings() {
   const docs = await getDocuments('settings')
@@ -14,11 +13,9 @@ async function getSettings() {
 async function handleGet() {
   try {
     const settings = await getSettings()
-    // DB settings take precedence, but hard-coded defaults fill any gaps.
-    return apiSuccess({ ...fallbackSettings(), ...settings })
+    return apiSuccess(settings)
   } catch {
-    // Database unreachable or missing tables — serve the hard-coded settings.
-    return apiSuccess(fallbackSettings())
+    return apiSuccess({})
   }
 }
 
@@ -26,11 +23,6 @@ async function handleSave(req: NextRequest) {
   try {
     await requireAdmin(req)
     const body = await req.json()
-    const existing = await getDocuments('settings')
-    if (existing.length === 0) {
-      const settings = await createDocument('settings', body)
-      return apiSuccess(settings, 'Settings updated')
-    }
 
     const snakeFields = [
       'site_name', 'tagline', 'description', 'keywords',
@@ -74,6 +66,14 @@ async function handleSave(req: NextRequest) {
     }
     if (Array.isArray(body.hireServices)) {
       updateData.hire_services = body.hireServices
+    }
+
+    // Same sanitized payload for create and update, so the first save works
+    // exactly like every later save.
+    const existing = await getDocuments('settings')
+    if (existing.length === 0) {
+      const settings = await createDocument('settings', updateData)
+      return apiSuccess(settings, 'Settings updated')
     }
 
     const settings = await updateDocument('settings', existing[0].id, updateData)

@@ -1,11 +1,14 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, countDocuments, getDocument, updateDocument } from '@/lib/supabase/db'
-import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
+import { requireAdmin, apiSuccess, apiError, mapFormToDb, resolveCourseId } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const lessons = await getDocuments('lessons', { filters: [{ field: 'course_id', operator: 'eq', value: params.id }], orderBy: { field: 'order_index', direction: 'asc' } })
+    // params.id may be a course slug (public pages) or UUID (admin) — resolve first.
+    const courseId = await resolveCourseId(params.id)
+    if (!courseId) return apiSuccess([])
+    const lessons = await getDocuments('lessons', { filters: [{ field: 'course_id', operator: 'eq', value: courseId }], orderBy: { field: 'order_index', direction: 'asc' } })
     return apiSuccess(lessons)
   } catch (error: any) {
     return apiError(error.message, 500)

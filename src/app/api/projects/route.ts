@@ -2,8 +2,8 @@ import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError, apiPaginated, mapFormToDb } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
-import { fallbackProjects } from '@/lib/fallback-data'
 
+// All content is admin-managed: an empty database returns an empty list.
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const page = parseInt(searchParams.get('page') || '1')
@@ -30,19 +30,10 @@ export async function GET(req: NextRequest) {
       countDocuments('projects', filters.length > 0 ? filters : undefined),
     ])
 
-    if (projects.length > 0) return apiPaginated(projects, total, page, limit)
+    return apiPaginated(projects, total, page, limit)
   } catch {
-    // Database unreachable or missing tables — fall through to the hard-coded catalog.
+    return apiPaginated([], 0, page, limit)
   }
-
-  // Hard-coded fallback: always show the real portfolio even before the DB is seeded.
-  let list = fallbackProjects()
-  if (!showAll) list = list.filter(p => p.is_published !== false)
-  if (category) list = list.filter(p => p.category === category)
-  if (status === 'featured' || featured === 'true') list = list.filter(p => p.featured === true)
-  const total = list.length
-  const start = (page - 1) * limit
-  return apiPaginated(list.slice(start, start + limit), total, page, limit)
 }
 
 export async function POST(req: NextRequest) {

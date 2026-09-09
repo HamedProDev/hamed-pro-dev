@@ -1,16 +1,15 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
-import { fallbackSkills } from '@/lib/fallback-data'
 
+// All content is admin-managed: an empty database returns an empty list.
 export async function GET() {
   try {
     const skills = await getDocuments('skills', { orderBy: { field: 'order_index', direction: 'asc' } })
-    if (skills.length > 0) return apiSuccess(skills)
+    return apiSuccess(skills)
   } catch {
-    // fall through to the hard-coded catalog
+    return apiSuccess([])
   }
-  return apiSuccess(fallbackSkills())
 }
 
 export async function POST(request: NextRequest) {

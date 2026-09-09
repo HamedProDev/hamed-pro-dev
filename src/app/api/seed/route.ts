@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { createDocument, countDocuments } from '@/lib/supabase/db'
+import { createDocument } from '@/lib/supabase/db'
 import { requireAdmin } from '@/lib/supabase/helpers'
-import { seedProjects, seedCourses, seedSettings, seedSkills, seedAchievements, seedSiteStats, seedTestimonials } from '@/lib/seed-data'
 
 const AUTH_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1`
 
@@ -21,9 +20,12 @@ async function authFetch(path: string, options: RequestInit = {}) {
   return data
 }
 
+// Admin bootstrap only: ensures the admin auth user + profile exist.
+// NOTE: no content is seeded here — all content is created by the admin
+// via /admin-control.
 export async function POST(req: NextRequest) {
   try {
-    // Gate seeding: require a shared secret header (SEED_SECRET) or an authenticated admin.
+    // Gate: require a shared secret header (SEED_SECRET) or an authenticated admin.
     const seedSecret = process.env.SEED_SECRET
     const provided = req.headers.get('x-seed-secret')
     if (seedSecret && provided === seedSecret) {
@@ -45,7 +47,7 @@ export async function POST(req: NextRequest) {
     const adminEmail = process.env.ADMIN_EMAIL || 'hamussein01@gmail.com'
     const adminPassword = process.env.ADMIN_PASSWORD || ''
     if (!adminPassword) {
-      return NextResponse.json({ success: false, error: 'ADMIN_PASSWORD env var is required to seed.' }, { status: 500 })
+      return NextResponse.json({ success: false, error: 'ADMIN_PASSWORD env var is required.' }, { status: 500 })
     }
     let adminUser: any = null
 
@@ -75,68 +77,6 @@ export async function POST(req: NextRequest) {
       // Create profile for the new user
       await createDocument('profiles', { id: adminUser.id, email: adminEmail, name: 'Hamed Hussein', role: 'admin', avatar_url: '' }).catch(() => {})
       results.push('Admin user created')
-    }
-
-    const projectCount = await countDocuments('projects')
-    if (projectCount === 0) {
-      const projects = seedProjects
-      await Promise.all(projects.map(p => createDocument('projects', p)))
-      results.push(`${projects.length} projects seeded`)
-    } else {
-      results.push(`${projectCount} projects exist`)
-    }
-
-    const courseCount = await countDocuments('courses')
-    if (courseCount === 0) {
-      const courses = seedCourses
-      await Promise.all(courses.map(c => createDocument('courses', c)))
-      results.push(`${courses.length} courses seeded`)
-    } else {
-      results.push(`${courseCount} courses exist`)
-    }
-
-    const settingsCount = await countDocuments('settings')
-    if (settingsCount === 0) {
-      await createDocument('settings', seedSettings)
-      results.push('Site settings created')
-    } else {
-      results.push('Site settings exist')
-    }
-
-    const skillCount = await countDocuments('skills')
-    if (skillCount === 0) {
-      const skills = seedSkills
-      await Promise.all(skills.map(s => createDocument('skills', s)))
-      results.push('18 skills seeded')
-    } else {
-      results.push(`${skillCount} skills exist`)
-    }
-
-    const achievementCount = await countDocuments('achievements')
-    if (achievementCount === 0) {
-      const achievements = seedAchievements
-      await Promise.all(achievements.map(a => createDocument('achievements', a)))
-      results.push('8 achievements seeded')
-    } else {
-      results.push(`${achievementCount} achievements exist`)
-    }
-
-    const siteStatsCount = await countDocuments('site_stats')
-    if (siteStatsCount === 0) {
-      const stats = seedSiteStats
-      await Promise.all(stats.map(s => createDocument('site_stats', s)))
-      results.push('5 site stats seeded')
-    } else {
-      results.push(`${siteStatsCount} site stats exist`)
-    }
-
-    const testimonialCount = await countDocuments('testimonials')
-    if (testimonialCount === 0) {
-      const testimonials = seedTestimonials
-      await Promise.all(testimonials.map(t => createDocument('testimonials', t)))
-      results.push('3 testimonials seeded')
-    } else {
-      results.push(`${testimonialCount} testimonials exist`)
     }
 
     return NextResponse.json({ success: true, data: { results, loginUrl: '/login' } })

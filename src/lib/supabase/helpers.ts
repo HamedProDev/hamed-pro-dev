@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { createServiceClient } from './server'
+import { getDocuments } from './db'
 
 const FIELD_MAP: Record<string, Record<string, string>> = {
   projects: {
@@ -176,4 +177,29 @@ export function apiPaginated(data: any[], total: number, page: number, limit: nu
       totalPages: Math.ceil(total / limit),
     },
   })
+}
+
+export function isUuid(v: unknown): v is string {
+  return (
+    typeof v === 'string' &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v)
+  )
+}
+
+/**
+ * Accept either a course UUID or a course slug and return the real UUID.
+ * The public course pages only know the slug, while enrollments / progress /
+ * lessons all key off the UUID — this bridges the two.
+ */
+export async function resolveCourseId(idOrSlug: string): Promise<string | null> {
+  if (isUuid(idOrSlug)) return idOrSlug
+  try {
+    const rows = await getDocuments('courses', {
+      filters: [{ field: 'slug', operator: 'eq', value: idOrSlug }],
+      limit: 1,
+    })
+    return rows?.[0]?.id || null
+  } catch {
+    return null
+  }
 }

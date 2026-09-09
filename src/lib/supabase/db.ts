@@ -27,7 +27,12 @@ function applyOrderBy(query: any, orderBy?: OrderBy | OrderBy[]) {
   return query
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function getDocument(table: string, id: string): Promise<any> {
+  // Fake fallback IDs (skill-0, test-0, slugs…) are never valid UUIDs —
+  // treat them as "not found" instead of letting Postgres throw a 500.
+  if (!UUID_RE.test(id)) return null
   const supabase = createServiceClient()
   const { data, error } = await supabase.from(table).select('*').eq('id', id).single()
   if (error) throw error

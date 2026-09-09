@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getDocuments } from '@/lib/supabase/db'
 import { apiSuccess, apiError } from '@/lib/supabase/helpers'
-import { fallbackCourses } from '@/lib/fallback-data'
 
 // Public: fetch a single course by its slug.
 export async function GET(_req: NextRequest, { params }: { params: { slug: string } }) {
@@ -15,10 +14,7 @@ export async function GET(_req: NextRequest, { params }: { params: { slug: strin
       return apiSuccess(course)
     }
   } catch {
-    // fall through to the hard-coded catalog
+    // fall through to 404
   }
-
-  const found = fallbackCourses().find((c: any) => c.slug === params.slug)
-  if (!found) return apiError('Course not found', 404)
-  return apiSuccess({ ...found, price: 'Free' })
+  return apiError('Course not found', 404)
 }

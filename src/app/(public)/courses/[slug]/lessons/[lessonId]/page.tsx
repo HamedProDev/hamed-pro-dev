@@ -11,6 +11,7 @@ import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { LessonComments } from '@/components/courses/LessonComments'
+import { CourseSidebar } from '@/components/courses/CourseSidebar'
 
 const typeIcons: Record<string, any> = { video: Youtube, text: FileText, quiz: HelpCircle, mixed: BookOpen }
 const typeLabels: Record<string, string> = { video: 'Video', text: 'Text', quiz: 'Quiz', mixed: 'Mixed' }
@@ -34,6 +35,7 @@ export default function LessonPage() {
   const [needsFinalQuiz, setNeedsFinalQuiz] = useState(false)
   const [completeError, setCompleteError] = useState('')
   const [certificate, setCertificate] = useState<string | null>(null)
+  const [progressData, setProgressData] = useState<{ completedLessonIds: string[]; unlockedLessonId: string | null } | null>(null)
 
   useEffect(() => {
     if (!slug) return
@@ -63,6 +65,7 @@ export default function LessonPage() {
       setDone(p.completedLessonIds?.includes(lessonId) || false)
       setLocked(idx > p.completedCount)
       setNeedsFinalQuiz(p.needsFinalQuiz || false)
+      setProgressData({ completedLessonIds: p.completedLessonIds || [], unlockedLessonId: p.unlockedLessonId || null })
     }).catch(() => {})
   }, [course, user, lessonId, lessons])
 
@@ -167,6 +170,9 @@ export default function LessonPage() {
       }
 
       setDone(true)
+      setProgressData(p => p
+        ? { ...p, completedLessonIds: [...p.completedLessonIds, lesson.id] }
+        : { completedLessonIds: [lesson.id], unlockedLessonId: null })
       if (res.data?.needsFinalQuiz) setNeedsFinalQuiz(true)
       if (res.data?.enrollment?.status === 'completed' && !res.data?.needsFinalQuiz) {
         const certs = await fetch('/api/certificates/me').then(r => r.json())
@@ -229,7 +235,8 @@ export default function LessonPage() {
         </div>
       </div>
 
-      <div className="container-wide max-w-4xl py-8">
+      <div className="container-wide grid lg:grid-cols-[minmax(0,1fr)_320px] gap-8 py-8 items-start">
+        <div className="min-w-0">
         <Breadcrumbs items={[
           { label: 'Courses', href: '/courses' },
           { label: course.title, href: `/courses/${slug}` },
@@ -404,6 +411,18 @@ export default function LessonPage() {
             )}
           </div>
         </div>
+        </div>
+        {/* Sidebar: course contents + progress */}
+        <aside className="lg:sticky lg:top-24 hidden lg:block">
+          <CourseSidebar
+            courseSlug={slug}
+            lessons={lessons}
+            completedLessonIds={progressData?.completedLessonIds || []}
+            currentLessonId={lesson.id}
+            unlockedLessonId={progressData?.unlockedLessonId || null}
+            enrolled={!!user && !!progressData}
+          />
+        </aside>
       </div>
     </main>
   )
