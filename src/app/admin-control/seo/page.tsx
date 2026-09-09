@@ -9,6 +9,7 @@ import { Save, Loader2 } from 'lucide-react'
 export default function AdminSEOPage() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [seo, setSeo] = useState({ metaTitle: '', metaDescription: '', keywords: '', ogImage: '' })
 
   useEffect(() => {
@@ -29,8 +30,9 @@ export default function AdminSEOPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setError(null)
     try {
-      await fetch('/api/settings', {
+      const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -42,9 +44,18 @@ export default function AdminSEOPage() {
           },
         }),
       })
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
-    } catch {}
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setSaved(true)
+        setTimeout(() => setSaved(false), 2000)
+        const msg: string = data.message || ''
+        if (msg && msg !== 'Settings updated') setError(msg)
+      } else {
+        setError(data.error || `Failed to save SEO settings (HTTP ${res.status})`)
+      }
+    } catch {
+      setError('Network error — failed to save SEO settings. Check your connection and try again.')
+    }
     setSaving(false)
   }
 
@@ -60,6 +71,12 @@ export default function AdminSEOPage() {
           {saved ? 'Saved!' : 'Save SEO Settings'}
         </Button>
       </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400" role="alert">
+          ❌ {error}
+        </div>
+      )}
 
       <Card>
         <CardHeader><CardTitle>Default Meta Tags</CardTitle><CardDescription>Applied across all pages unless overridden</CardDescription></CardHeader>

@@ -26,6 +26,8 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [warning, setWarning] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(d => {
@@ -47,6 +49,8 @@ export default function AdminSettingsPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setError(null)
+    setWarning(null)
     try {
       const res = await fetch('/api/settings', {
         method: 'POST',
@@ -54,12 +58,18 @@ export default function AdminSettingsPage() {
         body: JSON.stringify(settings),
       })
       const data = await res.json()
-      if (data.success) {
+      if (res.ok && data.success) {
         setSaved(true)
         setTimeout(() => setSaved(false), 3000)
+        // The API reports fields it had to skip (missing DB columns) in the message.
+        const msg: string = data.message || ''
+        if (msg && msg !== 'Settings updated') setWarning(msg)
+      } else {
+        setError(data.error || `Failed to save settings (HTTP ${res.status})`)
       }
     } catch (e) {
       console.error(e)
+      setError('Network error — failed to save settings. Check your connection and try again.')
     }
     setSaving(false)
   }
@@ -78,6 +88,17 @@ export default function AdminSettingsPage() {
           {saved ? 'Saved!' : 'Save Settings'}
         </Button>
       </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400" role="alert">
+          ❌ {error}
+        </div>
+      )}
+      {warning && (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-400" role="status">
+          ⚠️ {warning}
+        </div>
+      )}
 
       {/* Profile & Hero */}
       <Card>
