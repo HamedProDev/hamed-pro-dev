@@ -61,7 +61,7 @@ export default function AchievementsPage() {
                 _id: a.id,
                 title: a.title,
                 description: a.description,
-                year: a.date || '',
+                year: String(a.date || '').slice(0, 4),
                 type: (a.category || 'milestone') as Achievement['type'],
                 link: a.certificate_url || '',
                 image: a.image_url || '',

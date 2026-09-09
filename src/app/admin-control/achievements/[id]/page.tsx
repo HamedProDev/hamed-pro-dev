@@ -11,6 +11,7 @@ export default function EditAchievementPage({ params }: { params: { id: string }
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -29,7 +30,7 @@ export default function EditAchievementPage({ params }: { params: { id: string }
       .then(d => {
         if (d.success) {
           const a = d.data
-          setForm({ title: a.title, description: a.description, year: a.date || '', type: a.category || 'milestone', link: a.certificate_url || '', issuer: a.issuer || '', image: a.image_url || '', order: a.order_index || 0, featured: a.is_published || false })
+          setForm({ title: a.title, description: a.description, year: String(a.date || '').slice(0, 4), type: a.category || 'milestone', link: a.certificate_url || '', issuer: a.issuer || '', image: a.image_url || '', order: a.order_index || 0, featured: a.is_published || false })
         }
         setLoading(false)
       })
@@ -39,13 +40,23 @@ export default function EditAchievementPage({ params }: { params: { id: string }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    const res = await fetch(`/api/achievements/${params.id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-    if (res.ok) router.push('/admin-control/achievements')
-    else setSaving(false)
+    setError('')
+    try {
+      const res = await fetch(`/api/achievements/${params.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          year: form.year ? `${form.year}-01-01` : null,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) router.push('/admin-control/achievements')
+      else { setError(data.error || 'Failed to update achievement'); setSaving(false) }
+    } catch {
+      setError('Something went wrong. Please try again.')
+      setSaving(false)
+    }
   }
 
   const handleDelete = async () => {
@@ -108,8 +119,9 @@ export default function EditAchievementPage({ params }: { params: { id: string }
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-violet-500" />
-          <label htmlFor="featured" className="text-sm text-text-secondary">Featured achievement</label>
+          <label htmlFor="featured" className="text-sm text-text-secondary">Published (visible on the Achievements page)</label>
         </div>
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <Button type="submit" disabled={saving} className="gradient-bg text-white">
           <Save className="h-4 w-4 mr-2" />{saving ? 'Saving...' : 'Save Changes'}
         </Button>

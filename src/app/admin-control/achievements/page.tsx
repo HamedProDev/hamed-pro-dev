@@ -72,7 +72,7 @@ export default function AdminAchievementsPage() {
                         <Icon className="h-3 w-3" />{a.category}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-text-secondary">{a.date}</td>
+                    <td className="px-4 py-3 text-text-secondary">{String(a.date).slice(0, 4)}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Link href={`/admin-control/achievements/${a.id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors">

@@ -10,6 +10,7 @@ import { ImageUpload } from '@/components/ui/image-upload'
 export default function NewAchievementPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -19,19 +20,29 @@ export default function NewAchievementPage() {
     issuer: '',
     image: '',
     order: 0,
-    featured: false,
+    featured: true,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    const res = await fetch('/api/achievements', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-    if (res.ok) router.push('/admin-control/achievements')
-    else setSaving(false)
+    setError('')
+    try {
+      const res = await fetch('/api/achievements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          year: form.year ? `${form.year}-01-01` : null,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) router.push('/admin-control/achievements')
+      else { setError(data.error || 'Failed to create achievement'); setSaving(false) }
+    } catch {
+      setError('Something went wrong. Please try again.')
+      setSaving(false)
+    }
   }
 
   const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none'
@@ -83,8 +94,9 @@ export default function NewAchievementPage() {
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-violet-500" />
-          <label htmlFor="featured" className="text-sm text-text-secondary">Featured achievement</label>
+          <label htmlFor="featured" className="text-sm text-text-secondary">Published (visible on the Achievements page)</label>
         </div>
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <Button type="submit" disabled={saving} className="gradient-bg text-white">
           <Save className="h-4 w-4 mr-2" />{saving ? 'Saving...' : 'Create Achievement'}
         </Button>
