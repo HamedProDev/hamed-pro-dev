@@ -9,12 +9,12 @@ const iconMap: Record<string, any> = {
 }
 
 const iconColors = [
-  { color: 'text-blue-500', bg: 'bg-blue-500/10' },
+  { color: 'text-violet-500', bg: 'bg-violet-500/10' },
   { color: 'text-yellow-500', bg: 'bg-yellow-500/10' },
   { color: 'text-green-500', bg: 'bg-green-500/10' },
   { color: 'text-purple-500', bg: 'bg-purple-500/10' },
-  { color: 'text-blue-400', bg: 'bg-blue-400/10' },
-  { color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
+  { color: 'text-violet-400', bg: 'bg-violet-400/10' },
+  { color: 'text-teal-500', bg: 'bg-teal-500/10' },
   { color: 'text-pink-500', bg: 'bg-pink-500/10' },
   { color: 'text-orange-500', bg: 'bg-orange-500/10' },
 ]

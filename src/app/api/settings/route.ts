@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, updateDocument } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { fallbackSettings } from '@/lib/fallback-data'
 
 async function getSettings() {
   const docs = await getDocuments('settings')
@@ -13,9 +14,11 @@ async function getSettings() {
 async function handleGet() {
   try {
     const settings = await getSettings()
-    return apiSuccess(settings)
-  } catch (error: any) {
-    return apiError(error.message, 500)
+    // DB settings take precedence, but hard-coded defaults fill any gaps.
+    return apiSuccess({ ...fallbackSettings(), ...settings })
+  } catch {
+    // Database unreachable or missing tables — serve the hard-coded settings.
+    return apiSuccess(fallbackSettings())
   }
 }
 
@@ -35,6 +38,7 @@ async function handleSave(req: NextRequest) {
       'profile_photo', 'hero_name', 'hero_title', 'hero_subtitle',
       'contact_email', 'contact_phone', 'address', 'location',
       'maintenance_mode', 'allow_registration',
+      'resume_url', 'about_image',
     ]
 
     const camelToSnake: Record<string, string> = {
@@ -43,6 +47,7 @@ async function handleSave(req: NextRequest) {
       heroTitle: 'hero_title', heroSubtitle: 'hero_subtitle',
       contactEmail: 'contact_email', contactPhone: 'contact_phone',
       maintenanceMode: 'maintenance_mode', allowRegistration: 'allow_registration',
+      resumeUrl: 'resume_url', hireServices: 'hire_services', aboutImage: 'about_image',
     }
 
     const updateData: any = {}
@@ -50,7 +55,7 @@ async function handleSave(req: NextRequest) {
     for (const key of Object.keys(body)) {
       if (key === '_method' || key === 'id' || key === 'created_at' || key === 'updated_at') continue
       const dbKey = camelToSnake[key] || key
-      if (snakeFields.includes(dbKey) || dbKey === 'social_links' || dbKey === 'email_notifications' || dbKey === 'seo_defaults' || dbKey === 'integrations') {
+      if (snakeFields.includes(dbKey) || ['social_links', 'email_notifications', 'seo_defaults', 'integrations', 'hire_services'].includes(dbKey)) {
         updateData[dbKey] = body[key]
       }
     }
@@ -66,6 +71,9 @@ async function handleSave(req: NextRequest) {
     }
     if (body.integrations && typeof body.integrations === 'object') {
       updateData.integrations = body.integrations
+    }
+    if (Array.isArray(body.hireServices)) {
+      updateData.hire_services = body.hireServices
     }
 
     const settings = await updateDocument('settings', existing[0].id, updateData)

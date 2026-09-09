@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { FinalQuizEditor, type QuizQuestion } from '@/components/admin/FinalQuizEditor'
 
 export default function EditCoursePage() {
   const router = useRouter()
@@ -20,6 +21,7 @@ export default function EditCoursePage() {
     title: '', description: '', longDescription: '', coverImage: '', category: 'Frontend',
     level: 'beginner', type: 'free', price: '0', duration: '', rating: '', tags: '', prerequisites: '', outcomes: '',
     youtubePlaylistUrl: '',
+    finalQuiz: [] as QuizQuestion[],
   })
 
   const update = (key: string, value: any) => setForm(f => ({ ...f, [key]: value }))
@@ -35,6 +37,7 @@ export default function EditCoursePage() {
           rating: String(c.rating || ''),           tags: (c.tags || []).join(', '),
           prerequisites: (c.prerequisites || []).join(', '), outcomes: (c.outcomes || []).join(', '),
           youtubePlaylistUrl: c.youtube_url || '',
+          finalQuiz: c.final_quiz || [],
         })
       }
       setLoading(false)
@@ -51,12 +54,13 @@ export default function EditCoursePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          price: Number(form.price),
-          duration: Number(form.duration) || 0,
+          price: String(form.price || '0').trim(),
+          duration: String(form.duration || '').trim(),
           rating: Number(form.rating) || 0,
           tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
           prerequisites: form.prerequisites.split(',').map(t => t.trim()).filter(Boolean),
           outcomes: form.outcomes.split(',').map(t => t.trim()).filter(Boolean),
+          final_quiz: form.finalQuiz.filter(q => q.question && q.options.some(o => o)),
         }),
       })
       const data = await res.json()
@@ -66,7 +70,7 @@ export default function EditCoursePage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
 
   return (
     <div className="max-w-2xl">
@@ -96,6 +100,7 @@ export default function EditCoursePage() {
             <div><label htmlFor="course-youtubePlaylistUrl" className="text-sm font-medium mb-1 block">YouTube Playlist URL</label><Input id="course-youtubePlaylistUrl" name="youtubePlaylistUrl" value={form.youtubePlaylistUrl} onChange={e => update('youtubePlaylistUrl', e.target.value)} placeholder="https://youtube.com/playlist?list=..." /></div>
           </CardContent>
         </Card>
+        <FinalQuizEditor value={form.finalQuiz} onChange={v => update('finalQuiz', v)} />
         {error && <p className="text-red-400 text-sm">{error}</p>}
         <Button type="submit" disabled={saving} className="gradient-bg text-white">
           {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}

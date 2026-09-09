@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Search, ExternalLink, Github, ArrowRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -11,19 +12,22 @@ import { cn } from '@/lib/utils/cn'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
-const categories = ['All', 'large', 'mini', 'school']
+const categories = ['All', 'large', 'mini', 'school', 'ai', 'mobile', 'saas']
 
 const categoryLabels: Record<string, string> = {
   large: 'Web App',
   mini: 'Mini Project',
   school: 'School Project',
+  ai: 'AI / ML',
+  mobile: 'Mobile App',
+  saas: 'SaaS',
 }
 
 const gradients = [
   'from-green-600/30 via-surface-card to-surface-secondary',
-  'from-blue-600/30 via-indigo-700/20 to-surface-secondary',
+  'from-violet-600/30 via-purple-700/20 to-surface-secondary',
   'from-purple-600/30 via-pink-700/20 to-surface-secondary',
-  'from-cyan-600/30 via-blue-700/20 to-surface-secondary',
+  'from-teal-600/30 via-violet-700/20 to-surface-secondary',
   'from-amber-600/30 via-orange-700/20 to-surface-secondary',
   'from-teal-600/30 via-emerald-700/20 to-surface-secondary',
 ]
@@ -99,7 +103,7 @@ export default function ProjectsPage() {
                 <Card className="h-full card-hover group overflow-hidden">
                   <div className={cn('h-48 rounded-t-xl bg-gradient-to-br relative', gradients[i % gradients.length])}>
                     {p.image_url ? (
-                      <img src={p.image_url} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                      <Image src={p.image_url} alt={`${p.title} project screenshot`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" unoptimized />
                     ) : (
                       <div className="absolute inset-4 rounded-lg bg-dark-900/20 border border-border-primary p-3">
                         <div className="h-2 w-16 bg-surface-tertiary/60 rounded mb-2" />

@@ -20,6 +20,7 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
     isPublished: 'is_published',
     prerequisites: 'prerequisites',
     outcomes: 'outcomes',
+    finalQuiz: 'final_quiz',
     order: 'order_index',
   },
   lessons: {
@@ -27,11 +28,6 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
     videoDuration: 'duration',
     isFree: 'is_free',
     isPublished: 'is_published',
-    order: 'order_index',
-  },
-  blog_posts: {
-    coverImage: 'image_url',
-    published: 'is_published',
     order: 'order_index',
   },
   skills: {
@@ -43,6 +39,7 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
     year: 'date',
     type: 'category',
     link: 'certificate_url',
+    image: 'image_url',
     order: 'order_index',
     featured: 'is_published',
   },
@@ -51,16 +48,6 @@ const FIELD_MAP: Record<string, Record<string, string>> = {
     featured: 'is_published',
   },
   site_stats: {
-    order: 'order_index',
-  },
-  organizations: {
-    type: 'category',
-    team: 'team_size',
-    roles: 'team_roles',
-    tech: 'tech_stack',
-    hiring: 'is_hiring',
-    website: 'website_url',
-    logo: 'logo_url',
     order: 'order_index',
   },
   profiles: {
@@ -150,7 +137,7 @@ export async function getCurrentUser(req: NextRequest) {
     .from('profiles')
     .select('*')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   return {
     uid: user.id,
@@ -158,6 +145,15 @@ export async function getCurrentUser(req: NextRequest) {
     name: profile?.name || user.email?.split('@')[0] || '',
     image: profile?.avatar_url || null,
     role: profile?.role || 'visitor',
+    bio: profile?.bio || '',
+    interests: profile?.interests || [],
+    avatar_url: profile?.avatar_url || null,
+    website: profile?.website || '',
+    github_url: profile?.github_url || '',
+    linkedin_url: profile?.linkedin_url || '',
+    twitter_url: profile?.twitter_url || '',
+    location: profile?.location || '',
+    headline: profile?.headline || '',
   }
 }
 

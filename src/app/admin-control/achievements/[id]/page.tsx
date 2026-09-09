@@ -5,17 +5,21 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Save, ArrowLeft, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { ImageUpload } from '@/components/ui/image-upload'
 
 export default function EditAchievementPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     title: '',
     description: '',
     year: '',
     type: 'milestone',
     link: '',
+    issuer: '',
+    image: '',
     order: 0,
     featured: false,
   })
@@ -26,7 +30,7 @@ export default function EditAchievementPage({ params }: { params: { id: string }
       .then(d => {
         if (d.success) {
           const a = d.data
-          setForm({ title: a.title, description: a.description, year: a.date || '', type: a.category || 'milestone', link: a.certificate_url || '', order: a.order_index || 0, featured: a.is_published || false })
+          setForm({ title: a.title, description: a.description, year: String(a.date || '').slice(0, 4), type: a.category || 'milestone', link: a.certificate_url || '', issuer: a.issuer || '', image: a.image_url || '', order: a.order_index || 0, featured: a.is_published || false })
         }
         setLoading(false)
       })
@@ -36,13 +40,23 @@ export default function EditAchievementPage({ params }: { params: { id: string }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    const res = await fetch(`/api/achievements/${params.id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-    if (res.ok) router.push('/admin-control/achievements')
-    else setSaving(false)
+    setError('')
+    try {
+      const res = await fetch(`/api/achievements/${params.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          year: form.year ? `${form.year}-01-01` : null,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) router.push('/admin-control/achievements')
+      else { setError(data.error || 'Failed to update achievement'); setSaving(false) }
+    } catch {
+      setError('Something went wrong. Please try again.')
+      setSaving(false)
+    }
   }
 
   const handleDelete = async () => {
@@ -51,9 +65,9 @@ export default function EditAchievementPage({ params }: { params: { id: string }
     router.push('/admin-control/achievements')
   }
 
-  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
 
-  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-blue-500 focus:outline-none'
+  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none'
 
   return (
     <div>
@@ -92,13 +106,22 @@ export default function EditAchievementPage({ params }: { params: { id: string }
           <input id="ach-link" name="link" type="url" value={form.link} onChange={e => setForm({ ...form, link: e.target.value })} className={inputClass} />
         </div>
         <div>
+          <label htmlFor="ach-issuer" className="block text-sm font-medium text-text-secondary mb-1.5">Issuer (optional)</label>
+          <input id="ach-issuer" name="issuer" type="text" value={form.issuer} onChange={e => setForm({ ...form, issuer: e.target.value })} className={inputClass} placeholder="e.g. Amazon Web Services" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-secondary mb-1.5">Certificate image (optional)</label>
+          <ImageUpload value={form.image} onChange={url => setForm({ ...form, image: url })} folder="hamedpro/certificates" />
+        </div>
+        <div>
           <label htmlFor="ach-order" className="block text-sm font-medium text-text-secondary mb-1.5">Order</label>
           <input id="ach-order" name="order" type="number" value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} className={inputClass} />
         </div>
         <div className="flex items-center gap-2">
-          <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-blue-500" />
-          <label htmlFor="featured" className="text-sm text-text-secondary">Featured achievement</label>
+          <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-violet-500" />
+          <label htmlFor="featured" className="text-sm text-text-secondary">Published (visible on the Achievements page)</label>
         </div>
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <Button type="submit" disabled={saving} className="gradient-bg text-white">
           <Save className="h-4 w-4 mr-2" />{saving ? 'Saving...' : 'Save Changes'}
         </Button>

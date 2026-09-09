@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils/cn'
 import {
   LayoutDashboard, GraduationCap,
   Users, Search, UserCircle, Settings, ChevronLeft, ChevronRight,
-  Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare
+  Zap, Trophy, Building2, LogOut, BarChart3, MessageSquare, Image, Mail
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAdminAuth } from '@/components/admin/AdminGate'
@@ -17,9 +17,11 @@ const links = [
   { href: '/admin-control/courses', label: 'Courses', icon: GraduationCap },
   { href: '/admin-control/skills', label: 'Skills', icon: Zap },
   { href: '/admin-control/achievements', label: 'Achievements', icon: Trophy },
-  { href: '/admin-control/organizations', label: 'Organizations', icon: Building2 },
   { href: '/admin-control/stats', label: 'Stats', icon: BarChart3 },
   { href: '/admin-control/testimonials', label: 'Testimonials', icon: MessageSquare },
+  { href: '/admin-control/comments', label: 'Comments', icon: MessageSquare },
+  { href: '/admin-control/contact', label: 'Messages', icon: Mail },
+  { href: '/admin-control/media', label: 'Media', icon: Image },
   { href: '/admin-control/users', label: 'Users', icon: Users },
   { href: '/admin-control/seo', label: 'SEO', icon: Search },
   { href: '/admin-control/about', label: 'About Page', icon: UserCircle },
@@ -32,7 +34,7 @@ export function AdminSidebar() {
   const { lock } = useAdminAuth()
 
   return (
-    <aside className={cn('sticky top-16 h-[calc(100vh-4rem)] border-r border-border-primary bg-surface-secondary transition-all flex flex-col', collapsed ? 'w-16' : 'w-60')}>
+    <aside className={cn('shrink-0 border-r border-border-primary bg-surface-secondary transition-all flex flex-col', collapsed ? 'w-16' : 'w-60')}>
       <nav className="flex flex-col p-2 gap-1 flex-1 overflow-y-auto">
         {links.map(link => {
           const active = pathname === link.href || (link.href !== '/admin-control' && pathname.startsWith(link.href))
@@ -42,7 +44,7 @@ export function AdminSidebar() {
               href={link.href}
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                active ? 'bg-blue-500/10 text-blue-500' : 'text-text-secondary hover:bg-surface-tertiary hover:text-text-primary',
+                active ? 'bg-violet-500/10 text-violet-500' : 'text-text-secondary hover:bg-surface-tertiary hover:text-text-primary',
                 collapsed && 'justify-center px-2'
               )}
               title={collapsed ? link.label : undefined}

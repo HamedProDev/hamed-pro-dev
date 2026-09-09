@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ArrowRight, ExternalLink, Github, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -9,9 +10,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils/cn'
 
 const gradients = [
-  'from-blue-600/30 via-purple-600/20 to-surface-secondary',
-  'from-indigo-600/30 via-blue-600/20 to-surface-secondary',
-  'from-cyan-600/30 via-blue-600/20 to-surface-secondary',
+  'from-violet-600/30 via-purple-600/20 to-surface-secondary',
+  'from-purple-600/30 via-violet-600/20 to-surface-secondary',
+  'from-teal-600/30 via-violet-600/20 to-surface-secondary',
 ]
 
 export function FeaturedProjects() {
@@ -33,7 +34,7 @@ export function FeaturedProjects() {
             <div><h2 className="text-3xl font-bold">Featured Projects</h2><p className="text-text-secondary mt-2">Some of my best work</p></div>
             <Button variant="ghost" asChild><Link href="/projects">View all <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
           </div>
-          <div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+          <div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
         </div>
       </section>
     )
@@ -65,10 +66,10 @@ export function FeaturedProjects() {
               transition={{ delay: i * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               whileHover={{ y: -8 }}
             >
-                <Card className="h-full group overflow-hidden border-border-primary hover:border-blue-500/30 transition-all duration-300">
+                <Card className="h-full group overflow-hidden border-border-primary hover:border-violet-500/30 transition-all duration-300">
                 <div className={cn('h-52 rounded-t-xl bg-gradient-to-br relative overflow-hidden', gradients[i % gradients.length])}>
                   {p.image_url ? (
-                    <img src={p.image_url} alt={`${p.title} project screenshot`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                    <Image src={p.image_url} alt={`${p.title} project screenshot`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" unoptimized />
                   ) : (
                     <>
                       <motion.div
@@ -91,18 +92,18 @@ export function FeaturedProjects() {
                   <Badge className="absolute top-4 left-4 bg-green-500 text-white border-0 text-xs z-10">Featured</Badge>
                 </div>
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-400 transition-colors duration-300">{p.title}</h3>
+                  <h3 className="text-lg font-semibold mb-2 group-hover:text-violet-400 transition-colors duration-300">{p.title}</h3>
                   <p className="text-sm text-text-secondary mb-4">{p.description}</p>
                   <div className="flex flex-wrap gap-1.5 mb-5">
                     {(p.tech_stack || []).map((t: string) => (
-                      <Badge key={t} className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/20 font-medium">{t}</Badge>
+                      <Badge key={t} className="text-xs bg-violet-500/10 text-violet-400 border-violet-500/20 font-medium">{t}</Badge>
                     ))}
                   </div>
                   <div className="flex items-center gap-4 pt-4 border-t border-border-primary">
-                    {p.demo_url && <a href={p.demo_url} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-blue-400 transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
-                    {p.github_url && <a href={p.github_url} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-blue-400 transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
+                    {p.demo_url && <a href={p.demo_url} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-violet-400 transition-colors"><ExternalLink className="h-3.5 w-3.5" /> Live Demo</a>}
+                    {p.github_url && <a href={p.github_url} target="_blank" className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-violet-400 transition-colors"><Github className="h-3.5 w-3.5" /> GitHub</a>}
                     <motion.div className="ml-auto">
-                      <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-300" />
+                      <ArrowRight className="h-4 w-4 text-text-muted group-hover:text-violet-400 group-hover:translate-x-1 transition-all duration-300" />
                     </motion.div>
                   </div>
                 </CardContent>

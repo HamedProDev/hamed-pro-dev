@@ -2,16 +2,17 @@ import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError, apiPaginated, mapFormToDb } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
+import { fallbackCourses } from '@/lib/fallback-data'
 
 export async function GET(req: NextRequest) {
-  try {
-    const { searchParams } = new URL(req.url)
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '12')
-    const category = searchParams.get('category')
-    const level = searchParams.get('level')
+  const { searchParams } = new URL(req.url)
+  const page = parseInt(searchParams.get('page') || '1')
+  const limit = parseInt(searchParams.get('limit') || '12')
+  const category = searchParams.get('category')
+  const level = searchParams.get('level')
+  const showAll = searchParams.get('all') === 'true'
 
-    const showAll = searchParams.get('all') === 'true'
+  try {
     const filters: { field: string; operator: any; value: any }[] = []
     if (!showAll) filters.push({ field: 'is_published', operator: 'eq', value: true })
     if (category) filters.push({ field: 'category', operator: 'eq', value: category })
@@ -26,10 +27,44 @@ export async function GET(req: NextRequest) {
       }),
       countDocuments('courses', filters.length > 0 ? filters : undefined),
     ])
-    return apiPaginated(courses, total, page, limit)
-  } catch (error: any) {
-    return apiError(error.message, 500)
+
+    if (courses.length > 0) {
+      // Real enrollment counts (the courses.enrolled column is legacy/stale).
+      let enrollCounts: Record<string, number> = {}
+      try {
+        const courseIds = courses.map((c: any) => c.id)
+        const enrollments = await getDocuments('enrollments', {
+          filters: [{ field: 'course_id', operator: 'in', value: courseIds }],
+          select: 'course_id',
+        })
+        for (const e of enrollments) {
+          enrollCounts[e.course_id] = (enrollCounts[e.course_id] || 0) + 1
+        }
+      } catch {
+        // enrollment counts are non-critical — fall back to the legacy column
+      }
+
+      // Every course is free — normalize price so legacy rows never show a cost.
+      const normalized = courses.map((c: any) => ({
+        ...c,
+        price: 'Free',
+        enrolled: enrollCounts[c.id] ?? c.enrolled ?? 0,
+      }))
+      return apiPaginated(normalized, total, page, limit)
+    }
+  } catch {
+    // Database unreachable or missing tables — fall through to the hard-coded catalog.
   }
+
+  // Hard-coded fallback: always show the free course catalog before the DB is seeded.
+  let list = fallbackCourses()
+  if (!showAll) list = list.filter(c => c.is_published !== false)
+  if (category) list = list.filter(c => c.category === category)
+  if (level) list = list.filter(c => c.level === level)
+  const total = list.length
+  const start = (page - 1) * limit
+  const normalized = list.slice(start, start + limit).map(c => ({ ...c, price: 'Free' }))
+  return apiPaginated(normalized, total, page, limit)
 }
 
 export async function POST(req: NextRequest) {

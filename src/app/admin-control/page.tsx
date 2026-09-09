@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-  import { FolderOpen, GraduationCap, Users, FileText, Settings, Zap, Trophy, TrendingUp, Eye, BarChart3, MessageSquare, Database, Loader2 } from 'lucide-react'
+import { FolderOpen, GraduationCap, Users, Settings, Zap, Trophy, TrendingUp, Eye, BarChart3, MessageSquare } from 'lucide-react'
 
 interface Stats {
   projects: number
@@ -10,17 +10,13 @@ interface Stats {
   users: number
   skills: number
   achievements: number
-  blog: number
   siteStats: number
   testimonials: number
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stats>({ projects: 0, courses: 0, users: 0, skills: 0, achievements: 0, blog: 0, siteStats: 0, testimonials: 0 })
+  const [stats, setStats] = useState<Stats>({ projects: 0, courses: 0, users: 0, skills: 0, achievements: 0, siteStats: 0, testimonials: 0 })
   const [loading, setLoading] = useState(true)
-
-  const [seeding, setSeeding] = useState(false)
-  const [seedMsg, setSeedMsg] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -28,17 +24,15 @@ export default function AdminDashboard() {
       fetch('/api/courses?all=true').then(r => r.json()),
       fetch('/api/skills').then(r => r.json()),
       fetch('/api/achievements').then(r => r.json()),
-      fetch('/api/blog?all=true').then(r => r.json()),
       fetch('/api/users').then(r => r.json()),
       fetch('/api/stats').then(r => r.json()),
       fetch('/api/testimonials').then(r => r.json()),
-    ]).then(([p, c, s, a, b, u, st, t]) => {
+    ]).then(([p, c, s, a, u, st, t]) => {
       setStats({
         projects: p.data?.length || 0,
         courses: c.data?.length || 0,
         skills: s.data?.length || 0,
         achievements: a.data?.length || 0,
-        blog: b.data?.length || 0,
         users: u.data?.length || 0,
         siteStats: st.data?.length || 0,
         testimonials: t.data?.length || 0,
@@ -47,26 +41,12 @@ export default function AdminDashboard() {
     }).catch(() => setLoading(false))
   }, [])
 
-  const handleSeed = async () => {
-    if (!confirm('Reset database with seed data? This will NOT delete existing data (it only inserts if empty).')) return
-    setSeeding(true)
-    setSeedMsg('')
-    try {
-      const res = await fetch('/api/seed', { method: 'POST' })
-      const d = await res.json()
-      if (d.success) setSeedMsg('Seed completed: ' + (d.data?.results || []).join(', '))
-      else setSeedMsg('Error: ' + d.error)
-    } catch { setSeedMsg('Failed to connect') }
-    setSeeding(false)
-  }
-
   const cards = [
-    { label: 'Projects', value: stats.projects, icon: FolderOpen, href: '/admin-control/projects', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { label: 'Projects', value: stats.projects, icon: FolderOpen, href: '/admin-control/projects', color: 'text-violet-500', bg: 'bg-violet-500/10' },
     { label: 'Courses', value: stats.courses, icon: GraduationCap, href: '/admin-control/courses', color: 'text-green-500', bg: 'bg-green-500/10' },
-    { label: 'Skills', value: stats.skills, icon: Zap, href: '/admin-control/skills', color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
+    { label: 'Skills', value: stats.skills, icon: Zap, href: '/admin-control/skills', color: 'text-teal-500', bg: 'bg-teal-500/10' },
     { label: 'Achievements', value: stats.achievements, icon: Trophy, href: '/admin-control/achievements', color: 'text-purple-500', bg: 'bg-purple-500/10' },
-    { label: 'Blog Posts', value: stats.blog, icon: FileText, href: '/admin-control/blog', color: 'text-pink-500', bg: 'bg-pink-500/10' },
-    { label: 'Stats', value: stats.siteStats, icon: BarChart3, href: '/admin-control/stats', color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+    { label: 'Stats', value: stats.siteStats, icon: BarChart3, href: '/admin-control/stats', color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { label: 'Testimonials', value: stats.testimonials, icon: MessageSquare, href: '/admin-control/testimonials', color: 'text-teal-500', bg: 'bg-teal-500/10' },
     { label: 'Users', value: stats.users, icon: Users, href: '/admin-control/users', color: 'text-orange-500', bg: 'bg-orange-500/10' },
     { label: 'Settings', value: null, icon: Settings, href: '/admin-control/settings', color: 'text-gray-500', bg: 'bg-gray-500/10' },
@@ -77,7 +57,6 @@ export default function AdminDashboard() {
     { label: 'New Course', href: '/admin-control/courses/new' },
     { label: 'New Skill', href: '/admin-control/skills/new' },
     { label: 'New Achievement', href: '/admin-control/achievements/new' },
-    { label: 'New Blog Post', href: '/admin-control/blog/new' },
     { label: 'New Stat', href: '/admin-control/stats/new' },
     { label: 'New Testimonial', href: '/admin-control/testimonials/new' },
     { label: 'Site Settings', href: '/admin-control/settings' },
@@ -98,7 +77,7 @@ export default function AdminDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
           >
-            <Link href={s.href} className="block admin-card hover:shadow-lg transition-all duration-200 group">
+            <Link href={s.href} className="block admin-card hover:shadow-sm transition-all duration-200 group">
               <s.icon className={`h-5 w-5 mb-2 ${s.color} group-hover:scale-110 transition-transform`} />
               <p className="text-2xl font-bold text-text-primary">{loading ? '...' : s.value ?? '—'}</p>
               <p className="text-sm text-text-muted">{s.label}</p>
@@ -110,22 +89,16 @@ export default function AdminDashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="admin-card">
           <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-blue-500" />
+            <TrendingUp className="h-5 w-5 text-violet-500" />
             Quick Actions
           </h2>
           <div className="flex flex-wrap gap-2">
             {quickActions.map(a => (
-              <Link key={a.href} href={a.href} className="px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-sm hover:bg-blue-500/20 transition-colors">
+              <Link key={a.href} href={a.href} className="px-3 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-sm hover:bg-violet-500/20 transition-colors">
                 {a.label}
               </Link>
             ))}
-            <div className="w-full border-t border-border-primary my-2" />
-            <button onClick={handleSeed} disabled={seeding} className="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-500 text-sm hover:bg-amber-500/20 transition-colors flex items-center gap-1">
-              {seeding ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Database className="h-3.5 w-3.5" />}
-              {seeding ? 'Seeding...' : 'Seed Database'}
-            </button>
           </div>
-          {seedMsg && <p className="mt-3 text-xs text-text-muted">{seedMsg}</p>}
         </div>
         <div className="admin-card">
           <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
@@ -133,7 +106,7 @@ export default function AdminDashboard() {
             Platform Overview
           </h2>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between"><span className="text-text-muted">Total Content</span><span className="text-text-primary font-medium">{stats.projects + stats.courses + stats.blog + stats.skills + stats.achievements} items</span></div>
+            <div className="flex justify-between"><span className="text-text-muted">Total Content</span><span className="text-text-primary font-medium">{stats.projects + stats.courses + stats.skills + stats.achievements} items</span></div>
             <div className="flex justify-between"><span className="text-text-muted">Total Users</span><span className="text-text-primary font-medium">{stats.users}</span></div>
             <div className="flex justify-between"><span className="text-text-muted">Skills</span><span className="text-text-primary font-medium">{stats.skills}</span></div>
           </div>

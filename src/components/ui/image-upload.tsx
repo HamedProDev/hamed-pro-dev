@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
+import Image from 'next/image'
 import { Upload, X, Loader2, Link as LinkIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,9 +11,10 @@ interface ImageUploadProps {
   onChange: (url: string) => void
   className?: string
   folder?: string
+  square?: boolean
 }
 
-export function ImageUpload({ value, onChange, className, folder }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, className, folder, square }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState('')
@@ -68,17 +70,17 @@ export function ImageUpload({ value, onChange, className, folder }: ImageUploadP
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex gap-2">
-        <button type="button" onClick={() => setMode('upload')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'upload' ? 'bg-blue-500/10 text-blue-500' : 'text-text-muted hover:text-text-primary'}`}>
+        <button type="button" onClick={() => setMode('upload')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'upload' ? 'bg-violet-500/10 text-violet-500' : 'text-text-muted hover:text-text-primary'}`}>
           <Upload className="h-3 w-3 inline mr-1" /> Upload
         </button>
-        <button type="button" onClick={() => setMode('url')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'url' ? 'bg-blue-500/10 text-blue-500' : 'text-text-muted hover:text-text-primary'}`}>
+        <button type="button" onClick={() => setMode('url')} className={`text-xs px-3 py-1 rounded-lg transition-colors ${mode === 'url' ? 'bg-violet-500/10 text-violet-500' : 'text-text-muted hover:text-text-primary'}`}>
           <LinkIcon className="h-3 w-3 inline mr-1" /> URL
         </button>
       </div>
 
       {value && (
-        <div className="relative group rounded-xl overflow-hidden border border-border-primary">
-          <img src={value} alt="Uploaded" className="w-full h-48 object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+        <div className={cn('relative group overflow-hidden border border-border-primary', square ? 'aspect-square rounded-full' : 'rounded-xl')}>
+          <Image src={value} alt="Uploaded" width={800} height={400} className={cn('object-cover', square ? 'w-full h-full' : 'w-full h-48')} unoptimized />
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
             {mode === 'upload' && <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()}>Replace</Button>}
             <Button size="sm" variant="destructive" onClick={() => onChange('')}><X className="h-4 w-4" /></Button>
@@ -90,17 +92,17 @@ export function ImageUpload({ value, onChange, className, folder }: ImageUploadP
 
       {!value && mode === 'upload' && (
         <div
-          className={cn('relative rounded-xl border-2 border-dashed p-8 text-center cursor-pointer transition-all', dragOver ? 'border-blue-500 bg-blue-500/10' : 'border-border-primary hover:border-blue-500/50 bg-surface-secondary')}
+          className={cn('relative border-2 border-dashed p-8 text-center cursor-pointer transition-all', square ? 'aspect-square rounded-full flex flex-col items-center justify-center' : 'rounded-xl', dragOver ? 'border-violet-500 bg-violet-500/10' : 'border-border-primary hover:border-violet-500/50 bg-surface-secondary')}
           onDragOver={e => { e.preventDefault(); setDragOver(true) }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
         >
           {uploading ? (
-            <div className="flex flex-col items-center gap-2"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /><p className="text-sm text-text-muted">Uploading...</p></div>
+            <div className="flex flex-col items-center gap-2"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /><p className="text-sm text-text-muted">Uploading...</p></div>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center"><Upload className="h-5 w-5 text-blue-400" /></div>
+              <div className="h-12 w-12 rounded-xl bg-violet-500/10 flex items-center justify-center"><Upload className="h-5 w-5 text-violet-400" /></div>
               <p className="text-sm text-text-secondary">Click or drag to upload image</p>
               <p className="text-xs text-text-muted">PNG, JPG up to 5MB</p>
               {error && <p className="text-xs text-red-400 mt-1">{error}</p>}

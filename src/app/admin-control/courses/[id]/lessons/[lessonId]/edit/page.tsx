@@ -92,7 +92,7 @@ export default function EditLessonPage() {
         quiz: form.quiz.filter(q => q.question && q.options.some(o => o)),
       }
       if (form.type === 'video' || form.youtubeUrl) body.youtubeUrl = form.youtubeUrl
-      if (form.videoDuration) body.videoDuration = Number(form.videoDuration)
+      if (form.videoDuration) body.videoDuration = String(form.videoDuration).trim()
 
       const res = await fetch(`/api/courses/${courseId}/lessons/${lessonId}`, {
         method: 'POST',
@@ -106,7 +106,7 @@ export default function EditLessonPage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+  if (loading) return <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
 
   return (
     <div className="max-w-3xl">

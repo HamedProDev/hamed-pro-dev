@@ -8,11 +8,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <ErrorBoundary>
       <AdminAuthProvider>
         <AdminGate>
-          <div className="min-h-screen bg-surface-primary">
+          <div className="h-screen bg-surface-primary overflow-hidden">
             <Navbar />
-            <div className="flex pt-16">
+            <div className="flex h-full pt-16">
               <AdminSidebar />
-              <main className="flex-1 p-6 overflow-auto">{children}</main>
+              <main className="flex-1 p-6 overflow-y-auto">{children}</main>
             </div>
           </div>
         </AdminGate>

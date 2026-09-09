@@ -21,7 +21,7 @@ export default function NewStatPage() {
     else setSaving(false)
   }
 
-  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-blue-500 focus:outline-none'
+  const inputClass = 'w-full px-4 py-2.5 rounded-lg bg-surface-card border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none'
 
   return (
     <div>

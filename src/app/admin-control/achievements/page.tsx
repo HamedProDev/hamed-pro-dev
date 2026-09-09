@@ -25,7 +25,7 @@ export default function AdminAchievementsPage() {
   const [loading, setLoading] = useState(true)
 
   const fetchAchievements = () => {
-    fetch('/api/achievements')
+    fetch('/api/achievements?all=true')
       .then(r => r.json())
       .then(d => {
         if (d.success) setAchievements(d.data)
@@ -49,7 +49,7 @@ export default function AdminAchievementsPage() {
         <Button asChild className="gradient-bg text-white"><Link href="/admin-control/achievements/new"><Plus className="h-4 w-4 mr-2" /> New Achievement</Link></Button>
       </div>
       {loading ? (
-        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : (
         <div className="rounded-xl border border-border-primary bg-surface-card overflow-hidden">
           <table className="w-full text-sm">
@@ -68,11 +68,11 @@ export default function AdminAchievementsPage() {
                   <tr key={a.id} className="border-b border-border-primary/50 hover:bg-surface-secondary/50 transition-colors">
                     <td className="px-4 py-3 font-medium text-text-primary">{a.title}</td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500">
+                      <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500">
                         <Icon className="h-3 w-3" />{a.category}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-text-secondary">{a.date}</td>
+                    <td className="px-4 py-3 text-text-secondary">{String(a.date).slice(0, 4)}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Link href={`/admin-control/achievements/${a.id}`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors">

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { ArrowUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false)
@@ -16,13 +15,14 @@ export function ScrollToTop() {
   if (!visible) return null
 
   return (
-    <Button
-      size="icon"
-      variant="secondary"
-      className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg"
+    <button
+      type="button"
+      aria-label="Scroll back to top"
+      title="Back to top"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-border-primary bg-surface-card text-text-secondary shadow-sm transition-all hover:text-text-primary hover:border-border-hover hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/50"
     >
-      <ArrowUp className="h-4 w-4" />
-    </Button>
+      <ArrowUp className="h-5 w-5" />
+    </button>
   )
 }

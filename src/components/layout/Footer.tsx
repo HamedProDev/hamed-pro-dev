@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { MapPin } from 'lucide-react'
+import { useAuth } from '@/lib/hooks/useAuth'
+import { Logo } from '@/components/shared/Logo'
 
 const socialIconConfig: Record<string, { bg: string; hoverShadow: string; label: string }> = {
   github: { bg: 'bg-[#24292e]', hoverShadow: 'hover:shadow-[#24292e]/40', label: 'GitHub' },
@@ -13,7 +15,7 @@ const socialIconConfig: Record<string, { bg: string; hoverShadow: string; label:
   facebook: { bg: 'bg-[#1877F2]', hoverShadow: 'hover:shadow-[#1877F2]/40', label: 'Facebook' },
   instagram: { bg: 'bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]', hoverShadow: 'hover:shadow-[#DD2A7B]/40', label: 'Instagram' },
   whatsapp: { bg: 'bg-[#25D366]', hoverShadow: 'hover:shadow-[#25D366]/40', label: 'WhatsApp' },
-  phone: { bg: 'bg-[#3B82F6]', hoverShadow: 'hover:shadow-[#3B82F6]/40', label: 'Phone' },
+  phone: { bg: 'bg-[#7c3aed]', hoverShadow: 'hover:shadow-[#7c3aed]/40', label: 'Phone' },
   discord: { bg: 'bg-[#5865F2]', hoverShadow: 'hover:shadow-[#5865F2]/40', label: 'Discord' },
   twitter: { bg: 'bg-[#1DA1F2]', hoverShadow: 'hover:shadow-[#1DA1F2]/40', label: 'Twitter' },
   codepen: { bg: 'bg-[#1E1F1E]', hoverShadow: 'hover:shadow-[#1E1F1E]/40', label: 'CodePen' },
@@ -44,6 +46,7 @@ interface Settings {
 }
 
 export function Footer() {
+  const { isAuthenticated } = useAuth()
   const [settings, setSettings] = useState<Settings>({})
 
   useEffect(() => {
@@ -60,41 +63,55 @@ export function Footer() {
     ([, url]) => url && typeof url === 'string' && url.trim()
   )
 
-  const footerLinks = {
-    platform: [
-      { label: 'Projects', href: '/projects' },
-      { label: 'Courses', href: '/courses' },
-      { label: 'Startups / Orgs', href: '/startups' },
-      { label: 'Skills', href: '/skills' },
-      { label: 'Achievements', href: '/achievements' },
-    ],
-    resources: [
-      { label: 'Documentation', href: '/docs' },
-      { label: 'Open Source', href: '/open-source' },
-      { label: 'Community', href: '/community' },
-      { label: 'Newsletter', href: '/newsletter' },
-    ],
-    company: [
-      { label: 'About', href: '/about' },
-      { label: 'Contact', href: '/contact' },
-      { label: 'Hire Me', href: '/hire' },
-    ],
-  }
+  const footerLinks = isAuthenticated
+    ? {
+        learn: [
+          { label: 'Courses', href: '/courses' },
+          { label: 'Certification', href: '/certification' },
+          { label: 'Invite', href: '/invite' },
+          { label: 'Dashboard', href: '/dashboard' },
+        ],
+        resources: [
+          { label: 'Documentation', href: '/docs' },
+          { label: 'Community', href: '/community' },
+          { label: 'Newsletter', href: '/newsletter' },
+        ],
+        hire: [
+          { label: 'Hire Me', href: '/hire' },
+        ],
+      }
+    : {
+        platform: [
+          { label: 'Projects', href: '/projects' },
+          { label: 'Courses', href: '/courses' },
+          { label: 'Skills', href: '/skills' },
+          { label: 'Achievements', href: '/achievements' },
+        ],
+        resources: [
+          { label: 'Documentation', href: '/docs' },
+          { label: 'Open Source', href: 'https://github.com/HamedProDev' },
+          { label: 'Community', href: '/community' },
+          { label: 'Newsletter', href: '/newsletter' },
+        ],
+        company: [
+          { label: 'About', href: '/about' },
+          { label: 'Contact', href: '/contact' },
+          { label: 'Hire Me', href: '/hire' },
+        ],
+      }
 
   return (
     <footer className="border-t border-border-primary bg-surface-secondary">
-      <div className="container-wide py-12">
+      <div className="container-wide py-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link
               href="/"
               className="flex items-center gap-2 font-bold text-xl text-text-primary mb-4"
             >
-              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
-                HP
-              </span>
+              <Logo className="h-8 w-8 shrink-0" />
               <span>
-                Hamed<span className="text-blue-500">Pro</span>
+                Hamed<span className="gradient-text"> Hussein</span>
               </span>
             </Link>
             <p className="text-sm text-text-secondary mb-3">
@@ -123,7 +140,7 @@ export function Footer() {
                       title={config.label}
                       whileHover={{ scale: 1.2, y: -3 }}
                       whileTap={{ scale: 0.9 }}
-                      className={`flex items-center justify-center h-10 w-10 rounded-full ${config.bg} text-white shadow-md shadow-transparent hover:shadow-lg ${config.hoverShadow}`}
+                      className={`flex items-center justify-center h-10 w-10 rounded-full ${config.bg} text-white shadow-md shadow-transparent hover:shadow-sm ${config.hoverShadow}`}
                     >
                       {svg ? (
                         <span dangerouslySetInnerHTML={{ __html: svg }} />
@@ -143,52 +160,63 @@ export function Footer() {
                 {title}
               </h3>
               <ul className="space-y-2.5">
-                {links.map(link => (
+                {links.map((link: { label: string; href: string }) => {
+                  const external = /^https?:\/\//.test(link.href)
+                  return (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-text-secondary hover:text-blue-500 transition-all duration-200 hover:translate-x-1 inline-block"
+                      target={external ? '_blank' : undefined}
+                      rel={external ? 'noopener noreferrer' : undefined}
+                      className="text-sm text-text-secondary hover:text-brand-primary transition-all duration-200 hover:translate-x-1 inline-block"
                     >
                       {link.label}
                     </Link>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             </div>
           ))}
 
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">
               Location
             </h3>
             <div className="flex items-start gap-2 mb-3">
-              <MapPin className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
+              <MapPin className="h-4 w-4 text-brand-primary mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm text-text-secondary">
-                  {settings.location || 'Kigali, Rwanda'}
+                  {settings.location || 'Remera, Kigali, Rwanda'}
                 </p>
                 <p className="text-xs text-text-muted">UTC +2</p>
               </div>
             </div>
-            <div className="h-20 rounded-lg bg-surface-tertiary border border-border-primary overflow-hidden relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <a
+              href="https://www.openstreetmap.org/?mlat=-1.9417&mlon=30.1134#map=15/-1.9417/30.1134"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+              aria-label="Open Remera, Kigali in OpenStreetMap"
+            >
+              <div className="h-32 w-full rounded-lg overflow-hidden border border-border-primary bg-surface-card">
+                <iframe
+                  title="Remera, Kigali — map"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=30.0984%2C-1.9567%2C30.1284%2C-1.9267&layer=mapnik&marker=-1.9417%2C30.1134"
+                  className="h-full w-full border-0 pointer-events-none"
+                  loading="lazy"
+                />
               </div>
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage:
-                    'radial-gradient(circle, rgba(59,130,246,0.1) 1px, transparent 1px)',
-                  backgroundSize: '12px 12px',
-                }}
-              />
-            </div>
+              <span className="mt-1.5 inline-block text-[11px] text-text-muted hover:text-brand-primary transition-colors">
+                Open in OpenStreetMap ↗
+              </span>
+            </a>
           </div>
         </div>
 
         <div className="mt-12 pt-8 border-t border-border-primary flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-text-muted">
-            &copy; {new Date().getFullYear()} {settings.site_name || 'HamedProDev'}. All rights
+            &copy; {new Date().getFullYear()} {settings.site_name || 'Hamed Hussein'}. All rights
             reserved.
           </p>
           <div className="flex items-center gap-4 text-xs text-text-muted">

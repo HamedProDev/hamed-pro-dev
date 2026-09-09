@@ -15,6 +15,12 @@ CREATE TABLE IF NOT EXISTS profiles (
   twitter_url TEXT,
   location TEXT,
   headline TEXT,
+  interests TEXT[] DEFAULT '{}',
+  referred_by UUID REFERENCES profiles(id),
+  xp_points INT DEFAULT 0,
+  current_streak INT DEFAULT 0,
+  longest_streak INT DEFAULT 0,
+  last_activity_date DATE,
   is_published BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -31,8 +37,13 @@ CREATE TABLE IF NOT EXISTS projects (
   tags TEXT[] DEFAULT '{}',
   tech_stack TEXT[] DEFAULT '{}',
   image_url TEXT,
+  screenshots JSONB DEFAULT '[]',
   demo_url TEXT,
   github_url TEXT,
+  client TEXT,
+  year TEXT,
+  status TEXT,
+  role TEXT,
   featured BOOLEAN DEFAULT false,
   is_published BOOLEAN DEFAULT false,
   order_index INT DEFAULT 0,
@@ -59,6 +70,7 @@ CREATE TABLE IF NOT EXISTS courses (
   tags JSONB DEFAULT '[]',
   prerequisites JSONB DEFAULT '[]',
   outcomes JSONB DEFAULT '[]',
+  final_quiz JSONB DEFAULT '[]',
   featured BOOLEAN DEFAULT false,
   is_published BOOLEAN DEFAULT false,
   order_index INT DEFAULT 0,
@@ -86,23 +98,28 @@ CREATE TABLE IF NOT EXISTS lessons (
   UNIQUE(course_id, slug)
 );
 
--- Blog Posts
-CREATE TABLE IF NOT EXISTS blog_posts (
+-- Lesson comments (community)
+CREATE TABLE IF NOT EXISTS lesson_comments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  title TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  content TEXT,
-  excerpt TEXT,
-  image_url TEXT,
-  category TEXT,
-  tags TEXT[] DEFAULT '{}',
-  author TEXT,
-  is_published BOOLEAN DEFAULT false,
-  featured BOOLEAN DEFAULT false,
-  read_time INT,
+  lesson_id UUID REFERENCES lessons(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  status TEXT DEFAULT 'visible' CHECK (status IN ('visible', 'pending', 'hidden')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- XP events (gamification / learning activity log)
+CREATE TABLE IF NOT EXISTS user_xp_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  event TEXT NOT NULL,
+  points INT NOT NULL DEFAULT 0,
+  meta JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Blog Posts
 
 -- Jobs
 CREATE TABLE IF NOT EXISTS jobs (
@@ -151,29 +168,6 @@ CREATE TABLE IF NOT EXISTS achievements (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Organizations
-CREATE TABLE IF NOT EXISTS organizations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  description TEXT,
-  logo_url TEXT,
-  website_url TEXT,
-  role TEXT,
-  start_date DATE,
-  end_date DATE,
-  is_current BOOLEAN DEFAULT false,
-  category TEXT,
-  is_hiring BOOLEAN DEFAULT false,
-  tech_stack TEXT[] DEFAULT '{}',
-  team_roles INT DEFAULT 0,
-  team_size TEXT,
-  location TEXT,
-  is_published BOOLEAN DEFAULT false,
-  order_index INT DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
 
 -- Testimonials
 CREATE TABLE IF NOT EXISTS testimonials (
@@ -232,6 +226,9 @@ CREATE TABLE IF NOT EXISTS settings (
   email_notifications JSONB DEFAULT '{}',
   seo_defaults JSONB DEFAULT '{}',
   integrations JSONB DEFAULT '{}',
+  resume_url TEXT,
+  hire_services JSONB DEFAULT '[]',
+  about_image TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -261,7 +258,6 @@ CREATE TABLE IF NOT EXISTS analytics (
 
 -- Full-text search indexes
 CREATE INDEX IF NOT EXISTS idx_projects_search ON projects USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
-CREATE INDEX IF NOT EXISTS idx_blog_posts_search ON blog_posts USING gin(to_tsvector('english', title || ' ' || coalesce(excerpt, '')));
 CREATE INDEX IF NOT EXISTS idx_courses_search ON courses USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
 CREATE INDEX IF NOT EXISTS idx_jobs_search ON jobs USING gin(to_tsvector('english', title || ' ' || coalesce(description, '')));
 
@@ -283,12 +279,8 @@ DROP TRIGGER IF EXISTS update_courses_updated_at ON courses;
 CREATE TRIGGER update_courses_updated_at BEFORE UPDATE ON courses FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 DROP TRIGGER IF EXISTS update_lessons_updated_at ON lessons;
 CREATE TRIGGER update_lessons_updated_at BEFORE UPDATE ON lessons FOR EACH ROW EXECUTE FUNCTION update_updated_at();
-DROP TRIGGER IF EXISTS update_blog_posts_updated_at ON blog_posts;
-CREATE TRIGGER update_blog_posts_updated_at BEFORE UPDATE ON blog_posts FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 DROP TRIGGER IF EXISTS update_jobs_updated_at ON jobs;
 CREATE TRIGGER update_jobs_updated_at BEFORE UPDATE ON jobs FOR EACH ROW EXECUTE FUNCTION update_updated_at();
-DROP TRIGGER IF EXISTS update_organizations_updated_at ON organizations;
-CREATE TRIGGER update_organizations_updated_at BEFORE UPDATE ON organizations FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 DROP TRIGGER IF EXISTS update_settings_updated_at ON settings;
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
@@ -297,11 +289,9 @@ ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lessons ENABLE ROW LEVEL SECURITY;
-ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
-ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
@@ -316,16 +306,12 @@ DROP POLICY IF EXISTS "Anyone can view published courses" ON courses;
 CREATE POLICY "Anyone can view published courses" ON courses FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published lessons" ON lessons;
 CREATE POLICY "Anyone can view published lessons" ON lessons FOR SELECT USING (is_published = true);
-DROP POLICY IF EXISTS "Anyone can view published blog posts" ON blog_posts;
-CREATE POLICY "Anyone can view published blog posts" ON blog_posts FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published jobs" ON jobs;
 CREATE POLICY "Anyone can view published jobs" ON jobs FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published skills" ON skills;
 CREATE POLICY "Anyone can view published skills" ON skills FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published achievements" ON achievements;
 CREATE POLICY "Anyone can view published achievements" ON achievements FOR SELECT USING (is_published = true);
-DROP POLICY IF EXISTS "Anyone can view published organizations" ON organizations;
-CREATE POLICY "Anyone can view published organizations" ON organizations FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published testimonials" ON testimonials;
 CREATE POLICY "Anyone can view published testimonials" ON testimonials FOR SELECT USING (is_published = true);
 DROP POLICY IF EXISTS "Anyone can view published stats" ON site_stats;
@@ -344,16 +330,12 @@ DROP POLICY IF EXISTS "Admins can do everything on courses" ON courses;
 CREATE POLICY "Admins can do everything on courses" ON courses FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on lessons" ON lessons;
 CREATE POLICY "Admins can do everything on lessons" ON lessons FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-DROP POLICY IF EXISTS "Admins can do everything on blog_posts" ON blog_posts;
-CREATE POLICY "Admins can do everything on blog_posts" ON blog_posts FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on jobs" ON jobs;
 CREATE POLICY "Admins can do everything on jobs" ON jobs FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on skills" ON skills;
 CREATE POLICY "Admins can do everything on skills" ON skills FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on achievements" ON achievements;
 CREATE POLICY "Admins can do everything on achievements" ON achievements FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
-DROP POLICY IF EXISTS "Admins can do everything on organizations" ON organizations;
-CREATE POLICY "Admins can do everything on organizations" ON organizations FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on testimonials" ON testimonials;
 CREATE POLICY "Admins can do everything on testimonials" ON testimonials FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
 DROP POLICY IF EXISTS "Admins can do everything on settings" ON settings;
@@ -371,13 +353,14 @@ CREATE POLICY "Admins can do everything on analytics" ON analytics FOR ALL USING
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO profiles (id, email, name, avatar_url, role)
+  INSERT INTO profiles (id, email, name, avatar_url, role, referred_by)
   VALUES (
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data ->> 'name', split_part(NEW.email, '@', 1)),
     NEW.raw_user_meta_data ->> 'avatar_url',
-    'visitor'
+    'visitor',
+    NULLIF(NEW.raw_user_meta_data ->> 'referred_by', '')::uuid
   );
   RETURN NEW;
 END;
@@ -405,3 +388,36 @@ CREATE TRIGGER on_auth_user_created_admin
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION set_admin_role();
+
+-- Lesson comments RLS: anyone can read visible comments, users manage their own.
+ALTER TABLE lesson_comments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can read lesson comments" ON lesson_comments;
+CREATE POLICY "Anyone can read lesson comments" ON lesson_comments FOR SELECT USING (status = 'visible');
+DROP POLICY IF EXISTS "Users can insert lesson comments" ON lesson_comments;
+CREATE POLICY "Users can insert lesson comments" ON lesson_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can delete own comments" ON lesson_comments;
+CREATE POLICY "Users can delete own comments" ON lesson_comments FOR DELETE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admins can do everything on lesson_comments" ON lesson_comments;
+CREATE POLICY "Admins can do everything on lesson_comments" ON lesson_comments FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+
+-- XP events RLS
+ALTER TABLE user_xp_events ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can read own xp events" ON user_xp_events;
+CREATE POLICY "Users can read own xp events" ON user_xp_events FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admins can do everything on user_xp_events" ON user_xp_events;
+CREATE POLICY "Admins can do everything on user_xp_events" ON user_xp_events FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin') WITH CHECK (auth.jwt() -> 'app_metadata' ->> 'role' = 'admin');
+
+CREATE INDEX IF NOT EXISTS idx_xp_events_user ON user_xp_events(user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_lesson_comments_lesson ON lesson_comments(lesson_id, created_at);
+
+-- add_xp(uid, amount) — atomic XP increment helper for gamification.
+CREATE OR REPLACE FUNCTION add_xp(uid uuid, amount int)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE profiles SET xp_points = COALESCE(xp_points, 0) + amount WHERE id = uid;
+END;
+$$;

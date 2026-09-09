@@ -1,14 +1,16 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError, mapFormToDb } from '@/lib/supabase/helpers'
+import { fallbackTestimonials } from '@/lib/fallback-data'
 
 export async function GET() {
   try {
     const testimonials = await getDocuments('testimonials', { orderBy: { field: 'order_index', direction: 'asc' } })
-    return apiSuccess(testimonials)
-  } catch (error: any) {
-    return apiError(error.message, 500)
+    if (testimonials.length > 0) return apiSuccess(testimonials)
+  } catch {
+    // fall through to the hard-coded catalog
   }
+  return apiSuccess(fallbackTestimonials())
 }
 
 export async function POST(req: NextRequest) {

@@ -1,7 +1,7 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Send, Clock, Globe, CheckCircle2, Loader2 } from 'lucide-react'
+import { Mail, Phone, Send, Clock, Globe, CheckCircle2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,8 +14,7 @@ import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 const contactInfo = [
   { icon: Mail, label: 'Email', value: 'hamed@novasoft.rw', href: 'mailto:hamed@novasoft.rw', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
   { icon: Phone, label: 'Phone', value: '+250 788 123 456', href: 'tel:+250788123456', color: 'text-green-500', bg: 'bg-green-500/10' },
-  { icon: MapPin, label: 'Location', value: 'Kigali, Rwanda', href: '#', color: 'text-amber-500', bg: 'bg-amber-500/10' },
-  { icon: Globe, label: 'Website', value: 'hamedprodev.vercel.app', href: 'https://hamedprodev.vercel.app', color: 'text-purple-500', bg: 'bg-purple-500/10' },
+  { icon: Globe, label: 'Website', value: 'hamedhussein.is-a.dev', href: 'https://hamedhussein.is-a.dev', color: 'text-purple-500', bg: 'bg-purple-500/10' },
 ]
 
 const availability = [
@@ -35,13 +34,18 @@ const reasons = [
 
 export default function ContactPage() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
-  const [form, setForm] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      return { name: '', email: '', subject: params.get('subject') || '', reason: params.get('reason') || '', message: params.get('message') || '' }
-    }
-    return { name: '', email: '', subject: '', reason: '', message: '' }
-  })
+  const [form, setForm] = useState({ name: '', email: '', subject: '', reason: '', message: '' })
+
+  // Pre-fill from query params after hydration (avoids a hydration mismatch).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setForm(f => ({
+      ...f,
+      subject: params.get('subject') || f.subject,
+      reason: params.get('reason') || f.reason,
+      message: params.get('message') || f.message,
+    }))
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -157,13 +161,6 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="mt-12 rounded-2xl overflow-hidden border border-border-primary h-64 bg-surface-card flex items-center justify-center">
-          <div className="text-center text-text-muted">
-            <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">Kigali, Rwanda</p>
-            <p className="text-xs">Kwanda Facility</p>
-          </div>
-        </div>
       </div>
     </main>
   )

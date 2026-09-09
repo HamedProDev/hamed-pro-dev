@@ -1,7 +1,19 @@
 import type { Metadata } from 'next'
 
-const SITE_NAME = 'HamedProDev'
-const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://hamedpro.rw'
+const SITE_NAME = 'Hamed Hussein'
+const FALLBACK_URL = 'https://hamedhussein.is-a.dev'
+const rawAppUrl = process.env.NEXT_PUBLIC_APP_URL || FALLBACK_URL
+
+// Prefer the configured URL, but never use a localhost URL as the public base
+// (so invite links, canonical URLs and schema data always point at the real site).
+export const SITE_URL = /localhost|127\.0\.0\.1/.test(rawAppUrl)
+  ? FALLBACK_URL
+  : rawAppUrl.replace(/\/+$/, '')
+
+/** Stable absolute URL — identical on server and client (avoids hydration mismatch). */
+export function absoluteUrl(path: string): string {
+  return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`
+}
 
 interface SeoParams {
   title?: string

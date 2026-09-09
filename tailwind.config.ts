@@ -11,16 +11,21 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: '#3B82F6',
-          secondary: '#2563EB',
-          accent: '#60A5FA',
+          primary: '#7c3aed',
+          secondary: '#d946ef',
+          accent: '#0d9488',
+        },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          secondary: 'var(--accent-2)',
+          tertiary: 'var(--accent-3)',
         },
         dark: {
-          900: '#0a0a1a',
-          800: '#0f0f2a',
-          700: '#151535',
-          600: '#1a1a40',
-          500: '#252560',
+          900: '#05060f',
+          800: '#090b1c',
+          700: '#10132e',
+          600: '#161a3a',
+          500: '#1e2350',
         },
         text: {
           primary: 'var(--text-heading)',
@@ -34,6 +39,12 @@ const config: Config = {
           card: 'var(--bg-card)',
         },
       },
+      boxShadow: {
+        'glow-sm': '0 1px 3px rgba(15, 23, 42, 0.08)',
+        glow: '0 10px 30px -12px rgba(15, 23, 42, 0.18)',
+        'glow-violet': '0 10px 30px -12px rgba(15, 23, 42, 0.18)',
+        glass: '0 8px 24px rgba(15, 23, 42, 0.1)',
+      },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-jetbrains)', 'Fira Code', 'monospace'],
@@ -44,6 +55,9 @@ const config: Config = {
         'slide-up': 'slideUp 0.5s ease-out',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         blink: 'blink 1s step-end infinite',
+        'spin-slow': 'spin 6s linear infinite',
+        aurora: 'aurora 26s ease-in-out infinite alternate',
+        marquee: 'marquee 32s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -57,6 +71,11 @@ const config: Config = {
         blink: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' },
+        },
+        aurora: {
+          '0%': { transform: 'translate(-3%, -2%) rotate(0deg) scale(1)' },
+          '50%': { transform: 'translate(3%, 2%) rotate(6deg) scale(1.08)' },
+          '100%': { transform: 'translate(-2%, 3%) rotate(-4deg) scale(1.04)' },
         },
       },
     },

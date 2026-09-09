@@ -44,7 +44,7 @@ export default function AdminSkillsPage() {
         <Button asChild className="gradient-bg text-white"><Link href="/admin-control/skills/new"><Plus className="h-4 w-4 mr-2" /> New Skill</Link></Button>
       </div>
       {loading ? (
-        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="flex justify-center py-12"><div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>
       ) : (
         <div className="rounded-xl border border-border-primary bg-surface-card overflow-hidden">
           <table className="w-full text-sm">
@@ -67,7 +67,7 @@ export default function AdminSkillsPage() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <div className="w-24 h-2 bg-surface-tertiary rounded-full overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${skill.proficiency}%`, backgroundColor: skill.color || '#3B82F6' }} />
+                        <div className="h-full rounded-full" style={{ width: `${skill.proficiency}%`, backgroundColor: skill.color || '#8b5cf6' }} />
                       </div>
                       <span className="text-text-muted text-xs">{skill.proficiency}%</span>
                     </div>

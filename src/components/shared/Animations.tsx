@@ -75,7 +75,7 @@ export function StaggerItem({ children, className = '' }: {
   )
 }
 
-export function HoverCard({ children, className = '', glowColor = 'rgba(59,130,246,0.15)' }: {
+export function HoverCard({ children, className = '', glowColor = 'rgba(139,92,246,0.12)' }: {
   children: ReactNode; className?: string; glowColor?: string
 }) {
   return (
@@ -123,7 +123,7 @@ export function SlideIn({ children, delay = 0, className = '', from = 'left' }: 
   )
 }
 
-export function GlowPulse({ children, className = '', color = '#3B82F6' }: {
+export function GlowPulse({ children, className = '', color = '#a855f7' }: {
   children: ReactNode; className?: string; color?: string
 }) {
   return (

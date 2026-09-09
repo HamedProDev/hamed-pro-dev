@@ -11,8 +11,8 @@ interface Props {
 }
 
 export function MetadataInjector({ title, description, image, url, keywords, noindex }: Props) {
-  const siteName = 'HamedProDev'
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://hamedprodev.vercel.app'
+  const siteName = 'Hamed Hussein'
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://hamedhussein.is-a.dev'
   const fullTitle = `${title} | ${siteName}`
   const ogImage = image || `${baseUrl}/og/default.png`
   const canonical = url ? `${baseUrl}${url}` : (typeof window !== 'undefined' ? window.location.href : baseUrl)
@@ -26,7 +26,7 @@ export function MetadataInjector({ title, description, image, url, keywords, noi
       el.setAttribute('content', c)
     }
     setMeta('description', description)
-    setMeta('keywords', keywords || 'Hamed Hussein, Fullstack Developer, AI/ML, Rwanda, Kigali, Next.js, React')
+    setMeta('keywords', keywords || 'Hamed Hussein, hamedprodev, Full Stack Developer, AI/ML Engineer, Rwanda, Kigali, Next.js, React')
     setMeta('og:title', fullTitle); setMeta('og:description', description)
     setMeta('og:image', ogImage); setMeta('og:url', canonical)
     setMeta('og:type', 'website'); setMeta('og:site_name', siteName)

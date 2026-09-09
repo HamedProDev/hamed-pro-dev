@@ -122,7 +122,7 @@ export function AdminGate({ children }: { children: ReactNode }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface-primary">
-        <div className="h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        <div className="h-8 w-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -132,8 +132,8 @@ export function AdminGate({ children }: { children: ReactNode }) {
       <div className="min-h-screen flex items-center justify-center bg-surface-primary">
         <div className="w-full max-w-sm mx-4">
           <div className="admin-card p-8 text-center">
-            <div className="h-16 w-16 mx-auto mb-4 rounded-2xl bg-blue-500/10 flex items-center justify-center">
-              <svg className="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="h-16 w-16 mx-auto mb-4 rounded-2xl bg-violet-500/10 flex items-center justify-center">
+              <svg className="h-8 w-8 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
@@ -157,12 +157,12 @@ export function AdminGate({ children }: { children: ReactNode }) {
                       onKeyDown={e => handlePinKeyDown(i, e)}
                       onPaste={handlePinPaste}
                       autoFocus={i === 0}
-                      className={`w-12 h-14 text-center text-xl font-bold rounded-lg bg-surface-secondary border-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 ${
+                      className={`w-12 h-14 text-center text-xl font-bold rounded-lg bg-surface-secondary border-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-200 ${
                         error
                           ? 'border-red-500 focus:border-red-500'
                           : digit
-                            ? 'border-blue-500 focus:border-blue-500'
-                            : 'border-border-primary focus:border-blue-500'
+                            ? 'border-violet-500 focus:border-violet-500'
+                            : 'border-border-primary focus:border-violet-500'
                       }`}
                     />
                   ))}
@@ -190,7 +190,7 @@ export function AdminGate({ children }: { children: ReactNode }) {
                       onChange={e => { setPassword(e.target.value); setError(false) }}
                       placeholder="Enter admin password"
                       autoFocus
-                      className="w-full px-4 py-2.5 pr-12 rounded-lg bg-surface-secondary border border-border-primary text-text-primary focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 tracking-wider text-center"
+                      className="w-full px-4 py-2.5 pr-12 rounded-lg bg-surface-secondary border border-border-primary text-text-primary focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20 tracking-wider text-center"
                     />
                     <button
                       type="button"
@@ -205,7 +205,7 @@ export function AdminGate({ children }: { children: ReactNode }) {
                   <button
                     type="submit"
                     disabled={checking || !password}
-                    className="w-full py-2.5 rounded-lg gradient-bg text-white font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 disabled:opacity-50"
+                    className="w-full py-2.5 rounded-lg gradient-bg text-white font-medium hover:shadow-sm hover: transition-all duration-200 disabled:opacity-50"
                   >
                     {checking ? 'Verifying...' : 'Unlock Admin'}
                   </button>

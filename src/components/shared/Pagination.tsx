@@ -22,20 +22,39 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
   }
 
   return (
-    <nav className="flex items-center justify-center gap-1">
-      <Button variant="ghost" size="icon" disabled={page === 1} onClick={() => onPageChange(page - 1)}>
+    <nav aria-label="Pagination" className="flex items-center justify-center gap-1">
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled={page === 1}
+        onClick={() => onPageChange(page - 1)}
+        aria-label="Previous page"
+      >
         <ChevronLeft className="h-4 w-4" />
       </Button>
       {pages.map((p, i) => (
         typeof p === 'number' ? (
-          <Button key={i} variant={p === page ? 'default' : 'ghost'} size="icon" onClick={() => onPageChange(p)}>
+          <Button
+            key={i}
+            variant={p === page ? 'default' : 'ghost'}
+            size="icon"
+            onClick={() => onPageChange(p)}
+            aria-label={`Page ${p}`}
+            aria-current={p === page ? 'page' : undefined}
+          >
             {p}
           </Button>
         ) : (
-          <span key={i} className="px-2 text-text-muted"><MoreHorizontal className="h-4 w-4" /></span>
+          <span key={i} className="px-2 text-text-muted" aria-hidden="true"><MoreHorizontal className="h-4 w-4" /></span>
         )
       ))}
-      <Button variant="ghost" size="icon" disabled={page === totalPages} onClick={() => onPageChange(page + 1)}>
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled={page === totalPages}
+        onClick={() => onPageChange(page + 1)}
+        aria-label="Next page"
+      >
         <ChevronRight className="h-4 w-4" />
       </Button>
     </nav>

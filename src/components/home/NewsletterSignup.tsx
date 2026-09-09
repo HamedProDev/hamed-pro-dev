@@ -26,7 +26,7 @@ export function NewsletterSignup() {
             <motion.div
               animate={{ y: [0, -3, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-blue-500/10 text-blue-500 mb-4"
+              className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-violet-500/10 text-violet-500 mb-4"
             >
               <Mail className="h-6 w-6" />
             </motion.div>
@@ -64,7 +64,7 @@ export function NewsletterSignup() {
                     className="flex-1 rounded-r-none border-r-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button type="submit" disabled={status === 'loading'} className="rounded-l-none gradient-bg text-white whitespace-nowrap hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
+                    <Button type="submit" disabled={status === 'loading'} className="rounded-l-none gradient-bg text-white whitespace-nowrap hover:shadow-sm hover: transition-all duration-300">
                       <Send className="h-4 w-4 mr-2" /> {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
                     </Button>
                   </motion.div>

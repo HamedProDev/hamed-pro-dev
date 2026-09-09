@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { FileUpload } from '@/components/ui/file-upload'
 
 const socialPlatforms = [
   { key: 'github', label: 'GitHub', placeholder: 'https://github.com/username' },
@@ -63,7 +64,7 @@ export default function AdminSettingsPage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-violet-500" /></div>
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -116,6 +117,63 @@ export default function AdminSettingsPage() {
           <div>
             <label htmlFor="og_image" className="text-sm font-medium mb-1 block">OG Image (Social Share)</label>
             <ImageUpload value={settings.og_image || ''} onChange={v => update('og_image', v)} folder="hamedpro/og" />
+          </div>
+          <div>
+            <label htmlFor="about_image" className="text-sm font-medium mb-1 block">About Page Image</label>
+            <ImageUpload value={settings.about_image || ''} onChange={v => update('about_image', v)} folder="hamedpro/about" />
+            <p className="text-xs text-text-muted mt-1">Shown on the About page hero and story section.</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Career — Resume & Hire Pricing */}
+      <Card>
+        <CardHeader><CardTitle>Career — Resume & Hire Pricing</CardTitle><CardDescription>Your downloadable resume and the services/prices shown on the Hire Me page.</CardDescription></CardHeader>
+        <CardContent className="space-y-5">
+          <div>
+            <label htmlFor="resume" className="text-sm font-medium mb-1 block">Resume (PDF)</label>
+            <FileUpload value={settings.resume_url || ''} onChange={v => update('resume_url', v)} label="resume PDF" folder="hamedpro/resume" />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">Hire Me — Services & Prices</label>
+              <Button type="button" size="sm" variant="outline" onClick={() => update('hire_services', [...(settings.hire_services || []), { title: '', description: '', price: '' }])}>
+                <Plus className="h-3.5 w-3.5 mr-1" /> Add service
+              </Button>
+            </div>
+            {(settings.hire_services || []).length === 0 && (
+              <p className="text-sm text-text-muted">No services yet. Add your services and prices — they&apos;ll appear on the Hire Me page.</p>
+            )}
+            <div className="space-y-3">
+              {(settings.hire_services || []).map((s: any, i: number) => (
+                <div key={i} className="rounded-xl border border-border-primary bg-surface-tertiary/40 p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={s.title || ''}
+                      onChange={e => update('hire_services', (settings.hire_services || []).map((x: any, j: number) => j === i ? { ...x, title: e.target.value } : x))}
+                      placeholder="Service title (e.g. Web Development)"
+                      className="flex-1"
+                    />
+                    <Input
+                      value={s.price || ''}
+                      onChange={e => update('hire_services', (settings.hire_services || []).map((x: any, j: number) => j === i ? { ...x, price: e.target.value } : x))}
+                      placeholder="From $500"
+                      className="w-32"
+                    />
+                    <button type="button" onClick={() => update('hire_services', (settings.hire_services || []).filter((_: any, j: number) => j !== i))} className="p-2 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <Textarea
+                    rows={2}
+                    value={s.description || ''}
+                    onChange={e => update('hire_services', (settings.hire_services || []).map((x: any, j: number) => j === i ? { ...x, description: e.target.value } : x))}
+                    placeholder="Short description of the service"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>
