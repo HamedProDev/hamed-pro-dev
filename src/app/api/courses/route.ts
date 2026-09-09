@@ -3,6 +3,7 @@ import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError, apiPaginated, mapFormToDb } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
 import { fallbackCourses } from '@/lib/fallback-data'
+import { syncContentCatalog } from '@/lib/supabase/content-sync'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)

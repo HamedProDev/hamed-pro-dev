@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, getDocument } from '@/lib/supabase/db'
 import { getCurrentUser, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { resolveCourseId } from '@/lib/supabase/content-sync'
 
 // Get the current user's progress + lesson unlock state for a course.
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -8,7 +9,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const user = await getCurrentUser(req)
     if (!user) return apiSuccess({ enrolled: false })
 
-    const courseId = params.id
+    // params.id may be a course slug (public pages) or UUID — resolve first.
+    const courseId = await resolveCourseId(params.id)
+    if (!courseId) return apiSuccess({ enrolled: false })
     const enr = await getDocuments('enrollments', {
       filters: [
         { field: 'user_id', operator: 'eq', value: user.uid },

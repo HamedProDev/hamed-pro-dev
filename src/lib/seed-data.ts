@@ -502,15 +502,8 @@ export const seedSkills = [
   { name: 'TensorFlow', category: 'AI/ML', proficiency: 70, order_index: 18, is_published: true },
 ];
 
-export const seedAchievements = [
-  { title: 'AWS Certified Cloud Practitioner', description: 'Earned AWS Cloud Practitioner certification demonstrating cloud computing knowledge.', date: '2024-06-01', category: 'certification', order_index: 1, is_published: true },
-  { title: 'Best Innovation Award — Rwanda Tech Summit', description: 'Won first place for FarmConnect platform at the annual Rwanda Technology Summit.', date: '2024-03-15', category: 'award', order_index: 2, is_published: true },
-  { title: '100+ GitHub Stars on OpenDev CLI', description: 'Open-source CLI tool reached 100+ stars on GitHub, used by 500+ developers.', date: '2024-01-01', category: 'milestone', order_index: 3, is_published: true },
-  { title: 'FarmConnect — 5000+ Farmers Onboarded', description: 'Digital marketplace platform reached milestone of 5000+ active farmers.', date: '2023-11-01', category: 'milestone', order_index: 4, is_published: true },
-  { title: 'Google Developer Student Club Lead', description: 'Led GDSC at university, organizing workshops and hackathons for 200+ students.', date: '2023-09-01', category: 'milestone', order_index: 5, is_published: true },
-  { title: 'MongoDB Associate Developer Certification', description: 'Certified MongoDB developer, proficient in database design and aggregation.', date: '2023-06-01', category: 'certification', order_index: 6, is_published: true },
-  { title: 'Published Research — AI in Healthcare', description: 'Co-authored paper on ML-based health screening deployed in rural clinics.', date: '2023-03-01', category: 'publication', order_index: 7, is_published: true },
-  { title: 'Hackathon Winner — Africa Code Week', description: 'First place at Africa Code Week hackathon for EduConnect platform.', date: '2022-12-01', category: 'award', order_index: 8, is_published: true },
+export const seedAchievements: any[] = [
+  // Intentionally empty — Hamed adds his own achievements via Admin → Achievements.
 ];
 
 export const seedSiteStats = [

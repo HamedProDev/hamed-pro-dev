@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
-import { Loader2, Clock, BookOpen, Play, FileText, HelpCircle, Check, Lock, Award, ChevronRight, XCircle, CheckCircle } from 'lucide-react'
+import { Loader2, Clock, BookOpen, HelpCircle, Award, ChevronRight, XCircle, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,9 +12,8 @@ import { cn } from '@/lib/utils/cn'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { CourseJsonLd } from '@/components/shared/JsonLd'
+import { CourseSidebar } from '@/components/courses/CourseSidebar'
 import { useAuth } from '@/lib/hooks/useAuth'
-
-const lessonTypeIcons: Record<string, any> = { video: Play, text: FileText, quiz: HelpCircle, mixed: BookOpen }
 
 interface ProgressData {
   enrolled: boolean
@@ -151,13 +150,6 @@ export default function CourseDetailPage() {
   const isCert = progress?.isCertificateIssued
   const isDone = isCert || (enrolled && progress?.isCompleted && !progress?.needsFinalQuiz)
 
-  const lessonState = (id: string) => {
-    if (!progress) return 'unlocked'
-    if (progress.completedLessonIds.includes(id)) return 'completed'
-    if (progress.unlockedLessonId === id) return 'current'
-    return 'locked'
-  }
-
   const continueHref = () => {
     if (!progress) return `/courses/${slug}/lessons/${lessons[0]?.id || ''}`
     if (progress.needsFinalQuiz) return '#'
@@ -168,7 +160,8 @@ export default function CourseDetailPage() {
 
   return (
     <main id="main-content" className="section-padding pt-24">
-      <div className="container-wide max-w-4xl">
+      <div className="container-wide grid lg:grid-cols-[minmax(0,1fr)_340px] gap-8 items-start">
+        <div className="min-w-0">
         <MetadataInjector title={course.title} description={course.description} url={`/courses/${slug}`} />
         <Breadcrumbs items={[{ label: 'Courses', href: '/courses' }, { label: course.title }]} />
         <CourseJsonLd name={course.title} description={course.description} provider="Hamed Hussein" url={typeof window !== 'undefined' ? window.location.href : `/courses/${slug}`} />
@@ -196,97 +189,50 @@ export default function CourseDetailPage() {
           <span className="flex items-center gap-1"><BookOpen className="h-4 w-4" /> {lessons.length} lessons</span>
         </div>
 
-        {/* Progress bar (enrolled) */}
-        {enrolled && progress && (
-          <Card className="card-hover mb-6">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between mb-2 text-sm">
-                <span className="text-text-secondary">Your progress</span>
-                <span className="font-semibold text-brand-primary">{progress.enrollment?.progress ?? 0}%</span>
-              </div>
-              <div className="h-2.5 rounded-full bg-surface-tertiary overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-400 transition-all duration-500" style={{ width: `${progress.enrollment?.progress ?? 0}%` }} />
-              </div>
-              <p className="text-xs text-text-muted mt-2">{progress.completedCount} of {progress.totalCount} lessons completed</p>
-            </CardContent>
-          </Card>
-        )}
-
         {course.content && <article className="prose prose-invert max-w-none mb-8 prose-headings:text-text-primary prose-p:text-text-secondary prose-a:text-brand-primary"><ReactMarkdown>{course.content}</ReactMarkdown></article>}
 
-        {/* Lessons */}
-        {lessons.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="text-lg">Course Content</CardTitle>
-              <p className="text-sm text-text-muted">Lessons unlock in order — complete each one to continue.</p>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {lessons.map((l, i) => {
-                const TypeIcon = lessonTypeIcons[l.type] || BookOpen
-                const state = lessonState(l.id)
-                const locked = state === 'locked'
-                const completed = state === 'completed'
-                return (
-                  <div key={l.id}>
-                    {locked ? (
-                      <div className="flex items-center gap-3 p-3 rounded-lg opacity-50 cursor-not-allowed">
-                        <span className="text-xs text-text-muted w-6 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                        <Lock className="h-3.5 w-3.5 text-text-muted shrink-0" />
-                        <span className="text-sm flex-1">{l.title}</span>
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 capitalize">{l.type || 'text'}</Badge>
-                      </div>
-                    ) : (
-                      <Link
-                        href={`/courses/${slug}/lessons/${l.id}`}
-                        className={cn(
-                          'flex items-center gap-3 p-3 rounded-lg transition-colors group',
-                          completed ? 'text-green-500 bg-green-500/5' : state === 'current' ? 'bg-brand-primary/10 text-brand-primary' : 'hover:bg-surface-secondary'
-                        )}
-                      >
-                        <span className="text-xs text-text-muted w-6 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                        {completed ? <Check className="h-4 w-4 shrink-0" /> : <TypeIcon className="h-3.5 w-3.5 shrink-0" />}
-                        <span className="text-sm flex-1">{l.title}</span>
-                        {completed && <Badge variant="success" className="text-[10px] px-1.5 py-0 h-5">Done</Badge>}
-                        <ChevronRight className="h-3.5 w-3.5 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </Link>
-                    )}
-                  </div>
-                )
-              })}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* CTA */}
-        {isCert ? (
-          <Button asChild className="gradient-bg text-white w-full sm:w-auto">
-            <Link href="/certification"><Award className="h-4 w-4 mr-2" /> View Your Certificate</Link>
-          </Button>
-        ) : progress?.needsFinalQuiz ? (
-          <Button className="gradient-bg text-white w-full sm:w-auto" onClick={() => { setFinalResult(null); setShowFinalQuiz(true) }}>
-            <HelpCircle className="h-4 w-4 mr-2" /> Take Final Quiz
-          </Button>
-        ) : enrolled ? (
-          <Button asChild className="gradient-bg text-white w-full sm:w-auto">
-            <Link href={continueHref()}>
-              {progress && progress.completedCount > 0 ? 'Continue Learning' : 'Start Learning'} <ChevronRight className="h-4 w-4 ml-1" />
-            </Link>
-          </Button>
-        ) : user ? (
-          <Button className="gradient-bg text-white w-full sm:w-auto" onClick={handleEnroll} disabled={enrolling}>
-            {enrolling ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null} Enroll & Start
-          </Button>
-        ) : (
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button asChild className="gradient-bg text-white">
-              <Link href={`/register?redirect=/courses/${slug}`}>Enroll Free — Start Learning</Link>
+        </div>
+        {/* Sidebar: course contents + progress + primary action */}
+        <aside className="lg:sticky lg:top-24 space-y-4">
+          <CourseSidebar
+            courseSlug={slug}
+            lessons={lessons}
+            completedLessonIds={progress?.completedLessonIds || []}
+            currentLessonId={progress?.unlockedLessonId || null}
+            unlockedLessonId={progress?.unlockedLessonId || null}
+            enrolled={!!enrolled}
+            isCompleted={!!isDone}
+          />
+          {isCert ? (
+            <Button asChild className="gradient-bg text-white w-full">
+              <Link href="/certification"><Award className="h-4 w-4 mr-2" /> View Your Certificate</Link>
             </Button>
-            <Button asChild variant="outline">
-              <Link href={`/login?redirect=/courses/${slug}`}>I already have an account</Link>
+          ) : progress?.needsFinalQuiz ? (
+            <Button className="gradient-bg text-white w-full" onClick={() => { setFinalResult(null); setShowFinalQuiz(true) }}>
+              <HelpCircle className="h-4 w-4 mr-2" /> Take Final Quiz
             </Button>
-          </div>
-        )}
+          ) : enrolled ? (
+            <Button asChild className="gradient-bg text-white w-full">
+              <Link href={continueHref()}>
+                {progress && progress.completedCount > 0 ? 'Continue Learning' : 'Start Learning'} <ChevronRight className="h-4 w-4 ml-1" />
+              </Link>
+            </Button>
+          ) : user ? (
+            <Button className="gradient-bg text-white w-full" onClick={handleEnroll} disabled={enrolling}>
+              {enrolling ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null} Enroll Free & Start
+            </Button>
+          ) : (
+            <div className="space-y-3">
+              <Button asChild className="gradient-bg text-white w-full">
+                <Link href={`/register?redirect=/courses/${slug}`}>Enroll Free — Start Learning</Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full">
+                <Link href={`/login?redirect=/courses/${slug}`}>I already have an account</Link>
+              </Button>
+            </div>
+          )}
+        </aside>
+      </div>
 
         {/* Final Quiz modal */}
         {showFinalQuiz && course.final_quiz?.length > 0 && (
@@ -341,7 +287,6 @@ export default function CourseDetailPage() {
             </Card>
           </div>
         )}
-      </div>
     </main>
   )
 }
