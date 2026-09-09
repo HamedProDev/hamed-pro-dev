@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     if (projectCount === 0) {
       const projects = seedProjects
       await Promise.all(projects.map(p => createDocument('projects', p)))
-      results.push('6 projects seeded')
+      results.push(`${projects.length} projects seeded`)
     } else {
       results.push(`${projectCount} projects exist`)
     }
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
     if (courseCount === 0) {
       const courses = seedCourses
       await Promise.all(courses.map(c => createDocument('courses', c)))
-      results.push('12 courses seeded')
+      results.push(`${courses.length} courses seeded`)
     } else {
       results.push(`${courseCount} courses exist`)
     }

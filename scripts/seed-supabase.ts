@@ -1,11 +1,16 @@
 /**
  * Standalone Supabase seeder — run from your own machine (no app deploy needed).
  *
- *   npx tsx scripts/seed-supabase.ts
+ *   npx tsx scripts/seed-supabase.ts            # seed only empty tables + admin
+ *   npx tsx scripts/seed-supabase.ts --content  # upsert projects & courses (add/update live content)
+ *   npx tsx scripts/seed-supabase.ts --reset    # delete ALL content data
+ *   npx tsx scripts/seed-supabase.ts --admin-only
  *
  * Reads the same seed content as `/api/seed` (src/lib/seed-data.ts) and writes
  * it directly to Supabase using the service-role key, then creates the admin
- * user. Idempotent: it skips tables that already have rows.
+ * user. Idempotent: it skips tables that already have rows. `--content` upserts
+ * the project/course catalog by slug so you can add or refresh content without
+ * touching anything else.
  *
  * Required env vars (in .env or exported):
  *   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_PASSWORD
@@ -168,10 +173,54 @@ async function resetAll() {
   console.log('\n✔ Content cleared. Add new content from /admin-control.\n')
 }
 
+// Retired placeholder projects from an earlier seed — removed by --content so the
+// portfolio only shows real, admin-approved work. Custom projects added via the
+// admin panel are never touched.
+const RETIRED_PROJECT_SLUGS = [
+  'farmconnect',
+  'kwanda-ems',
+  'ai-health-assistant',
+  'educonnect',
+  'paysmart-mobile',
+  'opendev-cli',
+]
+
+async function seedContentUpsert() {
+  console.log(`\nSyncing projects & courses → ${url} (upsert by slug)\n`)
+
+  // Remove retired placeholders (only these exact slugs).
+  const { data: removed } = await supabase
+    .from('projects')
+    .delete({ count: 'exact' })
+    .in('slug', RETIRED_PROJECT_SLUGS)
+    .select('slug')
+  const removedSlugs = (removed ?? []).map((r: any) => r.slug)
+  if (removedSlugs.length) console.log(`• Removed ${removedSlugs.length} retired placeholder projects`)
+
+  const { error: projectsError } = await supabase
+    .from('projects')
+    .upsert(seedProjects, { onConflict: 'slug' })
+  if (projectsError) throw projectsError
+  console.log(`• Projects: ${seedProjects.length} upserted`)
+
+  const { error: coursesError } = await supabase
+    .from('courses')
+    .upsert(seedCourses, { onConflict: 'slug' })
+  if (coursesError) throw coursesError
+  console.log(`• Courses: ${seedCourses.length} upserted (all free)`)
+
+  console.log('\n✔ Done. Projects & courses are live. Manage/edit them from /admin-control.\n')
+}
+
 async function main() {
   const reset = process.argv.includes('--reset')
   if (reset) {
     await resetAll()
+    return
+  }
+
+  if (process.argv.includes('--content')) {
+    await seedContentUpsert()
     return
   }
 

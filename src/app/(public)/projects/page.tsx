@@ -12,12 +12,15 @@ import { cn } from '@/lib/utils/cn'
 import { MetadataInjector } from '@/components/shared/MetadataInjector'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 
-const categories = ['All', 'large', 'mini', 'school']
+const categories = ['All', 'large', 'mini', 'school', 'ai', 'mobile', 'saas']
 
 const categoryLabels: Record<string, string> = {
   large: 'Web App',
   mini: 'Mini Project',
   school: 'School Project',
+  ai: 'AI / ML',
+  mobile: 'Mobile App',
+  saas: 'SaaS',
 }
 
 const gradients = [
