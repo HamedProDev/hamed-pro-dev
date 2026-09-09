@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Save, Loader2, Mail, MessageSquare, Phone, MapPin, Inbox, MailOpen, Trash2, RefreshCw } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
+import { saveJson } from '@/lib/utils/admin-save'
 
 interface ContactMessage {
   id: string
@@ -27,6 +28,7 @@ export default function AdminContactPage() {
   const [loadingSettings, setLoadingSettings] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Messages
   const [messages, setMessages] = useState<ContactMessage[]>([])
@@ -55,14 +57,16 @@ export default function AdminContactPage() {
 
   const handleSave = async () => {
     setSaving(true)
-    try {
-      const res = await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings),
-      })
-      if (res.ok) { setSaved(true); setTimeout(() => setSaved(false), 2000) }
-    } catch {}
+    setError(null)
+    const result = await saveJson('/api/settings', settings)
+    if (result.ok) {
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+      const msg: string = result.data?.message || ''
+      if (msg && msg !== 'Settings updated') setError(msg)
+    } else {
+      setError(result.error || 'Failed to save contact info')
+    }
     setSaving(false)
   }
 
@@ -114,6 +118,12 @@ export default function AdminContactPage() {
           </button>
         ))}
       </div>
+
+      {activeTab === 'Contact Info' && error && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400" role="alert">
+          ❌ {error}
+        </div>
+      )}
 
       {activeTab === 'Messages' ? (
         loadingMessages ? (

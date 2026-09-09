@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Loader2, ArrowLeft } from 'lucide-react'
+import { Loader2, ArrowLeft, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -53,7 +53,13 @@ export default function EditCoursePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...form,
+          title: form.title,
+          description: form.description,
+          longDescription: form.longDescription,
+          coverImage: form.coverImage,
+          category: form.category,
+          level: form.level,
+          type: form.type,
           price: String(form.price || '0').trim(),
           duration: String(form.duration || '').trim(),
           rating: Number(form.rating) || 0,
@@ -75,7 +81,14 @@ export default function EditCoursePage() {
   return (
     <div className="max-w-2xl">
       <Link href="/admin-control/courses" className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-text-primary mb-4"><ArrowLeft className="h-4 w-4" /> Back to Courses</Link>
-      <h1 className="text-3xl font-bold mb-6">Edit Course</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Edit Course</h1>
+        <Button asChild variant="outline">
+          <Link href={`/admin-control/courses/${id}/lessons`}>
+            <BookOpen className="h-4 w-4 mr-2" /> Manage Lessons
+          </Link>
+        </Button>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
           <CardHeader><CardTitle>Course Details</CardTitle></CardHeader>

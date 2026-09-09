@@ -39,20 +39,35 @@ export default function LessonPage() {
 
   useEffect(() => {
     if (!slug) return
-    fetch('/api/courses?limit=100').then(r => r.json()).then(d => {
-      if (!d.success) { setLoading(false); return }
-      const found = d.data.find((c: any) => c.slug === slug || c.id === slug)
-      if (!found) { setLoading(false); return }
-      setCourse(found)
-      fetch(`/api/courses/${found.id}/lessons`).then(r2 => r2.json()).then(d2 => {
-        if (d2.success) {
-          setLessons(d2.data || [])
-          const current = d2.data.find((l: any) => l.id === lessonId || l.slug === lessonId)
+    let cancelled = false
+    const done = () => { if (!cancelled) setLoading(false) }
+
+    const loadLessons = (id: string) =>
+      fetch(`/api/courses/${id}/lessons`)
+        .then(r => r.json())
+        .then(d => {
+          if (cancelled || !d.success) return
+          setLessons(d.data || [])
+          const current = (d.data || []).find((l: any) => l.id === lessonId || l.slug === lessonId)
           if (current) setLesson(current)
+        })
+        .catch(() => {})
+
+    // Resolve the course by slug first (same as the course page — also works
+    // for draft courses while the admin previews them).
+    fetch(`/api/courses/slug/${encodeURIComponent(slug)}`)
+      .then(r => r.json())
+      .then(d => {
+        if (cancelled) return
+        if (d.success && d.data) {
+          setCourse(d.data)
+          loadLessons(d.data.id)
         }
-        setLoading(false)
-      }).catch(() => setLoading(false))
-    }).catch(() => setLoading(false))
+        done()
+      })
+      .catch(done)
+
+    return () => { cancelled = true }
   }, [slug, lessonId])
 
   // Load progress to determine lock / completion state.

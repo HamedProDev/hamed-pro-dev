@@ -6,7 +6,7 @@ import { sendEmail } from '@/lib/email'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    if (!body.name || !body.email || !body.message) return apiError('Name, email, and message are required')
+    if (!body.name || !body.email || !body.message) return apiError('Name, email, and message are required', 400)
 
     // Whitelist the fields that actually exist as columns on the contacts
     // table — passing through arbitrary body keys (e.g. `reason` from the

@@ -32,7 +32,13 @@ export default function NewCoursePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...form,
+          title: form.title,
+          description: form.description,
+          longDescription: form.longDescription,
+          coverImage: form.coverImage,
+          category: form.category,
+          level: form.level,
+          type: form.type,
           price: String(form.price || '0').trim(),
           duration: String(form.duration || '').trim(),
           rating: Number((form as any).rating) || 0,
@@ -45,10 +51,15 @@ export default function NewCoursePage() {
         }),
       })
       const data = await res.json()
-      if (data.success) router.push('/admin-control/courses')
-      else setError(data.error || 'Failed to create course')
-    } catch { setError('Something went wrong') }
-    setSaving(false)
+      if (data.success && data.data?.id) {
+        // Go straight to the lesson manager — a course without lessons isn't
+        // usable, so that's always the next step after creating one.
+        router.push(`/admin-control/courses/${data.data.id}/lessons`)
+      } else {
+        setError(data.error || 'Failed to create course')
+        setSaving(false)
+      }
+    } catch { setError('Something went wrong'); setSaving(false) }
   }
 
   return (
@@ -80,10 +91,10 @@ export default function NewCoursePage() {
           </CardContent>
         </Card>
         <FinalQuizEditor value={form.finalQuiz} onChange={v => update('finalQuiz', v)} />
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-red-400 text-sm" role="alert">{error}</p>}
         <Button type="submit" disabled={saving} className="gradient-bg text-white">
           {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-          {saving ? 'Creating...' : 'Create Course'}
+          {saving ? 'Creating...' : 'Create Course & Add Lessons'}
         </Button>
       </form>
     </div>

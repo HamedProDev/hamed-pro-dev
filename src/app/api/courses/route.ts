@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getDocuments, createDocument, countDocuments } from '@/lib/supabase/db'
+import { getDocuments, createDocument, countDocuments, uniqueSlug } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError, apiPaginated, mapFormToDb } from '@/lib/supabase/helpers'
 import { generateSlug } from '@/lib/utils/slug'
 
@@ -30,6 +30,7 @@ export async function GET(req: NextRequest) {
 
     // Real enrollment counts (the courses.enrolled column is legacy/stale).
     let enrollCounts: Record<string, number> = {}
+    let lessonCounts: Record<string, number> = {}
     try {
       const courseIds = courses.map((c: any) => c.id)
       const enrollments = await getDocuments('enrollments', {
@@ -39,8 +40,17 @@ export async function GET(req: NextRequest) {
       for (const e of enrollments) {
         enrollCounts[e.course_id] = (enrollCounts[e.course_id] || 0) + 1
       }
+      // Lesson counts per course — the admin table warns about courses that
+      // have no lessons yet.
+      const lessons = await getDocuments('lessons', {
+        filters: [{ field: 'course_id', operator: 'in', value: courseIds }],
+        select: 'course_id',
+      })
+      for (const l of lessons) {
+        lessonCounts[l.course_id] = (lessonCounts[l.course_id] || 0) + 1
+      }
     } catch {
-      // enrollment counts are non-critical — fall back to the legacy column
+      // enrollment/lesson counts are non-critical — fall back to the legacy column
     }
 
     // Every course is free — normalize price so legacy rows never show a cost.
@@ -48,6 +58,7 @@ export async function GET(req: NextRequest) {
       ...c,
       price: 'Free',
       enrolled: enrollCounts[c.id] ?? c.enrolled ?? 0,
+      ...(showAll ? { lessons_count: lessonCounts[c.id] ?? 0 } : {}),
     }))
     return apiPaginated(normalized, total, page, limit)
   } catch {
@@ -59,7 +70,7 @@ export async function POST(req: NextRequest) {
   try {
     await requireAdmin(req)
     const body = await req.json()
-    const slug = body.slug || generateSlug(body.title)
+    const slug = await uniqueSlug('courses', body.slug || generateSlug(body.title))
     const course = await createDocument('courses', { ...mapFormToDb('courses', body), slug })
     return apiSuccess(course, 'Course created')
   } catch (error: any) {

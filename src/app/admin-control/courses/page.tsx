@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Plus, Pencil, Trash2, Star, BookOpen, CheckSquare, Square, Eye, EyeOff } from 'lucide-react'
+import { Plus, Pencil, Trash2, Star, BookOpen, CheckSquare, Square, Eye, EyeOff, AlertTriangle } from 'lucide-react'
 
 interface Course {
-  id: string; title: string; category: string; level: string; enrolled: number; rating: number; type: string; price: number; is_published: boolean
+  id: string; title: string; category: string; level: string; enrolled: number; rating: number; type: string; price: number; is_published: boolean; lessons_count?: number
 }
 
 export default function AdminCoursesPage() {
@@ -86,6 +86,7 @@ export default function AdminCoursesPage() {
               </th>
               <th className="px-4 py-3 text-left text-text-muted">Title</th>
               <th className="px-4 py-3 text-left text-text-muted">Category</th>
+              <th className="px-4 py-3 text-left text-text-muted">Lessons</th>
               <th className="px-4 py-3 text-left text-text-muted">Level</th>
               <th className="px-4 py-3 text-left text-text-muted">Enrolled</th>
               <th className="px-4 py-3 text-left text-text-muted">Rating</th>
@@ -102,20 +103,29 @@ export default function AdminCoursesPage() {
                   </td>
                   <td className="px-4 py-3 font-medium text-text-primary">{c.title}</td>
                   <td className="px-4 py-3 text-text-secondary">{c.category}</td>
+                  <td className="px-4 py-3">
+                    {typeof c.lessons_count === 'number' && c.lessons_count === 0 ? (
+                      <Link href={`/admin-control/courses/${c.id}/lessons`} className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 hover:bg-amber-500/20" title="This course has no lessons yet — click to add some">
+                        <AlertTriangle className="h-3 w-3" /> No lessons
+                      </Link>
+                    ) : (
+                      <span className="text-text-muted">{c.lessons_count ?? '—'}</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-500">{c.level}</span></td>
                   <td className="px-4 py-3 text-text-muted">{c.enrolled}</td>
                   <td className="px-4 py-3 text-amber-500 flex items-center gap-1"><Star className="h-3 w-3 fill-current" /> {c.rating}</td>
                   <td className="px-4 py-3">{c.is_published ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-500">Published</span> : <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">Draft</span>}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Link href={`/admin-control/courses/${c.id}/lessons`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors" title="Manage Lessons"><BookOpen className="h-4 w-4" /></Link>
+                      <Link href={`/admin-control/courses/${c.id}/lessons`} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary text-xs transition-colors" title="Manage Lessons"><BookOpen className="h-3.5 w-3.5" /> Lessons</Link>
                       <Link href={`/admin-control/courses/${c.id}/edit`} className="p-1.5 rounded-lg hover:bg-surface-tertiary text-text-muted hover:text-text-primary transition-colors"><Pencil className="h-4 w-4" /></Link>
                       <button onClick={() => handleDelete(c.id)} aria-label="Delete" className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
                 </tr>
               ))}
-              {courses.length === 0 && <tr><td colSpan={8} className="px-4 py-8 text-center text-text-muted">No courses yet.</td></tr>}
+              {courses.length === 0 && <tr><td colSpan={9} className="px-4 py-8 text-center text-text-muted">No courses yet.</td></tr>}
             </tbody>
           </table>
         </div>
