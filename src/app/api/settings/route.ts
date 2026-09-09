@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getDocuments, createDocument, updateDocument } from '@/lib/supabase/db'
 import { requireAdmin, apiSuccess, apiError } from '@/lib/supabase/helpers'
+import { fallbackSettings } from '@/lib/fallback-data'
 
 async function getSettings() {
   const docs = await getDocuments('settings')
@@ -13,9 +14,11 @@ async function getSettings() {
 async function handleGet() {
   try {
     const settings = await getSettings()
-    return apiSuccess(settings)
-  } catch (error: any) {
-    return apiError(error.message, 500)
+    // DB settings take precedence, but hard-coded defaults fill any gaps.
+    return apiSuccess({ ...fallbackSettings(), ...settings })
+  } catch {
+    // Database unreachable or missing tables — serve the hard-coded settings.
+    return apiSuccess(fallbackSettings())
   }
 }
 
